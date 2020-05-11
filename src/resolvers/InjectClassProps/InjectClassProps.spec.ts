@@ -1,14 +1,14 @@
 import "mocha";
 import { expect } from "chai";
-import InjectProps from './InjectProps';
+import InjectClassProps from './InjectClassProps';
 
-describe(`InjectProps`, () => {
+describe(`InjectClassProps`, () => {
     it(`Should inject someProp property into MainClass via afterCreateInstanceHook hook.`, () => {
         class MainClass {
             public someProp = false;
         }
 
-        const resolver = InjectProps({
+        const resolver = InjectClassProps({
             in: MainClass,
             props: {
                 someProp: true,
@@ -29,7 +29,7 @@ describe(`InjectProps`, () => {
 
         }
 
-        const resolver = InjectProps({
+        const resolver = InjectClassProps({
             in: BaseClass,
             props: {
                 someProp: true,

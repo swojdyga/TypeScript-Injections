@@ -1,9 +1,9 @@
-import InjectPropsParams from "./interfaces/InjectPropsParams";
+import InjectClassPropsParams from "./interfaces/InjectClassPropsParams";
 import { Resolver } from "../../interfaces";
 import { Context } from "../../types/Context";
 import { Class } from "typescript-class-types";
 
-export default function InjectProps<I>(params: InjectPropsParams<I>): Resolver {
+export default function InjectClassProps<I>(params: InjectClassPropsParams<I>): Resolver {
     return {
         injectClassHook<C extends Context, O extends {} | I>(context: C, constructor: Class<O>): Class<O> | void {
         
