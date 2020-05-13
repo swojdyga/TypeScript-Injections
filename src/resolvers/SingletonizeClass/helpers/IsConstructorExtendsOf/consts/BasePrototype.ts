@@ -1,0 +1,1 @@
+export const BasePrototype = Object.getPrototypeOf(() => {});
