@@ -3,7 +3,7 @@ import { expect } from "chai";
 import InjectClassProps from './InjectClassProps';
 
 describe(`InjectClassProps`, () => {
-    it(`Should inject someProp property into MainClass via afterCreateInstanceHook hook.`, () => {
+    it(`Should inject someProp property into MainClass.`, () => {
         class MainClass {
             public someProp = false;
         }
@@ -20,7 +20,7 @@ describe(`InjectClassProps`, () => {
         expect(mainClass.someProp).to.be.equals(true);
     });
 
-    it(`Should inject someProp property from BaseClass into extended class via afterCreateInstanceHook hook.`, () => {
+    it(`Should inject someProp property from BaseClass into extended class.`, () => {
         class BaseClass {
             public someProp = false;
         }

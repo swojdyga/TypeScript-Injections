@@ -25,7 +25,7 @@ describe(`CreateFactory`, () => {
         expect(mainClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should inject class via InjectClassHook hook.`, () => {
+    it(`Should inject class.`, () => {
         class BaseClass {
 
         }
@@ -53,7 +53,7 @@ describe(`CreateFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
     
-    it(`Should create object from constructor via beforeCreateInstanceHook hook.`, () => {
+    it(`Should create object from class.`, () => {
         class BaseClass {
 
         }
@@ -81,7 +81,7 @@ describe(`CreateFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should set someProperty property to true in MainClass object via afterCreateInstanceHook hook.`, () => {
+    it(`Should set someProperty property to true in MainClass object.`, () => {
         class MainClass {
             public someProperty = false;
         }

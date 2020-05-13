@@ -3,7 +3,7 @@ import { expect } from "chai";
 import InjectClass from './InjectClass';
 
 describe(`InjectClass`, () => {
-    it(`Should inject MainClass into BaseClass place via injectClassHook hook.`, () => {
+    it(`Should inject MainClass into BaseClass place.`, () => {
         class BaseClass {
 
         }
