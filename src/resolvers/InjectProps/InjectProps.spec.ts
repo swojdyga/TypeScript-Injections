@@ -1,22 +1,22 @@
 import "mocha";
 import { expect } from "chai";
-import InjectClassProps from './InjectClassProps';
+import InjectProps from './InjectProps';
 
-describe(`InjectClassProps`, () => {
+describe(`InjectProps`, () => {
     it(`Should inject someProp property into MainClass.`, () => {
         class MainClass {
             public someProp = false;
         }
 
-        const resolver = InjectClassProps({
-            in: MainClass,
+        const resolver = InjectProps({
+            type: MainClass,
             props: {
                 someProp: true,
             },
         });
 
         const mainClass = new MainClass();
-        resolver.afterCreateInstanceHook(this, mainClass);
+        resolver.afterResolveHook(this, mainClass);
         expect(mainClass.someProp).to.be.equals(true);
     });
 
@@ -29,15 +29,15 @@ describe(`InjectClassProps`, () => {
 
         }
 
-        const resolver = InjectClassProps({
-            in: BaseClass,
+        const resolver = InjectProps({
+            type: BaseClass,
             props: {
                 someProp: true,
             },
         });
 
         const mainClass = new MainClass();
-        resolver.afterCreateInstanceHook(this, mainClass);
+        resolver.afterResolveHook(this, mainClass);
         expect(mainClass.someProp).to.be.equals(true);
     });
 });

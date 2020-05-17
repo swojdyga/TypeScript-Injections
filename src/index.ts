@@ -1,16 +1,19 @@
 import Resolver from "./interfaces/Resolver";
 import DefineFactory from "./helpers/DefineFactory/DefineFactory";
-import CreateFactory from "./helpers/CreateFactory/CreateFactory";
+import ResolveFactory from './helpers/ResolveFactory/ResolveFactory';
+import ResolveObjectFactory from "./helpers/ResolveObjectFactory/ResolveObjectFactory";
 
 const definedResolvers: Resolver[] = [];
 
 const Define = DefineFactory(definedResolvers);
-const Create = CreateFactory(definedResolvers);
+const Resolve = ResolveFactory(definedResolvers);
+const ResolveObject = ResolveObjectFactory(definedResolvers);
 
 export {
     definedResolvers,
     Define,
-    Create,
+    Resolve,
+    ResolveObject,
 };
 
 export * from "./helpers/index";

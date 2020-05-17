@@ -12,8 +12,7 @@ describe(`IsConstructorExtendsOf`, () => {
 
         }
 
-        const mainClassIsPrototypeOfBaseClass = IsConstructorExtendsOf(MainClass, BaseClass);
-        expect(mainClassIsPrototypeOfBaseClass).to.be.equals(true);
+        expect(IsConstructorExtendsOf(MainClass, BaseClass)).to.be.equals(true);
     });
 
     it(`Should return positive result during check is MainClass class is extends BaseBaseClass class.`, () => {
@@ -29,8 +28,7 @@ describe(`IsConstructorExtendsOf`, () => {
 
         }
 
-        const mainClassIsPrototypeOfBaseClass = IsConstructorExtendsOf(MainClass, BaseBaseClass);
-        expect(mainClassIsPrototypeOfBaseClass).to.be.equals(true);
+        expect(IsConstructorExtendsOf(MainClass, BaseBaseClass)).to.be.equals(true);
     });
 
     it(`Should return negative result during check is OtherMainClass class is extends MainClass class.`, () => {
@@ -42,7 +40,6 @@ describe(`IsConstructorExtendsOf`, () => {
 
         }
 
-        const mainClassIsPrototypeOfBaseClass = IsConstructorExtendsOf(OtherMainClass, MainClass);
-        expect(mainClassIsPrototypeOfBaseClass).to.be.equals(false);
+        expect(IsConstructorExtendsOf(OtherMainClass, MainClass)).to.be.equals(false);
     });
 });

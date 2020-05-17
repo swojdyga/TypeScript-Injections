@@ -1,1 +1,0 @@
-export type ObjectParams<I> = {[key in keyof I]?: I[key]};

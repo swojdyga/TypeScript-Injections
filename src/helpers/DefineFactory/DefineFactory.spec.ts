@@ -16,15 +16,6 @@ describe(`DefineFactory`, () => {
         const define = DefineFactory(resolvers);
 
         const emptyResolver = {
-            injectClassHook<C extends Context, O>(context: C, constructor: Class<O>): Class<O> | void {
-                return;
-            },
-            beforeCreateInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O>, constructorParams: A): O | void {
-                return;
-            },
-            afterCreateInstanceHook<C extends Context, O>(context: C, instance: O): void {
-                return;
-            },
         };
 
         define([
