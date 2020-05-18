@@ -1,4 +1,4 @@
-import Resolver from "../../interfaces/Resolver";
+import { Resolver } from '../../types/Resolver';
 
 export default function DefineFactory(definedResolvers: Resolver[]) {
     return function Define(resolvers: Resolver[]): void {

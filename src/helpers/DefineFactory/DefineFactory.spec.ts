@@ -1,9 +1,7 @@
 import "mocha";
 import { expect } from "chai";
 import DefineFactory from "./DefineFactory";
-import { Class } from "typescript-class-types";
-import Resolver from "../../interfaces/Resolver";
-import { Context } from "../../types/Context";
+import { Resolver } from '../../types/Resolver';
 
 describe(`DefineFactory`, () => {
     it(`Should return the Define function from DefineFactory function.`, () => {

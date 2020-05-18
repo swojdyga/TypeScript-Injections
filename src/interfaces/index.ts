@@ -1,5 +1,11 @@
-import Resolver from "./Resolver";
+import ResolverInjectHook from './ResolverInjectHook';
+import ResolverResolveHook from './ResolverResolveHook';
+import ResolverCreateInstanceHook from './ResolverCreateInstanceHook';
+import ResolverAfterResolveHook from './ResolverAfterResolveHook';
 
 export {
-    Resolver,
+    ResolverInjectHook,
+    ResolverResolveHook,
+    ResolverCreateInstanceHook,
+    ResolverAfterResolveHook,
 }

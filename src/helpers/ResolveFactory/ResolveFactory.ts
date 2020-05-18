@@ -1,7 +1,7 @@
-import Resolver from "../../interfaces/Resolver";
 import { Context } from '../../types/Context';
 import ResolveDefinition from './interfaces/ResolveDefinition';
 import { Class } from 'typescript-class-types';
+import { Resolver } from '../../types/Resolver';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
     return function Resolve<C extends Context, O, A extends Array<unknown>>(context: C, resolveDefinition: ResolveDefinition<Class<O, A>>): O {

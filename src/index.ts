@@ -1,4 +1,4 @@
-import Resolver from "./interfaces/Resolver";
+import { Resolver } from "./types/Resolver";
 import DefineFactory from "./helpers/DefineFactory/DefineFactory";
 import ResolveFactory from './helpers/ResolveFactory/ResolveFactory';
 import ResolveObjectFactory from "./helpers/ResolveObjectFactory/ResolveObjectFactory";

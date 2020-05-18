@@ -2,8 +2,10 @@ import SingletonizeParams from "./interfaces/SingletonizeParams";
 import { Context } from '../../types/Context';
 import IsConstructorExtendsOf from "./helpers/IsConstructorExtendsOf/IsConstructorExtendsOf";
 import IsConstructor from './helpers/IsConstructor/IsConstructor';
+import ResolverResolveHook from '../../interfaces/ResolverResolveHook';
+import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook';
 
-export default function Singletonize<I>(params: SingletonizeParams<I>) {
+export default function Singletonize<I>(params: SingletonizeParams<I>): ResolverResolveHook & ResolverAfterResolveHook {
     const catchedInstances: I[] = [];
     return {
         resolveHook<C extends Context, O extends {} | I, R extends O>(context: C, object: O): R | void {
