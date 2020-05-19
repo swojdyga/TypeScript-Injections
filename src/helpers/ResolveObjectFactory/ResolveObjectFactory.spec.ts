@@ -169,4 +169,79 @@ describe(`ResolveObjectFactory`, () => {
 
         expect(resolvedObject.someProp).to.be.equals(true);
     });
+
+    it(`Should inject object via injectHook during resolving concrete definition.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+        ]);
+
+        const resolvedObject = resolveObject(this, {
+            object: baseObject,
+        }, [
+            {
+                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return mainObject as unknown as R;
+                },
+            },
+        ]);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+
+    it(`Should inject object via resolveHook during resolving concrete definition.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+        ]);
+
+        const resolvedObject = resolveObject(this, {
+            object: baseObject,
+        }, [
+            {
+                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return mainObject as unknown as R;
+                },
+            },
+        ]);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+    
+    it(`Should mutate object via afterResolveHook during resolving concrete definition.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+        ]);
+
+        const resolvedMainObject = resolveObject(this, {
+            object: mainObject,
+        }, [
+            {
+                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
+                    (object as MainObjectInterface).someProperty = true;
+                },
+            },
+        ]);
+
+        expect(resolvedMainObject.someProperty).to.be.equals(true);
+    });
 });

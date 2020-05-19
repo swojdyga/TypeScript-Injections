@@ -3,9 +3,14 @@ import ResolveDefinitionObject from './interfaces/ResolveDefinitionObject';
 import { Resolver } from '../../types/Resolver';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
-    return function ResolveObject<C extends Context, O>(context: C, resolveDefinition: ResolveDefinitionObject<O>): O {
+    return function ResolveObject<C extends Context, O>(
+        context: C,
+        resolveDefinition: ResolveDefinitionObject<O>,
+        additionalResolvers: Array<Resolver> = [],
+    ): O {
         const resolvers = [
             ...definedResolvers,
+            ...additionalResolvers,
         ];
 
         const object = resolvers.reduce(

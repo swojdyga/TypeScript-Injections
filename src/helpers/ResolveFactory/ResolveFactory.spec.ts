@@ -248,4 +248,104 @@ describe(`ResolveFactory`, () => {
 
         expect(mainClass.someProperty).to.be.equals(true);
     });
+
+    it(`Should inject class via injectHook during resolving concrete definition.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+        ]);
+
+        const baseClass = resolve(this, {
+            type: BaseClass,
+        }, [
+            {
+                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return MainClass as unknown as R;
+                },
+            },
+        ]);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should inject class via resolveHook during resolving concrete definition.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+        ]);
+
+        const baseClass = resolve(this, {
+            type: BaseClass,
+        }, [
+            {
+                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return MainClass as unknown as R;
+                },
+            },
+        ]);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
+
+    it(`Should create object from class via createInstanceHook during resolving concrete definition.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+        ]);
+
+        const baseClass = resolve(this, {
+            type: BaseClass,
+        }, [
+            {
+                createInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O, A>): O | void {
+                    return new MainClass() as unknown as O;
+                },
+            },
+        ]);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should mutate object via afterResolveHook during resolving concrete definition.`, () => {
+        class MainClass {
+            public someProperty = false;
+        }
+
+        const resolve = ResolveFactory([
+        ]);
+
+        const mainClass = resolve(this, {
+            type: MainClass,
+        }, [
+            {
+                afterResolveHook<C extends Context, O>(context: C, object: O): void {
+                    if(object instanceof MainClass) {
+                        object.someProperty = true;
+                    }
+                },
+            },
+        ]);
+
+        expect(mainClass.someProperty).to.be.equals(true);
+    });
+
 });

@@ -4,7 +4,11 @@ import { Class } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
-    return function Resolve<C extends Context, O, A extends Array<unknown>>(context: C, resolveDefinition: ResolveDefinition<Class<O, A>>): O {
+    return function Resolve<C extends Context, O, A extends Array<unknown>>(
+        context: C,
+        resolveDefinition: ResolveDefinition<Class<O, A>>,
+        additionalResolvers: Array<Resolver> = [],
+    ): O {
         const predefinedResolvers: Array<Resolver> = [
             {
                 createInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O, A>): O | void {
@@ -15,6 +19,7 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
 
         const resolvers = [
             ...definedResolvers,
+            ...additionalResolvers,
             ...predefinedResolvers,
         ];
 
