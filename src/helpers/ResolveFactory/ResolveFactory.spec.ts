@@ -49,6 +49,31 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
+    it(`Should can inject class via resolveHook.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+            {
+                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return MainClass as unknown as R;
+                },
+            },
+        ]);
+
+        const baseClass = resolve(this, {
+            type: BaseClass,
+        });
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
+
     it(`Should can create object from class via createInstanceHook.`, () => {
         class BaseClass {
 

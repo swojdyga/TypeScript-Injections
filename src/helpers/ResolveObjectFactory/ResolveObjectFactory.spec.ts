@@ -45,6 +45,30 @@ describe(`ResolveObjectFactory`, () => {
 
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
+
+    it(`Should can inject object via resolveHook.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            {
+                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                    return mainObject as unknown as R;
+                },
+            },
+        ]);
+
+        const resolvedObject = resolveObject(this, {
+            object: baseObject,
+        });
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
     
     it(`Should can mutate object via afterResolveHook.`, () => {
         interface MainObjectInterface {
