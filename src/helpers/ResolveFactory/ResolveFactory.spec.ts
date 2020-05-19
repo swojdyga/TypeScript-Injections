@@ -10,7 +10,7 @@ describe(`ResolveFactory`, () => {
         expect(resolve).to.be.instanceOf(Function);
     });
 
-    it(`Should create object from resolveDefinition parameter given in Resolve method returned from ResolveFactory.`, () => {
+    it(`Should resolve object from resolveDefinition parameter given in Resolve method returned from ResolveFactory.`, () => {
         class MainClass {
 
         }
@@ -25,7 +25,7 @@ describe(`ResolveFactory`, () => {
         expect(mainClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should can inject class via injectHook.`, () => {
+    it(`Should inject class via injectHook.`, () => {
         class BaseClass {
 
         }
@@ -49,7 +49,7 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should can inject class via resolveHook.`, () => {
+    it(`Should inject class via resolveHook.`, () => {
         class BaseClass {
 
         }
@@ -74,7 +74,7 @@ describe(`ResolveFactory`, () => {
     });
 
 
-    it(`Should can create object from class via createInstanceHook.`, () => {
+    it(`Should create object from class via createInstanceHook.`, () => {
         class BaseClass {
 
         }
@@ -98,7 +98,7 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should can mutate object via afterResolveHook.`, () => {
+    it(`Should mutate object via afterResolveHook.`, () => {
         class MainClass {
             public someProperty = false;
         }

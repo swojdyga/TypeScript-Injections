@@ -9,7 +9,7 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolveObject).to.be.instanceOf(Function);
     });
 
-    it(`Should create object from resolveDefinition parameter given in ResolveObject method returned from ResolveObjectFactory.`, () => {
+    it(`Should resolve object from resolveDefinition parameter given in ResolveObject method returned from ResolveObjectFactory.`, () => {
         const mainObject = {};
 
         const resolveObject = ResolveObjectFactory([
@@ -22,7 +22,7 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedMainObject).to.be.equals(mainObject);
     });
 
-    it(`Should can inject object via injectHook.`, () => {
+    it(`Should inject object via injectHook.`, () => {
         const baseObject = {
             baseProp: true,
         };
@@ -46,7 +46,7 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
 
-    it(`Should can inject object via resolveHook.`, () => {
+    it(`Should inject object via resolveHook.`, () => {
         const baseObject = {
             baseProp: true,
         };
@@ -70,7 +70,7 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
     
-    it(`Should can mutate object via afterResolveHook.`, () => {
+    it(`Should mutate object via afterResolveHook.`, () => {
         interface MainObjectInterface {
             someProperty: boolean;
         }
