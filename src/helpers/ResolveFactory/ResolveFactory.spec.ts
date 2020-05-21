@@ -24,6 +24,21 @@ describe(`ResolveFactory`, () => {
 
         expect(mainClass).to.be.instanceOf(MainClass);
     });
+    
+    it(`Should resolve object from resolveDefinition parameter, which is abstract class, given in Resolve method returned from ResolveFactory.`, () => {
+        abstract class MainClass {
+
+        }
+
+        const resolve = ResolveFactory([
+        ]);
+
+        const mainClass = resolve(this, {
+            type: MainClass,
+        });
+
+        expect(mainClass).to.be.instanceOf(MainClass);
+    });
 
     it(`Should inject class via injectHook.`, () => {
         class BaseClass {
@@ -347,5 +362,4 @@ describe(`ResolveFactory`, () => {
 
         expect(mainClass.someProperty).to.be.equals(true);
     });
-
 });

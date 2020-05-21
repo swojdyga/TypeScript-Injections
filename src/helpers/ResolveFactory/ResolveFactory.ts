@@ -1,18 +1,20 @@
 import { Context } from '../../types/Context';
 import ResolveDefinition from './interfaces/ResolveDefinition';
-import { Class } from 'typescript-class-types';
+import { AbstractClass, Class } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
+import IsConstructor from '../../resolvers/Singletonize/helpers/IsConstructor/IsConstructor';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
-    return function Resolve<C extends Context, O, A extends Array<unknown>>(
+    return function Resolve<C extends Context, O>(
         context: C,
-        resolveDefinition: ResolveDefinition<Class<O, A>>,
+        resolveDefinition: ResolveDefinition<AbstractClass<O>>,
         additionalResolvers: Array<Resolver> = [],
     ): O {
         const predefinedResolvers: Array<Resolver> = [
             {
-                createInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O, A>): O | void {
-                    return new constructor(...[] as unknown as A);
+                createInstanceHook<C extends Context, O>(context: C, constructor: AbstractClass<O>): O | void {
+                    //can't detect at runtime is it an abstract class :(
+                    return new (constructor as Class<O>)();
                 },
             },  
         ];

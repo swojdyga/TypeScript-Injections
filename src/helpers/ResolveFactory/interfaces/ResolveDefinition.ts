@@ -1,5 +1,5 @@
-import { Class } from 'typescript-class-types';
+import { AbstractClass } from 'typescript-class-types';
 
-export default interface ResolveDefinition<L extends Class<{}>> {
+export default interface ResolveDefinition<L extends AbstractClass<{}>> {
     type: L;
 }
