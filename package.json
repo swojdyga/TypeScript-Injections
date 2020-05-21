@@ -22,5 +22,15 @@
   },
   "dependencies": {
     "typescript-class-types": "^1.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swojdyga/typescript-injections.git"
+  },
+  "author": "Sebastian Wojdyga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swojdyga/typescript-injections/issues"
+  },
+  "homepage": "https://github.com/swojdyga/typescript-injections#readme"
 }
