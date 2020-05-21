@@ -1,6 +1,7 @@
 import { Context } from '../../types/Context';
-import { AbstractClass, Class } from 'typescript-class-types';
+import { AbstractClass } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
+import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
     return function Resolve<C extends Context, O>(
@@ -9,12 +10,7 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
         additionalResolvers: Array<Resolver> = [],
     ): O {
         const predefinedResolvers: Array<Resolver> = [
-            {
-                createInstanceHook<C extends Context, O>(context: C, constructor: AbstractClass<O>): O | void {
-                    //can't detect at runtime is it an abstract class :(
-                    return new (constructor as Class<O>)();
-                },
-            },  
+            BasicInstanceCreator,
         ];
 
         const resolvers = [
