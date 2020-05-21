@@ -1,11 +1,10 @@
 import { Context } from "../../types/Context";
-import ResolveDefinitionObject from './interfaces/ResolveDefinitionObject';
 import { Resolver } from '../../types/Resolver';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
     return function ResolveObject<C extends Context, O>(
         context: C,
-        resolveDefinition: ResolveDefinitionObject<O>,
+        object: O,
         additionalResolvers: Array<Resolver> = [],
     ): O {
         const resolvers = [
@@ -13,7 +12,7 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             ...additionalResolvers,
         ];
 
-        const object = resolvers.reduce(
+        const injectedObject = resolvers.reduce(
             (object, resolver) => {
                 if(resolver.injectHook) {
                     return resolver.injectHook(context, object) || object;
@@ -21,20 +20,20 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
 
                 return object;
             },
-            resolveDefinition.object,
+            object,
         );
 
         const resolvedObject = (() => {
             for(const resolver of resolvers) {
                 if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook(context, object);
+                    const resolvedObject = resolver.resolveHook(context, injectedObject);
                     if(resolvedObject) {
                         return resolvedObject;
                     }
                 }
             }
 
-            return object;
+            return injectedObject;
         })();
 
         resolvers.forEach((resolver) => {

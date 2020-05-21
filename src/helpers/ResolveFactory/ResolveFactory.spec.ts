@@ -18,9 +18,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const mainClass = resolve(this, {
-            type: MainClass,
-        });
+        const mainClass = resolve(this, MainClass);
 
         expect(mainClass).to.be.instanceOf(MainClass);
     });
@@ -33,9 +31,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const mainClass = resolve(this, {
-            type: MainClass,
-        });
+        const mainClass = resolve(this, MainClass);
 
         expect(mainClass).to.be.instanceOf(MainClass);
     });
@@ -57,9 +53,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(this, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -81,9 +75,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(this, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -106,9 +98,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(this, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -128,9 +118,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const mainClass = resolve(this, {
-            type: MainClass,
-        });
+        const mainClass = resolve(this, MainClass);
 
         expect(mainClass.someProperty).to.be.equals(true);
     });
@@ -151,9 +139,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        resolve(this, {
-            type: MainClass,
-        });
+        resolve(this, MainClass);
 
         expect(mainClassInstances.length).to.be.equals(1);
     });
@@ -178,9 +164,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(currentContext, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(currentContext, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -205,9 +189,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(currentContext, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(currentContext, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -232,9 +214,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const baseClass = resolve(currentContext, {
-            type: BaseClass,
-        });
+        const baseClass = resolve(currentContext, BaseClass);
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -257,9 +237,7 @@ describe(`ResolveFactory`, () => {
             },
         ]);
 
-        const mainClass = resolve(this, {
-            type: MainClass,
-        });
+        const mainClass = resolve(this, MainClass);
 
         expect(mainClass.someProperty).to.be.equals(true);
     });
@@ -276,9 +254,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        }, [
+        const baseClass = resolve(this, BaseClass, [
             {
                 injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
                     return MainClass as unknown as R;
@@ -301,9 +277,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        }, [
+        const baseClass = resolve(this, BaseClass, [
             {
                 resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
                     return MainClass as unknown as R;
@@ -327,9 +301,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const baseClass = resolve(this, {
-            type: BaseClass,
-        }, [
+        const baseClass = resolve(this, BaseClass, [
             {
                 createInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O, A>): O | void {
                     return new MainClass() as unknown as O;
@@ -348,9 +320,7 @@ describe(`ResolveFactory`, () => {
         const resolve = ResolveFactory([
         ]);
 
-        const mainClass = resolve(this, {
-            type: MainClass,
-        }, [
+        const mainClass = resolve(this, MainClass, [
             {
                 afterResolveHook<C extends Context, O>(context: C, object: O): void {
                     if(object instanceof MainClass) {

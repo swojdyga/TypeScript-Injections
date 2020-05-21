@@ -15,9 +15,7 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
         ]);
 
-        const resolvedMainObject = resolveObject(this, {
-            object: mainObject,
-        });
+        const resolvedMainObject = resolveObject(this, mainObject);
 
         expect(resolvedMainObject).to.be.equals(mainObject);
     });
@@ -39,9 +37,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedObject = resolveObject(this, {
-            object: baseObject,
-        });
+        const resolvedObject = resolveObject(this, baseObject);
 
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
@@ -63,9 +59,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedObject = resolveObject(this, {
-            object: baseObject,
-        });
+        const resolvedObject = resolveObject(this, baseObject);
 
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
@@ -87,9 +81,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedMainObject = resolveObject(this, {
-            object: mainObject,
-        });
+        const resolvedMainObject = resolveObject(this, mainObject);
 
         expect(resolvedMainObject.someProperty).to.be.equals(true);
     });
@@ -112,9 +104,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedObject = resolveObject(currentContext, {
-            object: baseObject,
-        });
+        const resolvedObject = resolveObject(currentContext, baseObject);
 
         expect(resolvedObject).to.be.equals(mainObject);
     });
@@ -136,9 +126,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedObject = resolveObject(currentContext, {
-            object: mainObject,
-        });
+        const resolvedObject = resolveObject(currentContext, mainObject);
 
         expect(resolvedObject).to.be.equals(mainObject);
     });
@@ -163,9 +151,7 @@ describe(`ResolveObjectFactory`, () => {
             },
         ]);
 
-        const resolvedObject = resolveObject(this, {
-            object: mainObject,
-        });
+        const resolvedObject = resolveObject(this, mainObject);
 
         expect(resolvedObject.someProp).to.be.equals(true);
     });
@@ -182,9 +168,7 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
         ]);
 
-        const resolvedObject = resolveObject(this, {
-            object: baseObject,
-        }, [
+        const resolvedObject = resolveObject(this, baseObject, [
             {
                 injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
                     return mainObject as unknown as R;
@@ -207,9 +191,7 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
         ]);
 
-        const resolvedObject = resolveObject(this, {
-            object: baseObject,
-        }, [
+        const resolvedObject = resolveObject(this, baseObject, [
             {
                 resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
                     return mainObject as unknown as R;
@@ -232,9 +214,7 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
         ]);
 
-        const resolvedMainObject = resolveObject(this, {
-            object: mainObject,
-        }, [
+        const resolvedMainObject = resolveObject(this, mainObject, [
             {
                 afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
                     (object as MainObjectInterface).someProperty = true;

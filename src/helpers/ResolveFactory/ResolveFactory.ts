@@ -1,13 +1,11 @@
 import { Context } from '../../types/Context';
-import ResolveDefinition from './interfaces/ResolveDefinition';
 import { AbstractClass, Class } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
-import IsConstructor from '../../resolvers/Singletonize/helpers/IsConstructor/IsConstructor';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
     return function Resolve<C extends Context, O>(
         context: C,
-        resolveDefinition: ResolveDefinition<AbstractClass<O>>,
+        type: AbstractClass<O>,
         additionalResolvers: Array<Resolver> = [],
     ): O {
         const predefinedResolvers: Array<Resolver> = [
@@ -33,7 +31,7 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
 
                 return object;
             },
-            resolveDefinition.type,
+            type,
         );
 
         const resolvedObject = (() => {
