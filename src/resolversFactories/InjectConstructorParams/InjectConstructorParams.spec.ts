@@ -3,7 +3,7 @@ import { expect } from "chai";
 import InjectConstructorParams from './InjectConstructorParams';
 
 describe(`InjectConstructorParams`, () => {
-    it(``, () => {
+    it(`Should inject constructor params.`, () => {
         class MainClass {
             constructor(public welcomeText: string = "") {
 
