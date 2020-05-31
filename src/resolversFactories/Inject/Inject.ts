@@ -5,7 +5,7 @@ import ResolverInjectHook from '../../interfaces/ResolverInjectHook';
 export default function InjectClass<F, T extends F>(params: InjectParams<F, T>): ResolverInjectHook {
     return {
         injectHook<C extends Context, O extends {} | F, R extends O | T>(context: C, object: O): R | void {
-            if(params.from === object) {
+            if(params.type === object) {
                 return params.to as R;
             }
         },

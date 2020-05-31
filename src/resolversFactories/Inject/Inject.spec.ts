@@ -13,7 +13,7 @@ describe(`Inject`, () => {
         }
 
         const resolver = Inject({
-            from: BaseClass,
+            type: BaseClass,
             to: MainClass,
         });
 
@@ -31,7 +31,7 @@ describe(`Inject`, () => {
         }
 
         const resolver = Inject({
-            from: BaseClass,
+            type: BaseClass,
             to: MainClass,
         });
 
@@ -46,7 +46,7 @@ describe(`Inject`, () => {
         };
 
         const resolver = Inject({
-            from: baseObject,
+            type: baseObject,
             to: mainObject,
         });
 
