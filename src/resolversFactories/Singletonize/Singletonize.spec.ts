@@ -12,10 +12,10 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstMainClassInstance = resolver.resolveHook(this, MainClass) || new MainClass();
+        const firstMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
         resolver.afterResolveHook(this, firstMainClassInstance);
 
-        const secondMainClassInstance = resolver.resolveHook(this, MainClass) || new MainClass();
+        const secondMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
         resolver.afterResolveHook(this, secondMainClassInstance);
 
         expect(firstMainClassInstance).to.be.equals(secondMainClassInstance);
@@ -34,10 +34,10 @@ describe(`Singletonize`, () => {
 
         }
 
-        const firstMainClassInstance = resolver.resolveHook(this, MainClass) || new MainClass();
+        const firstMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
         resolver.afterResolveHook(this, firstMainClassInstance);
 
-        const secondMainClassInstance = resolver.resolveHook(this, MainClass) || new MainClass();
+        const secondMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
         resolver.afterResolveHook(this, secondMainClassInstance);
 
         expect(firstMainClassInstance).to.be.equals(secondMainClassInstance);
@@ -56,7 +56,7 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const baseClassInstance = resolver.resolveHook(this, BaseClass) || new BaseClass();
+        const baseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
         resolver.afterResolveHook(this, baseClassInstance);
 
         expect(baseClassInstance).not.to.be.instanceOf(MainClass);
@@ -75,10 +75,10 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstBaseClassInstance = resolver.resolveHook(this, BaseClass) || new BaseClass();
+        const firstBaseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
         resolver.afterResolveHook(this, firstBaseClassInstance);
 
-        const secondBaseClassInstance = resolver.resolveHook(this, BaseClass) || new BaseClass();
+        const secondBaseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
         resolver.afterResolveHook(this, secondBaseClassInstance);
 
         expect(firstBaseClassInstance).not.to.be.equals(secondBaseClassInstance);
