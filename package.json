@@ -13,13 +13,19 @@
     "@types/chai": "^4.2.7",
     "@types/mocha": "^7.0.2",
     "@types/node": "^10.17.9",
+    "@vue/test-utils": "^1.0.3",
     "chai": "^4.2.0",
     "esm": "^3.2.25",
+    "jsdom": "^16.2.2",
+    "jsdom-global": "^3.0.2",
     "mocha": "^7.2.0",
     "ts-loader": "^6.2.1",
     "ts-loader-decleration": "^0.10.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.8.3",
+    "vue": "^2.6.11",
+    "vue-property-decorator": "^8.4.2",
+    "vue-template-compiler": "^2.6.11"
   },
   "dependencies": {
     "typescript-class-types": "^1.1.0"
