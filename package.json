@@ -1,6 +1,6 @@
 {
   "name": "typescript-injections",
-  "version": "0.0.1-alpha-1",
+  "version": "1.0.0",
   "description": "TypeScript Injections",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
