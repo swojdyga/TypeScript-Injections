@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "target": "es6",
+        "moduleResolution": "node",
+        "strictNullChecks": true,
+        "experimentalDecorators": true,
+        "declaration": true,
+        "declarationDir": "build/es6",
+        "outDir": "build/es6"
+    },
+    "include": [
+        "src/index.ts"
+    ]
+}
