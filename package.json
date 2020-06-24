@@ -1,6 +1,6 @@
 {
   "name": "typescript-injections",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "TypeScript Injections is a dependency injection library, which move responsibility from producer to customer.",
   "main": "./build/commonjs/index.js",
   "jsnext:main": "./build/es6/index.js",
@@ -10,7 +10,8 @@
     "build": "npm run build-commonjs && npm run build-es6",
     "build-commonjs": "(rimraf -r build/commonjs/* && tsc --project tsconfig-commonjs.json) || rimraf -r build/commonjs/*",
     "build-es6": "(rimraf -r build/es6/* && tsc --project tsconfig-es6.json) || rimraf -r build/es6/*",
-    "main": "npm run test && npm run build"
+    "main": "npm run test && npm run build",
+    "publish": "npm run main && npm publish"
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
