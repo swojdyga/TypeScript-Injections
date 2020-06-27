@@ -1,3 +1,6 @@
+# 1.1.0
+* Adding support for Node.js applications.
+
 # 1.0.2
 * Repairing build, which was published in npm repository as 1.0.1 and is broken :(
 
