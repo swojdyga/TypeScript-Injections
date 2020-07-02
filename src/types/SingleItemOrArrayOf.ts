@@ -1,0 +1,1 @@
+export type SingleItemOrArrayOf<T> = T | T[];

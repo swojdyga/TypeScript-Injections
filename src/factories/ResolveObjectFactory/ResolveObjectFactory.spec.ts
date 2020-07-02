@@ -42,6 +42,30 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
 
+    it(`Should inject object via injectHook as array of hooks.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                        return mainObject as unknown as R;
+                    },
+                },
+            ],
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+
     it(`Should inject object via resolveHook.`, () => {
         const baseObject = {
             baseProp: true,
@@ -57,6 +81,30 @@ describe(`ResolveObjectFactory`, () => {
                     return mainObject as unknown as R;
                 },
             },
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+
+    it(`Should inject object via resolveHook as array of hooks.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                        return mainObject as unknown as R;
+                    },
+                },
+            ],
         ]);
 
         const resolvedObject = resolveObject(this, baseObject);
@@ -79,6 +127,30 @@ describe(`ResolveObjectFactory`, () => {
                     (object as MainObjectInterface).someProperty = true;
                 },
             },
+        ]);
+
+        const resolvedMainObject = resolveObject(this, mainObject);
+
+        expect(resolvedMainObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should mutate object via afterResolveHook as array of hooks.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
+                        (object as MainObjectInterface).someProperty = true;
+                    },
+                },
+            ],
         ]);
 
         const resolvedMainObject = resolveObject(this, mainObject);

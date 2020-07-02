@@ -1,5 +1,8 @@
 import { Context } from "../../types/Context";
 import { Resolver } from '../../types/Resolver';
+import ArrayOfObjectsKeyValue from '../../helpers/ArrayOfObjectsKeyValue/ArrayOfObjectsKeyValue';
+import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
+import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
     return function ResolveObject<C extends Context, O>(
@@ -12,34 +15,26 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             ...additionalResolvers,
         ];
 
-        const injectedObject = resolvers.reduce(
-            (object, resolver) => {
-                if(resolver.injectHook) {
-                    return resolver.injectHook(context, object) || object;
-                }
-
-                return object;
+        const injectedObject = NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'injectHook')).reduce(
+            (object, injectHook) => {
+                return injectHook(context, object) || object;
             },
             object,
         );
 
         const resolvedObject = (() => {
-            for(const resolver of resolvers) {
-                if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook(context, injectedObject);
-                    if(resolvedObject) {
-                        return resolvedObject;
-                    }
+            for(const resolveHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'resolveHook'))) {
+                const resolvedObject = resolveHook(context, injectedObject);
+                if(resolvedObject) {
+                    return resolvedObject;
                 }
             }
 
             return injectedObject;
         })();
 
-        resolvers.forEach((resolver) => {
-            if(resolver.afterResolveHook) {
-                resolver.afterResolveHook(context, resolvedObject)
-            }
+        NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'afterResolveHook')).forEach((afterResolveHook) => {
+            afterResolveHook(context, resolvedObject)
         });
 
         return resolvedObject;

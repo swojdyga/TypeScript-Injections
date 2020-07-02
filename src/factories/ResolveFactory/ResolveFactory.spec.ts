@@ -58,6 +58,30 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
+    it(`Should inject class via injectHook as array of hooks.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+            [
+                {
+                    injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                        return MainClass as unknown as R;
+                    },
+                },
+            ],
+        ]);
+
+        const baseClass = resolve(this, BaseClass);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
     it(`Should inject class via resolveHook.`, () => {
         class BaseClass {
 
@@ -80,6 +104,29 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
+    it(`Should inject class via resolveHook as array of hooks.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+            [
+                {
+                    resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
+                        return MainClass as unknown as R;
+                    },
+                },
+            ],
+        ]);
+
+        const baseClass = resolve(this, BaseClass);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
 
     it(`Should create object from class via createInstanceHook.`, () => {
         class BaseClass {
@@ -103,6 +150,30 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
+    it(`Should create object from class via createInstanceHook as array of hooks.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveFactory([
+            [
+                {
+                    createInstanceHook<C extends Context, O, A extends unknown[]>(context: C, constructor: Class<O, A>): O | void {
+                        return new MainClass() as unknown as O;
+                    },
+                },
+            ],
+        ]);
+
+        const baseClass = resolve(this, BaseClass);
+
+        expect(baseClass).to.be.instanceOf(MainClass);
+    });
+
     it(`Should mutate object via afterResolveHook.`, () => {
         class MainClass {
             public someProperty = false;
@@ -116,6 +187,28 @@ describe(`ResolveFactory`, () => {
                     }
                 },
             },
+        ]);
+
+        const mainClass = resolve(this, MainClass);
+
+        expect(mainClass.someProperty).to.be.equals(true);
+    });
+
+    it(`Should mutate object via afterResolveHook as array of hooks.`, () => {
+        class MainClass {
+            public someProperty = false;
+        }
+
+        const resolve = ResolveFactory([
+            [
+                {
+                    afterResolveHook<C extends Context, O>(context: C, object: O): void {
+                        if(object instanceof MainClass) {
+                            object.someProperty = true;
+                        }
+                    },
+                },
+            ],
         ]);
 
         const mainClass = resolve(this, MainClass);
@@ -287,7 +380,6 @@ describe(`ResolveFactory`, () => {
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
-
 
     it(`Should create object from class via createInstanceHook during resolving concrete definition.`, () => {
         class BaseClass {

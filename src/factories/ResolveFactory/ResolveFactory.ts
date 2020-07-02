@@ -2,6 +2,9 @@ import { Context } from '../../types/Context';
 import { AbstractClass } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
 import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
+import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
+import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
+import ArrayOfObjectsKeyValue from '../../helpers/ArrayOfObjectsKeyValue/ArrayOfObjectsKeyValue';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
     return function Resolve<C extends Context, O>(
@@ -19,24 +22,18 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             ...predefinedResolvers,
         ];
 
-        const object = resolvers.reduce(
-            (object, resolver) => {
-                if(resolver.injectHook) {
-                    return resolver.injectHook(context, object) || object;
-                }
-
-                return object;
+        const object = NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'injectHook')).reduce(
+            (object, injectHook) => {
+                return injectHook(context, object) || object;
             },
             type,
         );
 
         const resolvedObject = (() => {
-            for(const resolver of resolvers) {
-                if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook(context, object);
-                    if(resolvedObject) {
-                        return resolvedObject;
-                    }
+            for(const resolveHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'resolveHook'))) {
+                const resolvedObject = resolveHook(context, object);
+                if(resolvedObject) {
+                    return resolvedObject;
                 }
             }
 
@@ -44,12 +41,10 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
         })();
 
         const instance = (() => {
-            for(const resolver of resolvers) {
-                if(resolver.createInstanceHook) {
-                    const instance = resolver.createInstanceHook(context, resolvedObject);
-                    if(instance) {
-                        return instance;
-                    }
+            for(const createInstanceHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'createInstanceHook'))) {
+                const instance = createInstanceHook(context, resolvedObject);
+                if(instance) {
+                    return instance;
                 }
             }
         })();
@@ -58,10 +53,8 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             throw new Error('Failed to create object instance.');
         }
 
-        resolvers.forEach((resolver) => {
-            if(resolver.afterResolveHook) {
-                resolver.afterResolveHook(context, instance);
-            }
+        NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'afterResolveHook')).forEach((afterResolveHook) => {
+            afterResolveHook(context, instance);
         });
 
         return instance;
