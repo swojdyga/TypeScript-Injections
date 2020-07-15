@@ -4,7 +4,7 @@ import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook'
 
 export default function InjectProps<I>(params: InjectPropsParams<I>): ResolverAfterResolveHook {
     return {
-        afterResolveHook<C extends Context, O>(context: C, object: O): void {
+        afterResolveHook<C extends Context, O extends object | I>(context: C, object: O): void {
             const propsKeys = Object.keys(params.props);
             if(object instanceof params.type) {
                 propsKeys.forEach((propKey) => {

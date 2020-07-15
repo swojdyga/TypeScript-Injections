@@ -2,7 +2,7 @@ import { Context } from "../../types/Context";
 import { Resolver } from '../../types/Resolver';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
-    return function ResolveObject<C extends Context, O>(
+    return function ResolveObject<C extends Context, O extends object>(
         context: C,
         object: O,
         additionalResolvers: Array<Resolver> = [],

@@ -4,7 +4,7 @@ import { Resolver } from '../../types/Resolver';
 import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
-    return function Resolve<C extends Context, O>(
+    return function Resolve<C extends Context, O extends object>(
         context: C,
         type: AbstractClass<O>,
         additionalResolvers: Array<Resolver> = [],
