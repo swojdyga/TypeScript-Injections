@@ -40,4 +40,25 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook(this, mainClass);
         expect(mainClass.someProp).to.be.equals(true);
     });
+
+    it(`Should inject someProp property exactly once on concrete object.`, () => {
+        class MainClass {
+            public someProp: boolean | null = null;
+        }
+
+        const resolver = InjectProps({
+            type: MainClass,
+            props: {
+                someProp: true,
+            },
+        });
+
+        const mainClass = new MainClass();
+        resolver.afterResolveHook(this, mainClass);
+        mainClass.someProp = false;
+
+        resolver.afterResolveHook(this, mainClass);
+
+        expect(mainClass.someProp).to.be.equals(false);
+    });
 });
