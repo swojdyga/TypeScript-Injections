@@ -1,0 +1,1 @@
+export type CompareCallback = (a: unknown, b: unknown) => boolean;

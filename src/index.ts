@@ -16,6 +16,9 @@ import { Resolver } from "./types/Resolver";
 import DefineFactory from "./factories/DefineFactory/DefineFactory";
 import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
 import ResolveObjectFactory from "./factories/ResolveObjectFactory/ResolveObjectFactory";
+import Contextual from './resolversFactories/Contextual/Contextual';
+import ContextualObject from './resolversFactories/ContextualObject/ContextualObject';
+import ContextualParams from './helpers/ContextualResolverFactoryFactory/interfaces/ContextualParams';
 
 
 const definedResolvers: Resolver[] = [];
@@ -30,6 +33,10 @@ export {
     Define,
     Resolve,
     ResolveObject,
+
+    Contextual,
+    ContextualObject,
+    ContextualParams,
 
     Inject,
     InjectParams,
