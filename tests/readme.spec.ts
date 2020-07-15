@@ -111,8 +111,6 @@ describe(`Integration tests from README`, () => {
         const connection = Resolve(this, Connection);
         const secondConnection = Resolve(this, Connection);
 
-        expect(connection).to.be.instanceOf(MySQLConnection);
-        expect((connection as MySQLConnection).hostname).to.be.equals(`localhost`);
         expect(connection).to.be.equals(secondConnection);
     });
 });
