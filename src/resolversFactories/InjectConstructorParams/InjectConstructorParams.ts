@@ -5,7 +5,7 @@ import ResolverCreateInstanceHook from '../../interfaces/ResolverCreateInstanceH
 
 export default function InjectConstructorParams<L extends Class>(params: InjectConstructorParamsParams<L>): ResolverCreateInstanceHook {
     return {
-        createInstanceHook<C extends Context, O>(context: C, constructor: AbstractClass<O> | L): O | void {
+        createInstanceHook<C extends Context, O extends object>(context: C, constructor: AbstractClass<O> | L): O | void {
             if(constructor === params.type) {
                 return new params.type(...params.params) as O;
             }

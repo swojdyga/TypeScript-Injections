@@ -7,7 +7,7 @@ import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
 import ArrayOfObjectsKeyValue from '../../helpers/ArrayOfObjectsKeyValue/ArrayOfObjectsKeyValue';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
-    return function Resolve<C extends Context, O>(
+    return function Resolve<C extends Context, O extends object>(
         context: C,
         type: AbstractClass<O>,
         additionalResolvers: Array<Resolver> = [],

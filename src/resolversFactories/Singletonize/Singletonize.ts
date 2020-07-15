@@ -8,8 +8,9 @@ import { AbstractClass } from "typescript-class-types";
 
 export default function Singletonize<I>(params: SingletonizeParams<I>): ResolverCreateInstanceHook & ResolverAfterResolveHook {
     const catchedInstances: I[] = [];
+
     return {
-        createInstanceHook<C extends Context, O extends {} | I>(context: C, constructor: AbstractClass<O>): O | void {
+        createInstanceHook<C extends Context, O extends object | I>(context: C, constructor: AbstractClass<O>): O | void {
             if(IsConstructor(constructor) && IsConstructorExtendsOf(constructor, params.type)) {
                 const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
                 if(catchedInstance) {
@@ -17,7 +18,7 @@ export default function Singletonize<I>(params: SingletonizeParams<I>): Resolver
                 }
             }
         },
-        afterResolveHook<C extends Context, O>(context: C, object: O): void {
+        afterResolveHook<C extends Context, O extends object>(context: C, object: O): void {
             if(object instanceof params.type) {
                 if(!catchedInstances.find((catchedInstance) => catchedInstance === object)) {
                     catchedInstances.push(object);

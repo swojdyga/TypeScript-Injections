@@ -5,7 +5,7 @@ import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
 import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
-    return function ResolveObject<C extends Context, O>(
+    return function ResolveObject<C extends Context, O extends object>(
         context: C,
         object: O,
         additionalResolvers: Array<Resolver> = [],
