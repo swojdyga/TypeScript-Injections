@@ -117,7 +117,7 @@ As you probably seen - library creates new instance of *MySQLConnection* every t
 
 To Singletonize Connection, we must add new definition into already existing definitions:
 ```TypeScript
-import { Define, InjectProps, Singletonize } from "typescript-injections";
+import { Define, Inject, InjectProps, Singletonize } from "typescript-injections";
 import Connection from "./Connection";
 
 Define([
