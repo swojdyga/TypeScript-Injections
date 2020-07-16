@@ -29,7 +29,7 @@ describe(`Integration tests from README`, () => {
         expect(connection).to.be.instanceOf(MySQLConnection);
     });
 
-    it(`Should inject MySQLConnection object into Connection place and should inject props into Connection instance.`, () => {
+    it(`Should inject props into Connection instance.`, () => {
         class Connection {
             public ping(): void {
         
@@ -70,7 +70,7 @@ describe(`Integration tests from README`, () => {
         expect((connection as MySQLConnection).hostname).to.be.equals(`localhost`);
     });
 
-    it(`Should inject MySQLConnection object into Connection place, should inject props into Connection instance and should always return exactly the same instance.`, () => {
+    it(`Should always return exactly the same instance.`, () => {
         class Connection {
             public ping(): void {
         
@@ -111,8 +111,6 @@ describe(`Integration tests from README`, () => {
         const connection = Resolve(this, Connection);
         const secondConnection = Resolve(this, Connection);
 
-        expect(connection).to.be.instanceOf(MySQLConnection);
-        expect((connection as MySQLConnection).hostname).to.be.equals(`localhost`);
         expect(connection).to.be.equals(secondConnection);
     });
 
