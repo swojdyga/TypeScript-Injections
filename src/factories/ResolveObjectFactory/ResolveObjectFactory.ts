@@ -15,7 +15,10 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
         const injectedObject = resolvers.reduce(
             (object, resolver) => {
                 if(resolver.injectHook) {
-                    return resolver.injectHook(context, object) || object;
+                    return resolver.injectHook({
+                        context,
+                        object,
+                    }).injectedObject || object;
                 }
 
                 return object;
@@ -26,7 +29,11 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
         const resolvedObject = (() => {
             for(const resolver of resolvers) {
                 if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook(context, injectedObject);
+                    const resolvedObject = resolver.resolveHook({
+                        context,
+                        object: injectedObject,
+                    }).resolvedObject;
+
                     if(resolvedObject) {
                         return resolvedObject;
                     }
@@ -38,7 +45,10 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
 
         resolvers.forEach((resolver) => {
             if(resolver.afterResolveHook) {
-                resolver.afterResolveHook(context, resolvedObject)
+                resolver.afterResolveHook({
+                    context,
+                    object: resolvedObject,
+                })
             }
         });
 

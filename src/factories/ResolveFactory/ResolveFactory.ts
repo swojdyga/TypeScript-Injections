@@ -22,7 +22,10 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
         const object = resolvers.reduce(
             (object, resolver) => {
                 if(resolver.injectHook) {
-                    return resolver.injectHook(context, object) || object;
+                    return resolver.injectHook({
+                        context,
+                        object,
+                    }).injectedObject || object;
                 }
 
                 return object;
@@ -33,7 +36,11 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
         const resolvedObject = (() => {
             for(const resolver of resolvers) {
                 if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook(context, object);
+                    const resolvedObject = resolver.resolveHook({
+                        context,
+                        object,
+                    }).resolvedObject;
+
                     if(resolvedObject) {
                         return resolvedObject;
                     }
@@ -46,7 +53,11 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
         const instance = (() => {
             for(const resolver of resolvers) {
                 if(resolver.createInstanceHook) {
-                    const instance = resolver.createInstanceHook(context, resolvedObject);
+                    const instance = resolver.createInstanceHook({
+                        context,
+                        constructor: resolvedObject,
+                    }).createdInstance;
+
                     if(instance) {
                         return instance;
                     }
@@ -60,7 +71,10 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
 
         resolvers.forEach((resolver) => {
             if(resolver.afterResolveHook) {
-                resolver.afterResolveHook(context, instance);
+                resolver.afterResolveHook({
+                    context,
+                    object: instance,
+                });
             }
         });
 

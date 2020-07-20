@@ -1,26 +1,35 @@
 import InjectPropsParams from "./interfaces/InjectPropsParams";
-import { Context } from "../../types/Context";
 import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook';
+import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
+import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
 
-export default function InjectProps<I extends object>(params: InjectPropsParams<I>): ResolverAfterResolveHook {
+export default function InjectProps<I extends object>(config: InjectPropsParams<I>): ResolverAfterResolveHook {
     const injectedObjects: WeakSet<I> = new WeakSet();
 
     return {
-        afterResolveHook<C extends Context, O extends object | I>(context: C, object: O): void {
-            if(!(object instanceof params.type)) {
-                return;
+        afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+            if(!(params.object instanceof config.type)) {
+                return {
+
+                };
             }
 
-            if(injectedObjects.has(object)) {
-                return;
+            if(injectedObjects.has(params.object)) {
+                return {
+
+                };
             }
 
-            const propsKeys = Object.keys(params.props);
+            const propsKeys = Object.keys(config.props);
             propsKeys.forEach((propKey) => {
-                object[propKey] = params.props[propKey];
+                params.object[propKey] = config.props[propKey];
             });
 
-            injectedObjects.add(object);
+            injectedObjects.add(params.object);
+
+            return {
+                
+            };
         },
     }
 }

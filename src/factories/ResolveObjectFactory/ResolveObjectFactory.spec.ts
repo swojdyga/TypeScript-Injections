@@ -2,6 +2,12 @@ import "mocha";
 import { expect } from "chai";
 import ResolveObjectFactory from "./ResolveObjectFactory";
 import { Context } from "../../types/Context";
+import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
+import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
+import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
+import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import ResolverResolveHookParams from '../../interfaces/ResolverResolveHookParams';
 
 describe(`ResolveObjectFactory`, () => {
     it(`Should return the ResolveObject function from ResolveObjectFactory function.`, () => {
@@ -31,8 +37,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -53,8 +61,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                resolveHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -75,8 +85,12 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    (object as MainObjectInterface).someProperty = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    (params.object as MainObjectInterface).someProperty = true;
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -96,10 +110,16 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    if(context === currentContext) {
-                        return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    if(params.context === currentContext) {
+                        return {
+                            injectedObject: mainObject as unknown as T,
+                        };
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -118,10 +138,16 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    if(context === currentContext) {
-                        return mainObject as R;
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    if(params.context === currentContext) {
+                        return {
+                            resolvedObject: mainObject as T,
+                        };
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -143,10 +169,14 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    if(context === currentContext) {
-                        (object as MainObjectInterface).someProp = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.context === currentContext) {
+                        (params.object as MainObjectInterface).someProp = true;
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -170,8 +200,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedObject = resolveObject(this, baseObject, [
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -193,8 +225,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedObject = resolveObject(this, baseObject, [
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -216,8 +250,11 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedMainObject = resolveObject(this, mainObject, [
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    (object as MainObjectInterface).someProperty = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    (params.object as MainObjectInterface).someProperty = true;
+                    return {
+
+                    };
                 },
             },
         ]);

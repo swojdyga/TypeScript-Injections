@@ -16,7 +16,11 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook(this, mainClass);
+        resolver.afterResolveHook({
+            context: this,
+            object: mainClass,
+        });
+
         expect(mainClass.someProp).to.be.equals(true);
     });
 
@@ -37,7 +41,11 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook(this, mainClass);
+        resolver.afterResolveHook({
+            context: this,
+            object: mainClass,
+        });
+
         expect(mainClass.someProp).to.be.equals(true);
     });
 
@@ -54,10 +62,17 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook(this, mainClass);
+        resolver.afterResolveHook({
+            context: this,
+            object: mainClass,
+        });
+
         mainClass.someProp = false;
 
-        resolver.afterResolveHook(this, mainClass);
+        resolver.afterResolveHook({
+            context: this,
+            object: mainClass,
+        });
 
         expect(mainClass.someProp).to.be.equals(false);
     });
