@@ -19,6 +19,9 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
         });
 
         expect(mainClass.someProp).to.be.equals(true);
@@ -44,6 +47,9 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
         });
 
         expect(mainClass.someProp).to.be.equals(true);
@@ -65,6 +71,9 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
         });
 
         mainClass.someProp = false;
@@ -72,6 +81,9 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
         });
 
         expect(mainClass.someProp).to.be.equals(false);

@@ -12,29 +12,40 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             ...additionalResolvers,
         ];
 
+        const resolversWithUsedInjectHook: Resolver[] = [];
         const injectedObject = resolvers.reduce(
             (object, resolver) => {
                 if(resolver.injectHook) {
-                    return resolver.injectHook({
+                    const injectedObject = resolver.injectHook({
                         context,
                         object,
-                    }).injectedObject || object;
+                    }).injectedObject;
+
+                    if(injectedObject) {
+                        resolversWithUsedInjectHook.push(resolver);
+                        return injectedObject;
+                    }
+
+                    return object;
                 }
 
                 return object;
             },
             object,
         );
-
+        
+        const resolversWithUsedResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
             for(const resolver of resolvers) {
                 if(resolver.resolveHook) {
                     const resolvedObject = resolver.resolveHook({
                         context,
                         object: injectedObject,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
                     }).resolvedObject;
 
                     if(resolvedObject) {
+                        resolversWithUsedResolveHook.push(resolver);
                         return resolvedObject;
                     }
                 }
@@ -48,6 +59,9 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
                 resolver.afterResolveHook({
                     context,
                     object: resolvedObject,
+                    wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedCreateInstanceHook: false,
                 })
             }
         });

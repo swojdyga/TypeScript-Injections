@@ -19,13 +19,21 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             ...predefinedResolvers,
         ];
 
+        const resolversWithUsedInjectHook: Resolver[] = [];
         const object = resolvers.reduce(
             (object, resolver) => {
                 if(resolver.injectHook) {
-                    return resolver.injectHook({
+                    const injectedObject = resolver.injectHook({
                         context,
                         object,
-                    }).injectedObject || object;
+                    }).injectedObject;
+
+                    if(injectedObject) {
+                        resolversWithUsedInjectHook.push(resolver);
+                        return injectedObject;
+                    }
+
+                    return object;
                 }
 
                 return object;
@@ -33,15 +41,18 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             type,
         );
 
+        const resolversWithUsedResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
             for(const resolver of resolvers) {
                 if(resolver.resolveHook) {
                     const resolvedObject = resolver.resolveHook({
                         context,
                         object,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
                     }).resolvedObject;
 
                     if(resolvedObject) {
+                        resolversWithUsedResolveHook.push(resolver);
                         return resolvedObject;
                     }
                 }
@@ -50,15 +61,19 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             return object;
         })();
 
+        const resolversWithUsedCreateInstanceHook: Resolver[] = [];
         const instance = (() => {
             for(const resolver of resolvers) {
                 if(resolver.createInstanceHook) {
                     const instance = resolver.createInstanceHook({
                         context,
                         constructor: resolvedObject,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                        wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
                     }).createdInstance;
 
                     if(instance) {
+                        resolversWithUsedCreateInstanceHook.push(resolver);
                         return instance;
                     }
                 }
@@ -74,6 +89,9 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
                 resolver.afterResolveHook({
                     context,
                     object: instance,
+                    wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedCreateInstanceHook: !!resolversWithUsedCreateInstanceHook.find((usedResolver) => usedResolver === resolver),
                 });
             }
         });

@@ -11,6 +11,8 @@ describe(`BasicInstanceCreator`, () => {
         const instance = BasicInstanceCreator.createInstanceHook({
             context: this,
             constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
         }).createdInstance;
 
         expect(instance).to.be.instanceOf(MainClass);
