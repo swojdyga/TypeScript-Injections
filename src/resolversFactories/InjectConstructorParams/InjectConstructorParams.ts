@@ -1,14 +1,21 @@
 import InjectConstructorParamsParams from './interfaces/InjectConstructorParamsParams';
-import { Class, AbstractClass } from 'typescript-class-types';
-import { Context } from '../../types/Context';
+import { Class } from 'typescript-class-types';
 import ResolverCreateInstanceHook from '../../interfaces/ResolverCreateInstanceHook';
+import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
+import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
 
-export default function InjectConstructorParams<L extends Class>(params: InjectConstructorParamsParams<L>): ResolverCreateInstanceHook {
+export default function InjectConstructorParams<I extends object, L extends Class<I>>(config: InjectConstructorParamsParams<L>): ResolverCreateInstanceHook {
     return {
-        createInstanceHook<C extends Context, O extends object>(context: C, constructor: AbstractClass<O> | L): O | void {
-            if(constructor === params.type) {
-                return new params.type(...params.params) as O;
+        createInstanceHook<T extends object | I>(params: ResolverCreateInstanceHookParams<T | I>): ResolverCreateInstanceHookResult<T> {
+            if(params.constructor === config.type) {
+                return {
+                    createdInstance: (new config.type(...config.params)) as T,
+                };
             }
+
+            return {
+
+            };
         }
     };
 };

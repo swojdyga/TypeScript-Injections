@@ -1,29 +1,42 @@
 import SingletonizeParams from "./interfaces/SingletonizeParams";
-import { Context } from '../../types/Context';
 import IsConstructorExtendsOf from "./helpers/IsConstructorExtendsOf/IsConstructorExtendsOf";
 import IsConstructor from './helpers/IsConstructor/IsConstructor';
 import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from '../../interfaces/ResolverCreateInstanceHook';
-import { AbstractClass } from "typescript-class-types";
+import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
+import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
+import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
 
-export default function Singletonize<I>(params: SingletonizeParams<I>): ResolverCreateInstanceHook & ResolverAfterResolveHook {
+export default function Singletonize<I extends object>(config: SingletonizeParams<I>): ResolverCreateInstanceHook & ResolverAfterResolveHook {
     const catchedInstances: I[] = [];
 
     return {
-        createInstanceHook<C extends Context, O extends object | I>(context: C, constructor: AbstractClass<O>): O | void {
-            if(IsConstructor(constructor) && IsConstructorExtendsOf(constructor, params.type)) {
+        createInstanceHook<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+            const constructor = params.constructor;
+            if(IsConstructor(constructor) && IsConstructorExtendsOf(constructor, config.type)) {
                 const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
                 if(catchedInstance) {
-                    return catchedInstance as O;
+                    return {
+                        createdInstance: catchedInstance as unknown as T,
+                    };
                 }
             }
+
+            return {
+
+            };
         },
-        afterResolveHook<C extends Context, O extends object>(context: C, object: O): void {
-            if(object instanceof params.type) {
-                if(!catchedInstances.find((catchedInstance) => catchedInstance === object)) {
-                    catchedInstances.push(object);
+        afterResolveHook<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+            if(params.object instanceof config.type) {
+                if(!catchedInstances.find((catchedInstance) => catchedInstance === params.object)) {
+                    catchedInstances.push(params.object);
                 }
             }
+
+            return {
+
+            };
         },
     };
 }

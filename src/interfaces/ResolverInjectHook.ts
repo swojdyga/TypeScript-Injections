@@ -1,5 +1,6 @@
-import { Context } from '../types/Context';
+import ResolverInjectHookParams from './ResolverInjectHookParams';
+import ResolverInjectHookResult from './ResolverInjectHookResult';
 
 export default interface ResolverInjectHook {
-    injectHook: <C extends Context, O extends object, R extends O>(context: C, object: O) => R | void;
+    injectHook: <T extends object>(params: ResolverInjectHookParams<T>) => ResolverInjectHookResult<T>;
 }

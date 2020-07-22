@@ -1,6 +1,6 @@
-import { Context } from '../types/Context';
-import { AbstractClass } from 'typescript-class-types';
+import ResolverCreateInstanceHookParams from './ResolverCreateInstanceHookParams';
+import ResolverCreateInstanceHookResult from './ResolverCreateInstanceHookResult';
 
 export default interface ResolverCreateInstanceHook {
-    createInstanceHook: <C extends Context, O extends object>(context: C, constructor: AbstractClass<O>) => O | void;
+    createInstanceHook: <T extends object>(params: ResolverCreateInstanceHookParams<T>) => ResolverCreateInstanceHookResult<T>;
 }

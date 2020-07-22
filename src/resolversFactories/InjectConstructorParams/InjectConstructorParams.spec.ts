@@ -17,7 +17,13 @@ describe(`InjectConstructorParams`, () => {
             ],
         });
 
-        const mainClassInstance = injectConstructorParams.createInstanceHook(this, MainClass) || new MainClass();
+        const mainClassInstance = injectConstructorParams.createInstanceHook({
+            context: this,
+            constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new MainClass();
+        
         expect(mainClassInstance.welcomeText).to.be.equals(`Hello World!`);
     });
 });

@@ -3,8 +3,6 @@ import { AbstractClass } from 'typescript-class-types';
 import { Resolver } from '../../types/Resolver';
 import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
 import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
-import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
-import ArrayOfObjectsKeyValue from '../../helpers/ArrayOfObjectsKeyValue/ArrayOfObjectsKeyValue';
 
 export default function ResolveFactory(definedResolvers: Array<Resolver>) {
     return function Resolve<C extends Context, O extends object>(
@@ -22,29 +20,61 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             ...predefinedResolvers,
         ];
 
-        const object = NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'injectHook')).reduce(
-            (object, injectHook) => {
-                return injectHook(context, object) || object;
+        const resolversWithUsedInjectHook: Resolver[] = [];
+        const injectedObject = FlattenValuesIfPossible(resolvers).reduce(
+            (object, resolver) => {
+                if(resolver.injectHook) {
+                    const injectedObject = resolver.injectHook({
+                        context,
+                        object,
+                    }).injectedObject;
+
+                    if(injectedObject) {
+                        resolversWithUsedInjectHook.push(resolver);
+                        return injectedObject;
+                    }
+                }
+
+                return object;
             },
             type,
         );
 
+        const resolversWithUsedResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
-            for(const resolveHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'resolveHook'))) {
-                const resolvedObject = resolveHook(context, object);
-                if(resolvedObject) {
-                    return resolvedObject;
+            for(const resolver of FlattenValuesIfPossible(resolvers)) {
+                if(resolver.resolveHook) {
+                    const resolvedObject = resolver.resolveHook({
+                        context,
+                        object: injectedObject,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    }).resolvedObject;
+
+                    if(resolvedObject) {
+                        resolversWithUsedResolveHook.push(resolver);
+                        return resolvedObject;
+                    }
                 }
             }
 
-            return object;
+            return injectedObject;
         })();
 
+        const resolversWithUsedCreateInstanceHook: Resolver[] = [];
         const instance = (() => {
-            for(const createInstanceHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'createInstanceHook'))) {
-                const instance = createInstanceHook(context, resolvedObject);
-                if(instance) {
-                    return instance;
+            for(const resolver of FlattenValuesIfPossible(resolvers)) {
+                if(resolver.createInstanceHook) {
+                    const createdInstance = resolver.createInstanceHook({
+                        context,
+                        constructor: resolvedObject,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                        wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
+                    }).createdInstance;
+
+                    if(createdInstance) {
+                        resolversWithUsedCreateInstanceHook.push(resolver);
+                        return createdInstance;
+                    }
                 }
             }
         })();
@@ -53,8 +83,16 @@ export default function ResolveFactory(definedResolvers: Array<Resolver>) {
             throw new Error('Failed to create object instance.');
         }
 
-        NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'afterResolveHook')).forEach((afterResolveHook) => {
-            afterResolveHook(context, instance);
+        FlattenValuesIfPossible(resolvers).forEach((resolver) => {
+            if(resolver.afterResolveHook) {
+                resolver.afterResolveHook({
+                    context,
+                    object: instance,
+                    wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedCreateInstanceHook: !!resolversWithUsedCreateInstanceHook.find((usedResolver) => usedResolver === resolver),
+                });
+            }
         });
 
         return instance;

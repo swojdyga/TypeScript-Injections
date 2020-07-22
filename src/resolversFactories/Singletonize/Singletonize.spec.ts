@@ -12,11 +12,35 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
-        resolver.afterResolveHook(this, firstMainClassInstance);
+        const firstMainClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new MainClass();
 
-        const secondMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
-        resolver.afterResolveHook(this, secondMainClassInstance);
+        resolver.afterResolveHook({
+            context: this,
+            object: firstMainClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
+
+        const secondMainClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new MainClass();
+
+        resolver.afterResolveHook({
+            context: this,
+            object: secondMainClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
 
         expect(firstMainClassInstance).to.be.equals(secondMainClassInstance);
     });
@@ -34,11 +58,35 @@ describe(`Singletonize`, () => {
 
         }
 
-        const firstMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
-        resolver.afterResolveHook(this, firstMainClassInstance);
+        const firstMainClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new MainClass();
 
-        const secondMainClassInstance = resolver.createInstanceHook(this, MainClass) || new MainClass();
-        resolver.afterResolveHook(this, secondMainClassInstance);
+        resolver.afterResolveHook({
+            context: this,
+            object: firstMainClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
+
+        const secondMainClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: MainClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new MainClass();
+
+        resolver.afterResolveHook({
+            context: this,
+            object: secondMainClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
 
         expect(firstMainClassInstance).to.be.equals(secondMainClassInstance);
     });
@@ -56,8 +104,20 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const baseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
-        resolver.afterResolveHook(this, baseClassInstance);
+        const baseClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: BaseClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new BaseClass();
+
+        resolver.afterResolveHook({
+            context: this,
+            object: baseClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
 
         expect(baseClassInstance).not.to.be.instanceOf(MainClass);
     });
@@ -75,11 +135,35 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstBaseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
-        resolver.afterResolveHook(this, firstBaseClassInstance);
+        const firstBaseClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: BaseClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new BaseClass();
 
-        const secondBaseClassInstance = resolver.createInstanceHook(this, BaseClass) || new BaseClass();
-        resolver.afterResolveHook(this, secondBaseClassInstance);
+        resolver.afterResolveHook({
+            context: this,
+            object: firstBaseClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
+
+        const secondBaseClassInstance = resolver.createInstanceHook({
+            context: this,
+            constructor: BaseClass,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+        }).createdInstance || new BaseClass();
+
+        resolver.afterResolveHook({
+            context: this,
+            object: secondBaseClassInstance,
+            wasUsedInjectHook: false,
+            wasUsedResolveHook: false,
+            wasUsedCreateInstanceHook: false,
+        });
 
         expect(firstBaseClassInstance).not.to.be.equals(secondBaseClassInstance);
     });

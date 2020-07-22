@@ -1,22 +1,32 @@
 import ContextualParams from "./interfaces/ContextualParams";
 import { ContextualResolver } from "./types/ContextualResolver";
-import { Context } from "../../types/Context";
 import FlattenValuesIfPossible from '../FlattenValuesIfPossible/FlattenValuesIfPossible';
-import { AbstractClass } from "typescript-class-types";
 import IsInValuesMap from '../IsInValuesMap/IsInValuesMap';
 import ContextualResolverFactoryFactoryParams from "./interfaces/ContextualResolverFactoryFactoryParams";
+import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
+import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
+import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import ResolverResolveHookParams from '../../interfaces/ResolverResolveHookParams';
+import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
+import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
 
 export default function ContextualResolverFactoryFactory<C extends object>(factoryParams: ContextualResolverFactoryFactoryParams) {
-    return function Contextual(params: ContextualParams<C>): ContextualResolver {
+    return function Contextual(config: ContextualParams<C>): ContextualResolver {
         const contextsMap: WeakMap<object, object> = new WeakMap();
     
         return [
             {
-                afterResolveHook<C extends Context, O extends object>(context: C, object: O): void {
-                    contextsMap.set(object, context);
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    contextsMap.set(params.object, params.context);
+
+                    return {
+
+                    };
                 }
             },
-            ...FlattenValuesIfPossible(params.resolvers).map((resolver) => {
+            ...FlattenValuesIfPossible(config.resolvers).map((resolver) => {
                 return {
                     ...(() => {
                         const injectHook = resolver.injectHook;
@@ -25,15 +35,19 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                         }
 
                         return {
-                            injectHook<C extends Context, O extends object, R extends O>(context: C, object: O): R | void {
+                            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
                                 if(IsInValuesMap({
                                     valuesMap: contextsMap,
-                                    searchValue: params.context,
-                                    value: context,
+                                    searchValue: config.context,
+                                    value: params.context,
                                     compareCallback: factoryParams.contextsCompare,
                                 })) {
-                                    return injectHook.call(resolver, context, object);
+                                    return injectHook.call(resolver, params);
                                 }
+
+                                return {
+
+                                };
                             },
                         };
                     })(),
@@ -44,15 +58,19 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                         }
 
                         return {
-                            resolveHook<C extends Context, O extends object, R extends O>(context: C, object: O): R | void {
+                            resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
                                 if(IsInValuesMap({
                                     valuesMap: contextsMap,
-                                    searchValue: params.context,
-                                    value: context,
+                                    searchValue: config.context,
+                                    value: params.context,
                                     compareCallback: factoryParams.contextsCompare,
                                 })) {
-                                    return resolveHook.call(resolver, context, object);
+                                    return resolveHook.call(resolver, params);
                                 }
+
+                                return {
+
+                                };
                             },
                         };
                     })(),
@@ -63,15 +81,19 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                         }
 
                         return {
-                            createInstanceHook<C extends Context, O extends object>(context: C, constructor: AbstractClass<O>): O | void {
+                            createInstanceHook<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                                 if(IsInValuesMap({
                                     valuesMap: contextsMap,
-                                    searchValue: params.context,
-                                    value: context,
+                                    searchValue: config.context,
+                                    value: params.context,
                                     compareCallback: factoryParams.contextsCompare,
                                 })) {
-                                    return createInstanceHook.call(resolver, context, constructor);
+                                    return createInstanceHook.call(resolver, params);
                                 }
+
+                                return {
+
+                                };
                             },
                         };
                     })(),
@@ -82,15 +104,19 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                         }
 
                         return {
-                            afterResolveHook<C extends Context, O extends object>(context: C, object: O): void {
+                            afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                                 if(IsInValuesMap({
                                     valuesMap: contextsMap,
-                                    searchValue: params.context,
-                                    value: context,
+                                    searchValue: config.context,
+                                    value: params.context,
                                     compareCallback: factoryParams.contextsCompare,
                                 })) {
-                                    return afterResolveHook.call(resolver, context, object);
+                                    return afterResolveHook.call(resolver, params);
                                 }
+
+                                return {
+
+                                };
                             },
                         };
                     })(),

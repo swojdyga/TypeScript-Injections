@@ -1,7 +1,15 @@
 import "mocha";
 import { expect } from "chai";
-import ResolveObjectFactory from "./ResolveObjectFactory";
+import ResolveObjectFactory from './ResolveObjectFactory';
 import { Context } from "../../types/Context";
+import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
+import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
+import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
+import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import ResolverResolveHookParams from '../../interfaces/ResolverResolveHookParams';
+import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
+import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
 
 describe(`ResolveObjectFactory`, () => {
     it(`Should return the ResolveObject function from ResolveObjectFactory function.`, () => {
@@ -22,7 +30,6 @@ describe(`ResolveObjectFactory`, () => {
 
     it(`Should inject object via injectHook.`, () => {
         const baseObject = {
-            baseProp: true,
         };
 
         const mainObject = {
@@ -31,8 +38,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -54,8 +63,10 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
             [
                 {
-                    injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                        return mainObject as unknown as R;
+                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                        return {
+                            injectedObject: mainObject as unknown as T,
+                        };
                     },
                 },
             ],
@@ -68,7 +79,6 @@ describe(`ResolveObjectFactory`, () => {
 
     it(`Should inject object via resolveHook.`, () => {
         const baseObject = {
-            baseProp: true,
         };
 
         const mainObject = {
@@ -77,8 +87,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                resolveHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -100,8 +112,10 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
             [
                 {
-                    resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                        return mainObject as unknown as R;
+                    resolveHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverResolveHookResult<T> {
+                        return {
+                            resolvedObject: mainObject as unknown as T,
+                        };
                     },
                 },
             ],
@@ -112,6 +126,30 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
     
+    it(`Should not create object from class via createInstanceHook.`, () => {
+        class BaseClass {
+
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        const resolve = ResolveObjectFactory([
+            {
+                createInstanceHook<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                    return {
+                        createdInstance: new MainClass() as unknown as T,
+                    };
+                },
+            },
+        ]);
+
+        const baseClass = resolve(this, BaseClass);
+
+        expect(baseClass).not.to.be.instanceOf(MainClass);
+    });
+
     it(`Should mutate object via afterResolveHook.`, () => {
         interface MainObjectInterface {
             someProperty: boolean;
@@ -123,8 +161,12 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    (object as MainObjectInterface).someProperty = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    (params.object as MainObjectInterface).someProperty = true;
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -146,8 +188,12 @@ describe(`ResolveObjectFactory`, () => {
         const resolveObject = ResolveObjectFactory([
             [
                 {
-                    afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                        (object as MainObjectInterface).someProperty = true;
+                    afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                        (params.object as MainObjectInterface).someProperty = true;
+    
+                        return {
+    
+                        };
                     },
                 },
             ],
@@ -168,10 +214,16 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    if(context === currentContext) {
-                        return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    if(params.context === currentContext) {
+                        return {
+                            injectedObject: mainObject as unknown as T,
+                        };
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -190,10 +242,16 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    if(context === currentContext) {
-                        return mainObject as R;
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    if(params.context === currentContext) {
+                        return {
+                            resolvedObject: mainObject as T,
+                        };
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -215,10 +273,14 @@ describe(`ResolveObjectFactory`, () => {
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    if(context === currentContext) {
-                        (object as MainObjectInterface).someProp = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.context === currentContext) {
+                        (params.object as MainObjectInterface).someProp = true;
                     }
+
+                    return {
+
+                    };
                 },
             },
         ]);
@@ -230,7 +292,6 @@ describe(`ResolveObjectFactory`, () => {
 
     it(`Should inject object via injectHook during resolving concrete definition.`, () => {
         const baseObject = {
-            baseProp: true,
         };
 
         const mainObject = {
@@ -242,8 +303,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedObject = resolveObject(this, baseObject, [
             {
-                injectHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -253,7 +316,6 @@ describe(`ResolveObjectFactory`, () => {
 
     it(`Should inject object via resolveHook during resolving concrete definition.`, () => {
         const baseObject = {
-            baseProp: true,
         };
 
         const mainObject = {
@@ -265,8 +327,10 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedObject = resolveObject(this, baseObject, [
             {
-                resolveHook<C extends Context, O, R extends O>(context: C, object: O): R | void {
-                    return mainObject as unknown as R;
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
                 },
             },
         ]);
@@ -288,12 +352,388 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolvedMainObject = resolveObject(this, mainObject, [
             {
-                afterResolveHook<C extends Context, O extends MainObjectInterface | {}>(context: C, object: O): void {
-                    (object as MainObjectInterface).someProperty = true;
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    (params.object as MainObjectInterface).someProperty = true;
+                    return {
+
+                    };
                 },
             },
         ]);
 
         expect(resolvedMainObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should set wasUsedInjectHook to true in resolveHook, when injectHook was used.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const childObject = {
+            ...mainObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                },
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        return {
+                            resolvedObject: childObject as unknown as T, 
+                        }
+                    }
+
+                    return {
+
+                    };
+                }
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject).to.be.equals(childObject);
+    });
+
+    it(`Should set wasUsedInjectHook to false in resolveHook, when injectHook was not used.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const childObject = {
+            ...mainObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        return {
+                            resolvedObject: mainObject as unknown as T, 
+                        }
+                    }
+
+                    return {
+
+                    };
+                }
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject).not.to.be.equals(childObject);
+    });
+
+    it(`Should set wasUsedInjectHook to false in resolveHook, when injectHook was used from different resolver.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const childObject = {
+            ...mainObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                },
+            },
+            {
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        return {
+                            resolvedObject: childObject as unknown as T, 
+                        }
+                    }
+
+                    return {
+
+                    };
+                }
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject).not.to.be.equals(childObject);
+    });
+
+    it(`Should set wasUsedInjectHook to true in afterResolveHook, when injectHook was used.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                },
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should set wasUsedInjectHook to false in afterResolveHook, when injectHook was not used.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set wasUsedInjectHook to false in afterResolveHook, when injectHook was used from different resolver.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                },
+            },
+            {
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set wasUsedResolveHook to true in afterResolveHook, when resolveHook was used.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
+                },
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedResolveHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should set wasUsedResolveHook to false in afterResolveHook, when resolveHook was not used.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set wasUsedResolveHook to false in afterResolveHook, when resolveHook was used from different resolver.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                    return {
+                        resolvedObject: baseObject as unknown as T,
+                    };
+                },
+            },
+            {
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set wasUsedCreateInstanceHook to false in afterResolveHook, when createInstanceHook was not used.`, () => {
+        interface BaseObjectInterface {
+            someProperty: boolean;
+        }
+
+        const baseObject: BaseObjectInterface = {
+            someProperty: false,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+        
+        const resolve = ResolveObjectFactory([
+            {
+                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(params.wasUsedInjectHook) {
+                        if(params.object === mainObject) {
+                            (params.object as BaseObjectInterface).someProperty = true;
+                        }
+                    }
+
+                    return {
+
+                    };
+                },
+            }
+        ]);
+
+        const resolvedObject = resolve(this, baseObject);
+
+        expect(resolvedObject.someProperty).to.be.equals(false);
     });
 });

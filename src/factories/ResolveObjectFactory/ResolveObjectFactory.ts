@@ -1,7 +1,5 @@
 import { Context } from "../../types/Context";
 import { Resolver } from '../../types/Resolver';
-import ArrayOfObjectsKeyValue from '../../helpers/ArrayOfObjectsKeyValue/ArrayOfObjectsKeyValue';
-import NullableExcluder from '../../helpers/NullableExcluder/NullableExcluder';
 import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
 
 export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
@@ -15,26 +13,56 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             ...additionalResolvers,
         ];
 
-        const injectedObject = NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'injectHook')).reduce(
-            (object, injectHook) => {
-                return injectHook(context, object) || object;
+        const resolversWithUsedInjectHook: Resolver[] = [];
+        const injectedObject = FlattenValuesIfPossible(resolvers).reduce(
+            (object, resolver) => {
+                if(resolver.injectHook) {
+                    const injectedObject = resolver.injectHook({
+                        context,
+                        object,
+                    }).injectedObject;
+
+                    if(injectedObject) {
+                        resolversWithUsedInjectHook.push(resolver);
+                        return injectedObject;
+                    }
+                }
+
+                return object;
             },
             object,
         );
-
+        
+        const resolversWithUsedResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
-            for(const resolveHook of NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'resolveHook'))) {
-                const resolvedObject = resolveHook(context, injectedObject);
-                if(resolvedObject) {
-                    return resolvedObject;
+            for(const resolver of FlattenValuesIfPossible(resolvers)) {
+                if(resolver.resolveHook) {
+                    const resolvedObject = resolver.resolveHook({
+                        context,
+                        object: injectedObject,
+                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    }).resolvedObject;
+
+                    if(resolvedObject) {
+                        resolversWithUsedResolveHook.push(resolver);
+                        return resolvedObject;
+                    }
                 }
             }
 
             return injectedObject;
         })();
 
-        NullableExcluder(ArrayOfObjectsKeyValue(FlattenValuesIfPossible(resolvers), 'afterResolveHook')).forEach((afterResolveHook) => {
-            afterResolveHook(context, resolvedObject)
+        FlattenValuesIfPossible(resolvers).forEach((resolver) => {
+            if(resolver.afterResolveHook) {
+                resolver.afterResolveHook({
+                    context,
+                    object: resolvedObject,
+                    wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
+                    wasUsedCreateInstanceHook: false,
+                });
+            }
         });
 
         return resolvedObject;

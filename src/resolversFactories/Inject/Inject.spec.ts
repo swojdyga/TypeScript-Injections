@@ -17,7 +17,11 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolver.injectHook(this, BaseClass);
+        const injectedClass = resolver.injectHook({
+            context: this,
+            object: BaseClass,
+        }).injectedObject;
+
         expect(injectedClass).to.be.equals(MainClass);
     });
 
@@ -35,7 +39,11 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolver.injectHook(this, BaseClass);
+        const injectedClass = resolver.injectHook({
+            context: this,
+            object: BaseClass,
+        }).injectedObject;
+
         expect(injectedClass).to.be.equals(MainClass);
     });
 
@@ -50,7 +58,11 @@ describe(`Inject`, () => {
             to: mainObject,
         });
 
-        const injectedObject = resolver.injectHook(this, baseObject);
+        const injectedObject = resolver.injectHook({
+            context: this,
+            object: baseObject,
+        }).injectedObject;
+        
         expect(injectedObject).to.be.equals(mainObject);
     });
 });
