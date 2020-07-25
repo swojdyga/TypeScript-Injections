@@ -20,6 +20,7 @@ describe(`Inject`, () => {
         const injectedClass = resolver.injectHook({
             context: this,
             object: BaseClass,
+            calledResolversInInjectHook: [],
         }).injectedObject;
 
         expect(injectedClass).to.be.equals(MainClass);
@@ -42,6 +43,7 @@ describe(`Inject`, () => {
         const injectedClass = resolver.injectHook({
             context: this,
             object: BaseClass,
+            calledResolversInInjectHook: [],
         }).injectedObject;
 
         expect(injectedClass).to.be.equals(MainClass);
@@ -61,6 +63,7 @@ describe(`Inject`, () => {
         const injectedObject = resolver.injectHook({
             context: this,
             object: baseObject,
+            calledResolversInInjectHook: [],
         }).injectedObject;
         
         expect(injectedObject).to.be.equals(mainObject);

@@ -51,6 +51,32 @@ describe(`ResolveObjectFactory`, () => {
         expect(resolvedObject === mainObject).to.be.equals(true);
     });
 
+    it(`Should inject object via injectHook as array of hooks.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                        return {
+                            injectedObject: mainObject as unknown as T,
+                        };
+                    },
+                },
+            ],
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+
     it(`Should inject object via resolveHook.`, () => {
         const baseObject = {
         };
@@ -61,12 +87,38 @@ describe(`ResolveObjectFactory`, () => {
 
         const resolveObject = ResolveObjectFactory([
             {
-                resolveHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverResolveHookResult<T> {
+                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
                     return {
                         resolvedObject: mainObject as unknown as T,
                     };
                 },
             },
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject === mainObject).to.be.equals(true);
+    });
+
+    it(`Should inject object via resolveHook as array of hooks.`, () => {
+        const baseObject = {
+            baseProp: true,
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                        return {
+                            resolvedObject: mainObject as unknown as T,
+                        };
+                    },
+                },
+            ],
         ]);
 
         const resolvedObject = resolveObject(this, baseObject);
@@ -117,6 +169,34 @@ describe(`ResolveObjectFactory`, () => {
                     };
                 },
             },
+        ]);
+
+        const resolvedMainObject = resolveObject(this, mainObject);
+
+        expect(resolvedMainObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should mutate object via afterResolveHook as array of hooks.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                        (params.object as MainObjectInterface).someProperty = true;
+    
+                        return {
+    
+                        };
+                    },
+                },
+            ],
         ]);
 
         const resolvedMainObject = resolveObject(this, mainObject);
@@ -282,6 +362,324 @@ describe(`ResolveObjectFactory`, () => {
         ]);
 
         expect(resolvedMainObject.someProperty).to.be.equals(true);
+    });
+
+    it(`Should add previously used resolver to calledResolversInInjectHook array in injectHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const firstResolver = {
+            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                return {
+                    
+                };
+            },
+        };
+
+        const secondResolver = {
+            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                if(params.calledResolversInInjectHook.find((resolver) => resolver === firstResolver)) {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).to.be.equals(mainObject);
+    });
+
+    it(`Should not add previously resolver, which was not used, to calledResolversInInjectHook array in injectHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const firstResolver = {
+            
+        };
+
+        const secondResolver = {
+            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                if(params.calledResolversInInjectHook.find((resolver) => resolver === firstResolver)) {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).not.to.be.equals(mainObject);
+    });
+
+    it(`Should not add current resolver to calledResolversInInjectHook array in injectHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolver = {
+            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                if(params.calledResolversInInjectHook.find((calledResolver) => calledResolver === resolver)) {
+                    return {
+                        injectedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            resolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).not.to.be.equals(mainObject);
+    });
+
+    it(`Should add previously used resolver to calledResolversInResolveHook array in resolveHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const firstResolver = {
+            resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                return {
+                    
+                };
+            },
+        };
+
+        const secondResolver = {
+            resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                if(params.calledResolversInResolveHook.find((resolver) => resolver === firstResolver)) {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).to.be.equals(mainObject);
+    });
+
+    it(`Should not add previously resolver, which was not used, to calledResolversInResolveHook array in resolveHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const firstResolver = {
+            
+        };
+
+        const secondResolver = {
+            resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                if(params.calledResolversInResolveHook.find((resolver) => resolver === firstResolver)) {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).not.to.be.equals(mainObject);
+    });
+
+    it(`Should not add current resolver to calledResolversInResolveHook array in resolveHook hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolver = {
+            resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                if(params.calledResolversInResolveHook.find((calledResolver) => calledResolver === resolver)) {
+                    return {
+                        resolvedObject: mainObject as unknown as T,
+                    };
+                }
+
+                return {
+
+                }
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            resolver,
+        ]);
+
+        const object = resolve(this, baseObject);
+
+        expect(object).not.to.be.equals(mainObject);
+    });
+
+    it(`Should add previously used resolver to calledResolversInAfterResolveHook array in afterResolveHook hook.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const firstResolver = {
+            afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                return {
+
+                };
+            },
+        };
+
+        const secondResolver = {
+            afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                if(params.calledResolversInAfterResolveHook.find((resolver) => resolver === firstResolver)) {
+                    (params.object as MainObjectInterface).someProperty = true;
+                }
+
+                return {
+
+                };
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, mainObject);
+
+        expect(object.someProperty).to.be.equals(true);
+    });
+
+    it(`Should not add previously resolver, which was not used, to calledResolversInAfterResolveHook array in afterResolveHook hook.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const firstResolver = {
+            
+        };
+
+        const secondResolver = {
+            afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                if(params.calledResolversInAfterResolveHook.find((resolver) => resolver === firstResolver)) {
+                    (params.object as MainObjectInterface).someProperty = true;
+                }
+
+                return {
+
+                };
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            firstResolver,
+            secondResolver,
+        ]);
+
+        const object = resolve(this, mainObject);
+
+        expect(object.someProperty).to.be.equals(false);
+    });
+
+    it(`Should not add current resolver to calledResolversInAfterResolveHook array in afterResolveHook hook.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const resolver = {
+            afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                if(params.calledResolversInAfterResolveHook.find((calledResolver) => calledResolver === resolver)) {
+                    (params.object as MainObjectInterface).someProperty = true;
+                }
+
+                return {
+
+                };
+            },
+        };
+
+        const resolve = ResolveObjectFactory([
+            resolver,
+        ]);
+
+        const object = resolve(this, mainObject);
+
+        expect(object.someProperty).to.be.equals(false);
     });
 
     it(`Should set wasUsedInjectHook to true in resolveHook, when injectHook was used.`, () => {

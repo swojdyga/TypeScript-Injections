@@ -22,6 +22,7 @@ describe(`InjectConstructorParams`, () => {
             constructor: MainClass,
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
+            calledResolversInCreateInstanceHook: [],
         }).createdInstance || new MainClass();
         
         expect(mainClassInstance.welcomeText).to.be.equals(`Hello World!`);
