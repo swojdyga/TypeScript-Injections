@@ -163,16 +163,9 @@ describe(`Integration tests from README`, () => {
                     database: "main",
                 },
             }),
-            Singletonize({
-                type: MySQLConnection,
-            }),
             Contextual({
                 context: ConsoleApplication,
                 resolvers: [
-                    Inject({
-                        type: Connection,
-                        to: MySQLConnection,
-                    }),
                     InjectProps({
                         type: MySQLConnection,
                         props: {
@@ -187,6 +180,9 @@ describe(`Integration tests from README`, () => {
                     }),
                 ],
             }),
+            Singletonize({
+                type: MySQLConnection,
+            }),
         ]);
 
         const application = Resolve(this, Application);
@@ -194,6 +190,8 @@ describe(`Integration tests from README`, () => {
 
         expect(application.getConnection()).to.be.instanceOf(MySQLConnection);
         expect((application.getConnection() as MySQLConnection).database).to.be.equals("main");
+
+        expect(application.getConnection()).not.to.equals(consoleApplication.getConnection());
 
         expect(consoleApplication.getConnection()).to.be.instanceOf(MySQLConnection);
         expect((consoleApplication.getConnection() as MySQLConnection).database).to.be.equals("search-results");
