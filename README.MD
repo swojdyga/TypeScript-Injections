@@ -143,7 +143,7 @@ Define([
 That definition gives us sure than code `Resolve(this, Connection)` every time gives us exactly same instance of *Connection*.
 
 ## Contextual
-Sometimes you need inject something not in all application, but in concrete context. You can do that using `Contextual` resolver factory. For example, you would connect with different database in search results action:
+Sometimes you need inject something not in all application, but in concrete context. You can do that using `Contextual` resolver factory. For example, you would connect with different database in other application:
 
 ```TypeScript
 import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
@@ -153,8 +153,17 @@ Define([
         type: Connection,
         to: MySQLConnection,
     }),
+    InjectProps({
+        type: MySQLConnection,
+        props: {
+            hostname: "localhost",
+            login: "root",
+            password: "",
+            database: "main",
+        },
+    }),
     Contextual({
-        context: SearchResults,
+        context: ConsoleApplication,
         resolvers: [
             InjectProps({
                 type: MySQLConnection,
@@ -170,6 +179,21 @@ Define([
             }),
         ],
     }),
+    Singletonize({
+        type: MySQLConnection,
+    }),
+]);
+```
+
+Remember, Contextual not excluding other definitions - they add definitions in concrete context, so in ConsoleApplication than definition looks like:
+```TypeScript
+import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
+
+Define([
+    Inject({
+        type: Connection,
+        to: MySQLConnection,
+    }),
     InjectProps({
         type: MySQLConnection,
         props: {
@@ -179,11 +203,74 @@ Define([
             database: "main",
         },
     }),
+    InjectProps({
+        type: MySQLConnection,
+        props: {
+            hostname: "localhost",
+            login: "root",
+            password: "",
+            database: "search-results",
+        },
+    }),
+    Singletonize({
+        type: MySQLConnection,
+    }),
     Singletonize({
         type: MySQLConnection,
     }),
 ]);
 ```
+
+As you can see, props in MySQLConnection are settinging twice. For more more obvious definitions I recommening that you always use Contextual.
+```TypeScript
+import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
+
+Define([
+    Contextual({
+        context: Application,
+        resolvers: [
+            Inject({
+                type: Connection,
+                to: MySQLConnection,
+            }),
+            InjectProps({
+                type: MySQLConnection,
+                props: {
+                    hostname: "localhost",
+                    login: "root",
+                    password: "",
+                    database: "main",
+                },
+            }),
+            Singletonize({
+                type: MySQLConnection,
+            }),
+        ],
+    }),
+    Contextual({
+        context: ConsoleApplication,
+        resolvers: [
+            Inject({
+                type: Connection,
+                to: MySQLConnection,
+            }),
+            InjectProps({
+                type: MySQLConnection,
+                props: {
+                    hostname: "localhost",
+                    login: "root",
+                    password: "",
+                    database: "search-results",
+                },
+            }),
+            Singletonize({
+                type: MySQLConnection,
+            }),
+        ],
+    }),
+]);
+```
+
 
 # Partial support for Dependency Injection Principle (DIP)
 As I said before - we can not implement full implementation of DIP, because interfaces in TypeScript doesn't exists at the runtime. My proposition of compromise is a using abstract classes, which resolve that problem, because abstract class exists at the runtime.
