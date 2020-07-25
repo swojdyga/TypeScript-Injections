@@ -19,6 +19,7 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -47,6 +48,7 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -71,6 +73,7 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -81,6 +84,7 @@ describe(`InjectProps`, () => {
         resolver.afterResolveHook({
             context: this,
             object: mainClass,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,

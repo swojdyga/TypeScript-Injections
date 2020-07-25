@@ -57,6 +57,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -67,6 +68,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].injectHook({
                 context,
                 object: MainClass,
+                calledResolversInInjectHook: [],
             });
         }
 
@@ -105,6 +107,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -115,6 +118,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].injectHook({
                     context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false;
 
@@ -153,6 +157,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -163,6 +168,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].injectHook({
                     context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false;
 
@@ -201,6 +207,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -211,6 +218,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].resolveHook({
                     context,
                     object: BaseClass,
+                    calledResolversInResolveHook: [],
                     wasUsedInjectHook: false,
                 }).resolvedObject
             : false;
@@ -250,6 +258,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -260,6 +269,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].resolveHook({
                     context,
                     object: BaseClass,
+                    calledResolversInResolveHook: [],
                     wasUsedInjectHook: false,
                 }).resolvedObject
             : false;
@@ -299,6 +309,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -309,6 +320,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].createInstanceHook({
                     context,
                     constructor: BaseClass,
+                    calledResolversInCreateInstanceHook: [],
                     wasUsedInjectHook: false,
                     wasUsedResolveHook: false,
                 }).createdInstance
@@ -349,6 +361,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -359,6 +372,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].createInstanceHook({
                     context,
                     constructor: BaseClass,
+                    calledResolversInCreateInstanceHook: [],
                     wasUsedInjectHook: false,
                     wasUsedResolveHook: false,
                 }).createdInstance
@@ -399,6 +413,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -411,6 +426,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].afterResolveHook({
                 context: context,
                 object: injectedObject,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -452,6 +468,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -464,6 +481,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: context,
                 object: injectedObject,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -512,6 +530,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -520,6 +539,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: context,
                 object: deepContext,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -530,6 +550,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[1].injectHook({
                     context: deepContext,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false;
 
@@ -580,6 +601,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -590,6 +612,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -601,6 +624,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: context,
                 object: deepContext,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -611,6 +635,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].afterResolveHook({
                 context: context,
                 object: deepContext,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -621,6 +646,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[2].injectHook({
                     context: deepContext,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false;
         expect(injectedClass).to.be.equals(MainClass);
@@ -671,6 +697,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -681,6 +708,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -692,6 +720,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[0].afterResolveHook({
                 context: context,
                 object: deepContext,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -702,6 +731,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             resolvers[1].afterResolveHook({
                 context: context,
                 object: deepContext,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -712,6 +742,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             ? resolvers[2].injectHook({
                     context: otherContext,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false;
 

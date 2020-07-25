@@ -37,6 +37,7 @@ describe(`Contextual`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -47,6 +48,7 @@ describe(`Contextual`, () => {
             ? resolvers[1].injectHook({
                     context: context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false
 
@@ -89,6 +91,7 @@ describe(`Contextual`, () => {
             resolvers[0].afterResolveHook({
                 context: this,
                 object: context,
+                calledResolversInAfterResolveHook: [],
                 wasUsedInjectHook: false,
                 wasUsedResolveHook: false,
                 wasUsedCreateInstanceHook: false,
@@ -99,6 +102,7 @@ describe(`Contextual`, () => {
             ? resolvers[1].injectHook({
                     context: context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false
 

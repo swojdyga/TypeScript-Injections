@@ -15,6 +15,7 @@ describe(`Singletonize`, () => {
         const firstMainClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: MainClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new MainClass();
@@ -22,6 +23,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: firstMainClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -30,6 +32,7 @@ describe(`Singletonize`, () => {
         const secondMainClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: MainClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new MainClass();
@@ -37,6 +40,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: secondMainClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -61,6 +65,7 @@ describe(`Singletonize`, () => {
         const firstMainClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: MainClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new MainClass();
@@ -68,6 +73,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: firstMainClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -76,6 +82,7 @@ describe(`Singletonize`, () => {
         const secondMainClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: MainClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new MainClass();
@@ -83,6 +90,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: secondMainClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -107,6 +115,7 @@ describe(`Singletonize`, () => {
         const baseClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: BaseClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new BaseClass();
@@ -114,6 +123,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: baseClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -138,6 +148,7 @@ describe(`Singletonize`, () => {
         const firstBaseClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: BaseClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new BaseClass();
@@ -145,6 +156,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: firstBaseClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
@@ -153,6 +165,7 @@ describe(`Singletonize`, () => {
         const secondBaseClassInstance = resolver.createInstanceHook({
             context: this,
             constructor: BaseClass,
+            calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance || new BaseClass();
@@ -160,6 +173,7 @@ describe(`Singletonize`, () => {
         resolver.afterResolveHook({
             context: this,
             object: secondBaseClassInstance,
+            calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
             wasUsedCreateInstanceHook: false,
