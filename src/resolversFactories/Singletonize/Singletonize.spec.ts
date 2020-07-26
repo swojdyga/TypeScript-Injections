@@ -182,24 +182,29 @@ describe(`Singletonize`, () => {
         expect(firstBaseClassInstance).not.to.be.equals(secondBaseClassInstance);
     });
 
-    it(`Should not return any instance, when other Singletonize resolver was used in current resolving cycle.`, () => {
-        class MainClass {
+    it(`Should return two different singletonized objects from two different class.`, () => {
+        class FirstClass {
+
+        }
+
+        class SecondClass {
 
         }
 
         const firstResolver = Singletonize({
-            type: MainClass,
+            type: FirstClass,
         });
 
         const secondResolver = Singletonize({
-            type: MainClass,
+            type: SecondClass,
         });
 
-        const object = new MainClass();
+        const firstObject = new FirstClass();
+        const secondObject = new SecondClass();
 
         firstResolver.afterResolveHook({
             context: this,
-            object: object,
+            object: firstObject,
             calledResolversInAfterResolveHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
@@ -208,7 +213,7 @@ describe(`Singletonize`, () => {
 
         secondResolver.afterResolveHook({
             context: this,
-            object: object,
+            object: secondObject,
             calledResolversInAfterResolveHook: [
                 firstResolver,
             ],
@@ -217,17 +222,17 @@ describe(`Singletonize`, () => {
             wasUsedCreateInstanceHook: false,
         });
 
-        const firstInstance = firstResolver.createInstanceHook({
+        const singletonizedFirstObject = firstResolver.createInstanceHook({
             context: this,
-            constructor: MainClass,
+            constructor: FirstClass,
             calledResolversInCreateInstanceHook: [],
             wasUsedInjectHook: false,
             wasUsedResolveHook: false,
         }).createdInstance;
 
-        const secondInstance = firstResolver.createInstanceHook({
+        const singletonizedSecondObject = secondResolver.createInstanceHook({
             context: this,
-            constructor: MainClass,
+            constructor: SecondClass,
             calledResolversInCreateInstanceHook: [
                 firstResolver,
             ],
@@ -235,6 +240,7 @@ describe(`Singletonize`, () => {
             wasUsedResolveHook: false,
         }).createdInstance;
 
-        expect(secondInstance).to.be.undefined;
+        expect(singletonizedFirstObject).to.be.instanceOf(FirstClass);
+        expect(singletonizedSecondObject).to.be.instanceOf(SecondClass);
     });
 });

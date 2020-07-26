@@ -9,6 +9,7 @@ import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateIns
 import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
 import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import ResolverInjectHook from "../../interfaces/ResolverInjectHook";
 
 describe(`ContextualResolverFactoryFactory`, () => {
     it(`Should return the Contextual Resolver Factory function from ContextualResolverFactoryFactory function.`, () => {
@@ -748,4 +749,36 @@ describe(`ContextualResolverFactoryFactory`, () => {
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });
+
+    it(`Should rewrite custom resolver properties.`, () => {
+        const Contextual = ContextualResolverFactory({
+            contextsCompare: () => true,
+        });
+
+        interface SomeResolver extends ResolverInjectHook {
+            someProperty: boolean;
+        }
+
+        const someResolver = {
+            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                return {
+
+                };
+            },
+            someProperty: true,
+        }
+
+        const resolver = Contextual({
+            context: this,
+            resolvers: [
+                someResolver,
+            ],
+        });
+
+        const someProperty = resolver[1] && resolver[1].hasOwnProperty('someProperty')
+            ? (resolver[1] as SomeResolver).someProperty
+            : false;
+
+        expect(someProperty).to.be.equals(true);
+    })
 });

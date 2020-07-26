@@ -13,55 +13,76 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
 
     return {
         resolverIdentity,
+        resolverParams: config,
         createInstanceHook<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
-            const wasCalledOtherSingletoneResolver = params.calledResolversInCreateInstanceHook.find((resolver) => {
-                if(!resolver.hasOwnProperty('resolverIdentity')) {
-                    return false;
-                }
-
-                return (resolver as SingletonizeResult).resolverIdentity === resolverIdentity;
-            });
-
-            if(wasCalledOtherSingletoneResolver) {
+            const constructor = params.constructor;
+            if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
                 return {
 
                 };
             }
 
-            const constructor = params.constructor;
-            if(IsConstructor(constructor) && IsConstructorExtendsOf(constructor, config.type)) {
-                const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
-                if(catchedInstance) {
-                    return {
-                        createdInstance: catchedInstance as unknown as T,
-                    };
+            const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInCreateInstanceHook.find((resolver) => {
+                if(!resolver.hasOwnProperty('resolverIdentity')) {
+                    return false;
                 }
+
+                if((resolver as SingletonizeResult).resolverIdentity !== resolverIdentity) {
+                    return false;
+                }
+
+                return (resolver as SingletonizeResult).resolverParams.type === config.type;
+            });
+
+            if(wasCalledOtherSingletoneResolverWithSameType) {
+                return {
+
+                };
             }
 
-            return {
+            const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
+            if(!catchedInstance) {
+                return {
 
+                };
+            }
+            
+            return {
+                createdInstance: catchedInstance as unknown as T,
             };
         },
         afterResolveHook<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-            const wasCalledOtherSingletoneResolver = params.calledResolversInAfterResolveHook.find((resolver) => {
-                if(!resolver.hasOwnProperty('resolverIdentity')) {
-                    return false;
-                }
-
-                return (resolver as SingletonizeResult).resolverIdentity === resolverIdentity;
-            });
-
-            if(wasCalledOtherSingletoneResolver) {
+            if(!(params.object instanceof config.type)) {
                 return {
 
                 };
             }
 
-            if(params.object instanceof config.type) {
-                if(!catchedInstances.find((catchedInstance) => catchedInstance === params.object)) {
-                    catchedInstances.push(params.object);
+            const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInAfterResolveHook.find((resolver) => {
+                if(!resolver.hasOwnProperty('resolverIdentity')) {
+                    return false;
                 }
+
+                if((resolver as SingletonizeResult).resolverIdentity !== resolverIdentity) {
+                    return false;
+                }
+                
+                return (resolver as SingletonizeResult).resolverParams.type === config.type;
+            });
+
+            if(wasCalledOtherSingletoneResolverWithSameType) {
+                return {
+
+                };
             }
+
+            if(catchedInstances.find((catchedInstance) => catchedInstance === params.object)) {
+                return {
+
+                };
+            }
+        
+            catchedInstances.push(params.object);
 
             return {
 

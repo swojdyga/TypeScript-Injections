@@ -28,6 +28,7 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
             },
             ...FlattenValuesIfPossible(config.resolvers).map((resolver) => {
                 return {
+                    ...resolver,
                     ...(() => {
                         const injectHook = resolver.injectHook;
                         if(!injectHook) {
