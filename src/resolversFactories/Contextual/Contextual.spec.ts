@@ -38,9 +38,6 @@ describe(`Contextual`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -92,9 +89,6 @@ describe(`Contextual`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 

@@ -5,8 +5,4 @@ export default interface ResolverAfterResolveHookParams<T extends object> {
     context: Context;
     object: T;
     calledResolversInAfterResolveHook: ResolverAfterResolveHook[];
-    
-    wasUsedInjectHook: boolean;
-    wasUsedResolveHook: boolean;
-    wasUsedCreateInstanceHook: boolean;
 }

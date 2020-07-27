@@ -16,7 +16,6 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             ...additionalResolvers,
         ];
 
-        const resolversWithUsedInjectHook: Resolver[] = [];
         const calledResolversInInjectHook: ResolverInjectHook[] = [];
         const injectedObject = FlattenValuesIfPossible(resolvers).reduce(
             (object, resolver) => {
@@ -27,7 +26,6 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
                         calledResolversInInjectHook,
                     }).injectedObject;
 
-                    resolversWithUsedInjectHook.push(resolver);
                     calledResolversInInjectHook.push(resolver as ResolverInjectHook);
 
                     if(injectedObject) {
@@ -40,7 +38,6 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             object,
         );
         
-        const resolversWithUsedResolveHook: Resolver[] = [];
         const calledResolversInResolveHook: ResolverResolveHook[] = [];
         const resolvedObject = (() => {
             for(const resolver of FlattenValuesIfPossible(resolvers)) {
@@ -49,11 +46,8 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
                         context,
                         object: injectedObject,
                         calledResolversInResolveHook,
-
-                        wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
                     }).resolvedObject;
 
-                    resolversWithUsedResolveHook.push(resolver);
                     calledResolversInResolveHook.push(resolver as ResolverResolveHook);
 
                     if(resolvedObject) {
@@ -72,10 +66,6 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
                     context,
                     object: resolvedObject,
                     calledResolversInAfterResolveHook,
-
-                    wasUsedInjectHook: !!resolversWithUsedInjectHook.find((usedResolver) => usedResolver === resolver),
-                    wasUsedResolveHook: !!resolversWithUsedResolveHook.find((usedResolver) => usedResolver === resolver),
-                    wasUsedCreateInstanceHook: false,
                 });
                 
                 calledResolversInAfterResolveHook.push(resolver as ResolverAfterResolveHook);

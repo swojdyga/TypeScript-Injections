@@ -59,9 +59,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -109,9 +106,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -159,9 +153,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
         
@@ -209,9 +200,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -220,7 +208,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     context,
                     object: BaseClass,
                     calledResolversInResolveHook: [],
-                    wasUsedInjectHook: false,
                 }).resolvedObject
             : false;
 
@@ -260,9 +247,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -271,7 +255,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     context,
                     object: BaseClass,
                     calledResolversInResolveHook: [],
-                    wasUsedInjectHook: false,
                 }).resolvedObject
             : false;
 
@@ -311,9 +294,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -322,8 +302,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     context,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
-                    wasUsedInjectHook: false,
-                    wasUsedResolveHook: false,
                 }).createdInstance
             : false;
 
@@ -363,9 +341,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -374,8 +349,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     context,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
-                    wasUsedInjectHook: false,
-                    wasUsedResolveHook: false,
                 }).createdInstance
             : false;
 
@@ -415,9 +388,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -428,9 +398,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: injectedObject,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -470,9 +437,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -483,9 +447,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: injectedObject,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -532,18 +493,12 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
 
             resolvers[0].afterResolveHook({
                 context: context,
                 object: deepContext,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -603,9 +558,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -614,9 +566,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -626,9 +575,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: deepContext,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -637,9 +583,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: deepContext,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
         
@@ -699,9 +642,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -710,9 +650,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -722,9 +659,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: deepContext,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
 
@@ -733,9 +667,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 context: context,
                 object: deepContext,
                 calledResolversInAfterResolveHook: [],
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
             });
         }
         

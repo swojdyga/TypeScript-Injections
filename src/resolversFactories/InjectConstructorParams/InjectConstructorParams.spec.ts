@@ -20,8 +20,6 @@ describe(`InjectConstructorParams`, () => {
         const mainClassInstance = injectConstructorParams.createInstanceHook({
             context: this,
             constructor: MainClass,
-            wasUsedInjectHook: false,
-            wasUsedResolveHook: false,
             calledResolversInCreateInstanceHook: [],
         }).createdInstance || new MainClass();
         
