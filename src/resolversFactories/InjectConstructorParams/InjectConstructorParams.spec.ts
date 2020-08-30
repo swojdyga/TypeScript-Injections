@@ -10,19 +10,21 @@ describe(`InjectConstructorParams`, () => {
             }
         }
 
-        const injectConstructorParams = InjectConstructorParams({
+        const resolvers = InjectConstructorParams({
             type: MainClass,
             params: [
                 'Hello World!',
             ],
         });
 
-        const mainClassInstance = injectConstructorParams.createInstanceHook({
-            context: this,
-            constructor: MainClass,
-            calledResolversInCreateInstanceHook: [],
-        }).createdInstance || new MainClass();
+        const mainClassInstance = resolvers[0] && resolvers[0].createInstanceHook
+            ? resolvers[0].createInstanceHook({
+                    context: this,
+                    constructor: MainClass,
+                    calledResolversInCreateInstanceHook: [],
+                }).createdInstance
+            : false;
         
-        expect(mainClassInstance.welcomeText).to.be.equals(`Hello World!`);
+        expect((mainClassInstance as MainClass).welcomeText).to.be.equals(`Hello World!`);
     });
 });

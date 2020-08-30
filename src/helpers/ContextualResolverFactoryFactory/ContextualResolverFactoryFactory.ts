@@ -1,6 +1,5 @@
 import ContextualParams from "./interfaces/ContextualParams";
 import { ContextualResolver } from "./types/ContextualResolver";
-import FlattenValuesIfPossible from '../FlattenValuesIfPossible/FlattenValuesIfPossible';
 import IsInValuesMap from '../IsInValuesMap/IsInValuesMap';
 import ContextualResolverFactoryFactoryParams from "./interfaces/ContextualResolverFactoryFactoryParams";
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
@@ -26,7 +25,7 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                     };
                 }
             },
-            ...FlattenValuesIfPossible(config.resolvers).map((resolver) => {
+            ...config.resolvers.flat().map((resolver) => {
                 return {
                     ...resolver,
                     ...(() => {

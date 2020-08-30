@@ -1,7 +1,6 @@
 import "mocha";
 import { expect } from "chai";
 import ResolveObjectFactory from './ResolveObjectFactory';
-import { Context } from "../../types/Context";
 import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
 import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
 import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
@@ -30,29 +29,6 @@ describe(`ResolveObjectFactory`, () => {
 
     it(`Should inject object via injectHook.`, () => {
         const baseObject = {
-        };
-
-        const mainObject = {
-            ...baseObject,
-        };
-
-        const resolveObject = ResolveObjectFactory([
-            {
-                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                    return {
-                        injectedObject: mainObject as unknown as T,
-                    };
-                },
-            },
-        ]);
-
-        const resolvedObject = resolveObject(this, baseObject);
-
-        expect(resolvedObject === mainObject).to.be.equals(true);
-    });
-
-    it(`Should inject object via injectHook as array of hooks.`, () => {
-        const baseObject = {
             baseProp: true,
         };
 
@@ -78,29 +54,6 @@ describe(`ResolveObjectFactory`, () => {
     });
 
     it(`Should inject object via resolveHook.`, () => {
-        const baseObject = {
-        };
-
-        const mainObject = {
-            ...baseObject,
-        };
-
-        const resolveObject = ResolveObjectFactory([
-            {
-                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
-                    return {
-                        resolvedObject: mainObject as unknown as T,
-                    };
-                },
-            },
-        ]);
-
-        const resolvedObject = resolveObject(this, baseObject);
-
-        expect(resolvedObject === mainObject).to.be.equals(true);
-    });
-
-    it(`Should inject object via resolveHook as array of hooks.`, () => {
         const baseObject = {
             baseProp: true,
         };
@@ -136,13 +89,15 @@ describe(`ResolveObjectFactory`, () => {
         }
 
         const resolve = ResolveObjectFactory([
-            {
-                createInstanceHook<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
-                    return {
-                        createdInstance: new MainClass() as unknown as T,
-                    };
+            [
+                {
+                    createInstanceHook<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                        return {
+                            createdInstance: new MainClass() as unknown as T,
+                        };
+                    },
                 },
-            },
+            ],
         ]);
 
         const baseClass = resolve(this, BaseClass);
@@ -151,32 +106,6 @@ describe(`ResolveObjectFactory`, () => {
     });
 
     it(`Should mutate object via afterResolveHook.`, () => {
-        interface MainObjectInterface {
-            someProperty: boolean;
-        }
-
-        const mainObject: MainObjectInterface = {
-            someProperty: false,
-        };
-
-        const resolveObject = ResolveObjectFactory([
-            {
-                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    (params.object as MainObjectInterface).someProperty = true;
-
-                    return {
-
-                    };
-                },
-            },
-        ]);
-
-        const resolvedMainObject = resolveObject(this, mainObject);
-
-        expect(resolvedMainObject.someProperty).to.be.equals(true);
-    });
-
-    it(`Should mutate object via afterResolveHook as array of hooks.`, () => {
         interface MainObjectInterface {
             someProperty: boolean;
         }
@@ -213,19 +142,21 @@ describe(`ResolveObjectFactory`, () => {
 
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
-            {
-                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                    if(params.context === currentContext) {
+            [
+                {
+                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                        if(params.context === currentContext) {
+                            return {
+                                injectedObject: mainObject as unknown as T,
+                            };
+                        }
+    
                         return {
-                            injectedObject: mainObject as unknown as T,
+    
                         };
-                    }
-
-                    return {
-
-                    };
+                    },
                 },
-            },
+            ],
         ]);
 
         const resolvedObject = resolveObject(currentContext, baseObject);
@@ -241,19 +172,21 @@ describe(`ResolveObjectFactory`, () => {
 
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
-            {
-                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
-                    if(params.context === currentContext) {
+            [
+                {
+                    resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                        if(params.context === currentContext) {
+                            return {
+                                resolvedObject: mainObject as T,
+                            };
+                        }
+    
                         return {
-                            resolvedObject: mainObject as T,
+    
                         };
-                    }
-
-                    return {
-
-                    };
+                    },
                 },
-            },
+            ],
         ]);
 
         const resolvedObject = resolveObject(currentContext, mainObject);
@@ -272,17 +205,19 @@ describe(`ResolveObjectFactory`, () => {
 
         const currentContext = this;
         const resolveObject = ResolveObjectFactory([
-            {
-                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    if(params.context === currentContext) {
-                        (params.object as MainObjectInterface).someProp = true;
-                    }
-
-                    return {
-
-                    };
+            [
+                {
+                    afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                        if(params.context === currentContext) {
+                            (params.object as MainObjectInterface).someProp = true;
+                        }
+    
+                        return {
+    
+                        };
+                    },
                 },
-            },
+            ],
         ]);
 
         const resolvedObject = resolveObject(this, mainObject);
@@ -302,13 +237,15 @@ describe(`ResolveObjectFactory`, () => {
         ]);
 
         const resolvedObject = resolveObject(this, baseObject, [
-            {
-                injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                    return {
-                        injectedObject: mainObject as unknown as T,
-                    };
+            [
+                {
+                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                        return {
+                            injectedObject: mainObject as unknown as T,
+                        };
+                    },
                 },
-            },
+            ],
         ]);
 
         expect(resolvedObject === mainObject).to.be.equals(true);
@@ -326,13 +263,15 @@ describe(`ResolveObjectFactory`, () => {
         ]);
 
         const resolvedObject = resolveObject(this, baseObject, [
-            {
-                resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
-                    return {
-                        resolvedObject: mainObject as unknown as T,
-                    };
+            [
+                {
+                    resolveHook<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
+                        return {
+                            resolvedObject: mainObject as unknown as T,
+                        };
+                    },
                 },
-            },
+            ],
         ]);
 
         expect(resolvedObject === mainObject).to.be.equals(true);
@@ -351,14 +290,16 @@ describe(`ResolveObjectFactory`, () => {
         ]);
 
         const resolvedMainObject = resolveObject(this, mainObject, [
-            {
-                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    (params.object as MainObjectInterface).someProperty = true;
-                    return {
-
-                    };
+            [
+                {
+                    afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                        (params.object as MainObjectInterface).someProperty = true;
+                        return {
+    
+                        };
+                    },
                 },
-            },
+            ],
         ]);
 
         expect(resolvedMainObject.someProperty).to.be.equals(true);
@@ -395,8 +336,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -431,8 +374,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -463,7 +408,9 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            resolver,
+            [
+                resolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -502,8 +449,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -538,8 +487,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -570,7 +521,9 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            resolver,
+            [
+                resolver,
+            ],
         ]);
 
         const object = resolve(this, baseObject);
@@ -608,8 +561,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, mainObject);
@@ -643,8 +598,10 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            firstResolver,
-            secondResolver,
+            [
+                firstResolver,
+                secondResolver,
+            ],
         ]);
 
         const object = resolve(this, mainObject);
@@ -674,7 +631,9 @@ describe(`ResolveObjectFactory`, () => {
         };
 
         const resolve = ResolveObjectFactory([
-            resolver,
+            [
+                resolver,
+            ],
         ]);
 
         const object = resolve(this, mainObject);

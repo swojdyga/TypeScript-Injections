@@ -12,16 +12,18 @@ describe(`Inject`, () => {
 
         }
 
-        const resolver = Inject({
+        const resolvers = Inject({
             type: BaseClass,
             to: MainClass,
         });
 
-        const injectedClass = resolver.injectHook({
-            context: this,
-            object: BaseClass,
-            calledResolversInInjectHook: [],
-        }).injectedObject;
+        const injectedClass = resolvers[0] && resolvers[0].injectHook
+            ? resolvers[0].injectHook({
+                    context: this,
+                    object: BaseClass,
+                    calledResolversInInjectHook: [],
+                }).injectedObject
+            : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -35,16 +37,18 @@ describe(`Inject`, () => {
 
         }
 
-        const resolver = Inject({
+        const resolvers = Inject({
             type: BaseClass,
             to: MainClass,
         });
 
-        const injectedClass = resolver.injectHook({
-            context: this,
-            object: BaseClass,
-            calledResolversInInjectHook: [],
-        }).injectedObject;
+        const injectedClass = resolvers[0] && resolvers[0].injectHook
+            ? resolvers[0].injectHook({
+                    context: this,
+                    object: BaseClass,
+                    calledResolversInInjectHook: [],
+                }).injectedObject
+            : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -55,16 +59,18 @@ describe(`Inject`, () => {
             ...baseObject,
         };
 
-        const resolver = Inject({
+        const resolvers = Inject({
             type: baseObject,
             to: mainObject,
         });
 
-        const injectedObject = resolver.injectHook({
-            context: this,
-            object: baseObject,
-            calledResolversInInjectHook: [],
-        }).injectedObject;
+        const injectedObject = resolvers[0] && resolvers[0].injectHook
+            ? resolvers[0].injectHook({
+                    context: this,
+                    object: baseObject,
+                    calledResolversInInjectHook: [],
+                }).injectedObject
+            : false;
         
         expect(injectedObject).to.be.equals(mainObject);
     });

@@ -11,12 +11,15 @@ describe(`DefineFactory`, () => {
 
     it(`Should add resolver to set set in the DefineFactory function in the Define function returned from DefineFactory.`, () => {
         const resolvers = new Array<Resolver>();
-        const define = DefineFactory(resolvers);
+        const Define = DefineFactory(resolvers);
 
-        const emptyResolver = {
-        };
+        const emptyResolver = [
+            {
 
-        define([
+            },
+        ];
+
+        Define([
             emptyResolver,
         ])
 

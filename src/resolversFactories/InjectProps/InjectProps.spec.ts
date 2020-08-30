@@ -8,7 +8,7 @@ describe(`InjectProps`, () => {
             public someProp = false;
         }
 
-        const resolver = InjectProps({
+        const resolvers = InjectProps({
             type: MainClass,
             props: {
                 someProp: true,
@@ -16,11 +16,14 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook({
-            context: this,
-            object: mainClass,
-            calledResolversInAfterResolveHook: [],
-        });
+
+        if(resolvers[0] && resolvers[0].afterResolveHook) {
+            resolvers[0].afterResolveHook({
+                context: this,
+                object: mainClass,
+                calledResolversInAfterResolveHook: [],
+            });
+        }
 
         expect(mainClass.someProp).to.be.equals(true);
     });
@@ -34,7 +37,7 @@ describe(`InjectProps`, () => {
 
         }
 
-        const resolver = InjectProps({
+        const resolvers = InjectProps({
             type: BaseClass,
             props: {
                 someProp: true,
@@ -42,11 +45,14 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook({
-            context: this,
-            object: mainClass,
-            calledResolversInAfterResolveHook: [],
-        });
+
+        if(resolvers[0] && resolvers[0].afterResolveHook) {
+            resolvers[0].afterResolveHook({
+                context: this,
+                object: mainClass,
+                calledResolversInAfterResolveHook: [],
+            });
+        }
 
         expect(mainClass.someProp).to.be.equals(true);
     });
@@ -56,7 +62,7 @@ describe(`InjectProps`, () => {
             public someProp: boolean | null = null;
         }
 
-        const resolver = InjectProps({
+        const resolvers = InjectProps({
             type: MainClass,
             props: {
                 someProp: true,
@@ -64,19 +70,24 @@ describe(`InjectProps`, () => {
         });
 
         const mainClass = new MainClass();
-        resolver.afterResolveHook({
-            context: this,
-            object: mainClass,
-            calledResolversInAfterResolveHook: [],
-        });
+
+        if(resolvers[0] && resolvers[0].afterResolveHook) {
+            resolvers[0].afterResolveHook({
+                context: this,
+                object: mainClass,
+                calledResolversInAfterResolveHook: [],
+            });
+        }
 
         mainClass.someProp = false;
 
-        resolver.afterResolveHook({
-            context: this,
-            object: mainClass,
-            calledResolversInAfterResolveHook: [],
-        });
+        if(resolvers[0] && resolvers[0].afterResolveHook) {
+            resolvers[0].afterResolveHook({
+                context: this,
+                object: mainClass,
+                calledResolversInAfterResolveHook: [],
+            });
+        }
 
         expect(mainClass.someProp).to.be.equals(false);
     });

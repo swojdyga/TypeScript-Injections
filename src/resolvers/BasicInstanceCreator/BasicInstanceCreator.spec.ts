@@ -8,7 +8,7 @@ describe(`BasicInstanceCreator`, () => {
 
         }
 
-        const instance = BasicInstanceCreator.createInstanceHook({
+        const instance = BasicInstanceCreator[0].createInstanceHook({
             context: this,
             constructor: MainClass,
             calledResolversInCreateInstanceHook: [],

@@ -1,6 +1,5 @@
 import { Context } from "../../types/Context";
 import { Resolver } from '../../types/Resolver';
-import FlattenValuesIfPossible from '../../helpers/FlattenValuesIfPossible/FlattenValuesIfPossible';
 import ResolverInjectHook from '../../interfaces/ResolverInjectHook';
 import ResolverResolveHook from '../../interfaces/ResolverResolveHook';
 import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook';
@@ -17,30 +16,32 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
         ];
 
         const calledResolversInInjectHook: ResolverInjectHook[] = [];
-        const injectedObject = FlattenValuesIfPossible(resolvers).reduce(
-            (object, resolver) => {
-                if(resolver.injectHook) {
-                    const injectedObject = resolver.injectHook({
-                        context,
-                        object,
-                        calledResolversInInjectHook,
-                    }).injectedObject;
+        const injectedObject = resolvers
+            .flat()
+            .reduce(
+                (object, resolver) => {
+                    if(resolver.injectHook) {
+                        const injectedObject = resolver.injectHook({
+                            context,
+                            object,
+                            calledResolversInInjectHook,
+                        }).injectedObject;
 
-                    calledResolversInInjectHook.push(resolver as ResolverInjectHook);
+                        calledResolversInInjectHook.push(resolver as ResolverInjectHook);
 
-                    if(injectedObject) {
-                        return injectedObject;
+                        if(injectedObject) {
+                            return injectedObject;
+                        }
                     }
-                }
 
-                return object;
-            },
-            object,
-        );
+                    return object;
+                },
+                object,
+            );
         
         const calledResolversInResolveHook: ResolverResolveHook[] = [];
         const resolvedObject = (() => {
-            for(const resolver of FlattenValuesIfPossible(resolvers)) {
+            for(const resolver of resolvers.flat()) {
                 if(resolver.resolveHook) {
                     const resolvedObject = resolver.resolveHook({
                         context,
@@ -60,7 +61,7 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
         })();
 
         const calledResolversInAfterResolveHook: ResolverAfterResolveHook[] = [];
-        FlattenValuesIfPossible(resolvers).forEach((resolver) => {
+        resolvers.flat().forEach((resolver) => {
             if(resolver.afterResolveHook) {
                 resolver.afterResolveHook({
                     context,
