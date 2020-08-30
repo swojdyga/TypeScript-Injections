@@ -19,16 +19,16 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
             .reduce(
                 (object, resolver) => {
                     if(resolver.hooks.inject) {
-                        const injectedObject = resolver.hooks.inject({
+                        const injectHookResult = resolver.hooks.inject({
                             context,
                             object,
                             calledResolversInInjectHook,
-                        }).injectedObject;
+                        });
 
                         calledResolversInInjectHook.push(resolver);
 
-                        if(injectedObject) {
-                            return injectedObject;
+                        if(injectHookResult && injectHookResult.injectedObject) {
+                            return injectHookResult.injectedObject;
                         }
                     }
 
@@ -41,16 +41,16 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
         const resolvedObject = (() => {
             for(const resolver of resolvers.flat()) {
                 if(resolver.hooks.resolve) {
-                    const resolvedObject = resolver.hooks.resolve({
+                    const resolveHookResult = resolver.hooks.resolve({
                         context,
                         object: injectedObject,
                         calledResolversInResolveHook,
-                    }).resolvedObject;
+                    });
 
                     calledResolversInResolveHook.push(resolver);
 
-                    if(resolvedObject) {
-                        return resolvedObject;
+                    if(resolveHookResult && resolveHookResult.resolvedObject) {
+                        return resolveHookResult.resolvedObject;
                     }
                 }
             }

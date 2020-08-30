@@ -2,13 +2,13 @@ import "mocha";
 import { expect } from "chai";
 import ResolveObjectFactory from './ResolveObjectFactory';
 import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
-import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
-import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
+import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
+import { ResolverResolveHookResult } from '../../types/ResolverResolveHookResult';
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
-import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import ResolverResolveHookParams from '../../interfaces/ResolverResolveHookParams';
 import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
-import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 
 describe(`ResolveObjectFactory`, () => {
     it(`Should return the ResolveObject function from ResolveObjectFactory function.`, () => {
@@ -126,10 +126,6 @@ describe(`ResolveObjectFactory`, () => {
                     hooks: {
                         afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                             (params.object as MainObjectInterface).someProperty = true;
-        
-                            return {
-        
-                            };
                         },
                     },
                 },
@@ -159,10 +155,6 @@ describe(`ResolveObjectFactory`, () => {
                                     injectedObject: mainObject as unknown as T,
                                 };
                             }
-        
-                            return {
-        
-                            };
                         },
                     },
                 },
@@ -191,10 +183,6 @@ describe(`ResolveObjectFactory`, () => {
                                     resolvedObject: mainObject as T,
                                 };
                             }
-        
-                            return {
-        
-                            };
                         },
                     },
                 },
@@ -224,10 +212,6 @@ describe(`ResolveObjectFactory`, () => {
                             if(params.context === currentContext) {
                                 (params.object as MainObjectInterface).someProp = true;
                             }
-        
-                            return {
-        
-                            };
                         },
                     },
                 },
@@ -313,9 +297,6 @@ describe(`ResolveObjectFactory`, () => {
                     hooks: {
                         afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                             (params.object as MainObjectInterface).someProperty = true;
-                            return {
-        
-                            };
                         },
                     },
                 },
@@ -337,9 +318,7 @@ describe(`ResolveObjectFactory`, () => {
             {
                 hooks: {
                     inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                        return {
-                            
-                        };
+                        
                     },
                 },
             },
@@ -353,10 +332,6 @@ describe(`ResolveObjectFactory`, () => {
                             return {
                                 injectedObject: mainObject as unknown as T,
                             };
-                        }
-        
-                        return {
-        
                         }
                     },
                 },
@@ -398,10 +373,6 @@ describe(`ResolveObjectFactory`, () => {
                                 injectedObject: mainObject as unknown as T,
                             };
                         }
-        
-                        return {
-        
-                        }
                     },
                 },
             },
@@ -434,10 +405,6 @@ describe(`ResolveObjectFactory`, () => {
                                 injectedObject: mainObject as unknown as T,
                             };
                         }
-        
-                        return {
-        
-                        }
                     },
                 },
             },
@@ -464,9 +431,7 @@ describe(`ResolveObjectFactory`, () => {
             {
                 hooks: {
                     resolve<T extends object>(params: ResolverResolveHookParams<T>): ResolverResolveHookResult<T> {
-                        return {
-                            
-                        };
+
                     },
                 },
             },
@@ -480,10 +445,6 @@ describe(`ResolveObjectFactory`, () => {
                             return {
                                 resolvedObject: mainObject as unknown as T,
                             };
-                        }
-        
-                        return {
-        
                         }
                     },
                 }
@@ -525,10 +486,6 @@ describe(`ResolveObjectFactory`, () => {
                                 resolvedObject: mainObject as unknown as T,
                             };
                         }
-        
-                        return {
-        
-                        }
                     },
                 },
             },
@@ -561,10 +518,6 @@ describe(`ResolveObjectFactory`, () => {
                                 resolvedObject: mainObject as unknown as T,
                             };
                         }
-        
-                        return {
-        
-                        }
                     },
                 },
             },
@@ -592,9 +545,6 @@ describe(`ResolveObjectFactory`, () => {
             {
                 hooks: {
                     afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                        return {
-        
-                        };
                     },
                 },
             },
@@ -607,10 +557,6 @@ describe(`ResolveObjectFactory`, () => {
                         if(params.calledResolversInAfterResolveHook.find((resolver) => resolver === firstResolversCollection[0])) {
                             (params.object as MainObjectInterface).someProperty = true;
                         }
-        
-                        return {
-        
-                        };
                     },
                 }
             },
@@ -650,10 +596,6 @@ describe(`ResolveObjectFactory`, () => {
                         if(params.calledResolversInAfterResolveHook.find((resolver) => resolver === firstResolversCollection[0])) {
                             (params.object as MainObjectInterface).someProperty = true;
                         }
-        
-                        return {
-        
-                        };
                     },
                 },
             },
@@ -685,10 +627,6 @@ describe(`ResolveObjectFactory`, () => {
                         if(params.calledResolversInAfterResolveHook.find((calledResolver) => calledResolver === resolversCollection[0])) {
                             (params.object as MainObjectInterface).someProperty = true;
                         }
-        
-                        return {
-        
-                        };
                     },
                 },
             },

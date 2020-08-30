@@ -2,13 +2,13 @@ import "mocha";
 import { expect } from "chai";
 import ContextualResolverFactory from './ContextualResolverFactoryFactory';
 import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
-import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
 import ResolverResolveHookParams from '../../interfaces/ResolverResolveHookParams';
-import ResolverResolveHookResult from '../../interfaces/ResolverResolveHookResult';
+import { ResolverResolveHookResult } from '../../types/ResolverResolveHookResult';
 import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
-import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
-import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import Resolver from '../../interfaces/Resolver';
 
 describe(`ContextualResolverFactoryFactory`, () => {
@@ -48,9 +48,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     {
                         hooks: {
                             inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                                return {
-        
-                                };
+                                
                             },
                         },
                     },
@@ -117,13 +115,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+        const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -150,9 +150,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
                     {
                         hooks: {
                             inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                                return {
-                                    injectedObject: MainClass as unknown as T,
-                                };
+                                
                             },
                         },
                     },
@@ -168,13 +166,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
         
-        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+        const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });
@@ -219,13 +219,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.resolve
+        const resolveHookResult = resolvers[1] && resolvers[1].hooks.resolve
             ? resolvers[1].hooks.resolve({
                     context,
                     object: BaseClass,
                     calledResolversInResolveHook: [],
-                }).resolvedObject
+                })
             : false;
+
+        const injectedClass = resolveHookResult ? resolveHookResult.resolvedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -270,13 +272,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.resolve
+        const resolveHookResult = resolvers[1] && resolvers[1].hooks.resolve
             ? resolvers[1].hooks.resolve({
                     context,
                     object: BaseClass,
                     calledResolversInResolveHook: [],
-                }).resolvedObject
+                })
             : false;
+
+        const injectedClass = resolveHookResult ? resolveHookResult.resolvedObject : false;
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });
@@ -321,13 +325,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedObject = resolvers[1] && resolvers[1].hooks.createInstance
+        const createInstanceHookResult = resolvers[1] && resolvers[1].hooks.createInstance
             ? resolvers[1].hooks.createInstance({
                     context,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
-                }).createdInstance
+                })
             : false;
+
+        const injectedObject = createInstanceHookResult ? createInstanceHookResult.createdInstance : false;
 
         expect(injectedObject).to.be.instanceOf(MainClass);
     });
@@ -372,13 +378,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedObject = resolvers[1] && resolvers[1].hooks.createInstance
+        const createInstanceHookResult = resolvers[1] && resolvers[1].hooks.createInstance
             ? resolvers[1].hooks.createInstance({
                     context,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
-                }).createdInstance
+                })
             : false;
+
+        const injectedObject = createInstanceHookResult ? createInstanceHookResult.createdInstance : false;
 
         expect(injectedObject).not.to.be.instanceOf(MainClass);
     });
@@ -404,10 +412,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                                 if(params.object instanceof MainClass) {
                                     params.object.someProperty = true;
                                 }
-        
-                                return {
-        
-                                };
                             },
                         },
                     },
@@ -457,10 +461,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                                 if(params.object instanceof MainClass) {
                                     params.object.someProperty = true;
                                 }
-        
-                                return {
-        
-                                };
                             },
                         },
                     },
@@ -517,10 +517,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                                         injectedObject: MainClass as unknown as T,
                                     };
                                 }
-        
-                                return {
-        
-                                };
                             },
                         },
                     },
@@ -542,13 +538,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+        const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context: deepContext,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -584,10 +582,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                                                 injectedObject: MainClass as unknown as T,
                                             };
                                         }
-                
-                                        return {
-                
-                                        };
                                     },
                                 },
                             },
@@ -630,13 +624,16 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
         
-        const injectedClass = resolvers[2] && resolvers[2].hooks.inject
+        const injectHookResult = resolvers[2] && resolvers[2].hooks.inject
             ? resolvers[2].hooks.inject({
                     context: deepContext,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
+
         expect(injectedClass).to.be.equals(MainClass);
     });
 
@@ -672,10 +669,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
                                                 injectedObject: MainClass as unknown as T,
                                             };
                                         }
-                
-                                        return {
-                
-                                        };
                                     },
                                 },
                             },
@@ -718,13 +711,15 @@ describe(`ContextualResolverFactoryFactory`, () => {
             });
         }
         
-        const injectedClass = resolvers[2] && resolvers[2].hooks.inject
+        const injectHookResult = resolvers[2] && resolvers[2].hooks.inject
             ? resolvers[2].hooks.inject({
                     context: otherContext,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });
@@ -742,9 +737,7 @@ describe(`ContextualResolverFactoryFactory`, () => {
             {
                 hooks: {
                     inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                        return {
-        
-                        };
+                        
                     },
                 },
                 someProperty: true,

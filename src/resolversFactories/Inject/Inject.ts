@@ -1,6 +1,6 @@
 import InjectParams from './interfaces/InjectParams';
 import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
-import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
 import ResolversCollection from '../../interfaces/ResolversCollection';
 
 export default function Inject<F extends object, T extends F>(config: InjectParams<F, T>): ResolversCollection {
@@ -13,10 +13,6 @@ export default function Inject<F extends object, T extends F>(config: InjectPara
                             injectedObject: config.to as unknown as T,
                         };
                     }
-        
-                    return {
-        
-                    };
                 },
             },
         },

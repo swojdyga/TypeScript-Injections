@@ -3,9 +3,9 @@ import { SingletonizeResult } from './types/SingletonizeResult';
 import IsConstructorExtendsOf from "./helpers/IsConstructorExtendsOf/IsConstructorExtendsOf";
 import IsConstructor from './helpers/IsConstructor/IsConstructor';
 import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
-import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
-import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import SingletonizeResolver from './interfaces/SingletonizeResolver';
 
 const resolverIdentity = Symbol();
@@ -20,9 +20,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                 createInstance<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
                     if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInCreateInstanceHook.find((resolver) => {
@@ -38,16 +36,12 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                     });
         
                     if(wasCalledOtherSingletoneResolverWithSameType) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
                     if(!catchedInstance) {
-                        return {
-        
-                        };
+                        return;
                     }
                     
                     return {
@@ -56,9 +50,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                 },
                 afterResolve<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInAfterResolveHook.find((resolver) => {
@@ -74,22 +66,14 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                     });
         
                     if(wasCalledOtherSingletoneResolverWithSameType) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     if(catchedInstances.find((catchedInstance) => catchedInstance === params.object)) {
-                        return {
-        
-                        };
+                        return;
                     }
                 
                     catchedInstances.push(params.object);
-        
-                    return {
-        
-                    };
                 },
             },
         },

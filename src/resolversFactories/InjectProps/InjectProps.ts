@@ -1,6 +1,6 @@
 import InjectPropsParams from "./interfaces/InjectPropsParams";
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
-import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import ResolversCollection from '../../interfaces/ResolversCollection';
 
 export default function InjectProps<I extends object>(config: InjectPropsParams<I>): ResolversCollection {
@@ -11,15 +11,11 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
             hooks: {
                 afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     if(injectedObjects.has(params.object)) {
-                        return {
-        
-                        };
+                        return;
                     }
         
                     const propsKeys = Object.keys(config.props);
@@ -28,10 +24,6 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
                     });
         
                     injectedObjects.add(params.object);
-        
-                    return {
-                        
-                    };
                 },
             },
         },

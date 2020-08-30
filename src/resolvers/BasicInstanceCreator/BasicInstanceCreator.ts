@@ -1,6 +1,6 @@
 import { Class } from 'typescript-class-types';
 import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
-import ResolverCreateInstanceHookResult from '../../interfaces/ResolverCreateInstanceHookResult';
+import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import ResolversCollection from '../../interfaces/ResolversCollection';
 
 export const BasicInstanceCreator: ResolversCollection = [

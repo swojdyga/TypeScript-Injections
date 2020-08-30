@@ -17,13 +17,15 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolvers[0] && resolvers[0].hooks.inject
+        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
                     context: this,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -42,13 +44,15 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolvers[0] && resolvers[0].hooks.inject
+        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
                     context: this,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -64,14 +68,16 @@ describe(`Inject`, () => {
             to: mainObject,
         });
 
-        const injectedObject = resolvers[0] && resolvers[0].hooks.inject
+        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
                     context: this,
                     object: baseObject,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false;
         
+        const injectedObject = injectHookResult ? injectHookResult.injectedObject : false;
+
         expect(injectedObject).to.be.equals(mainObject);
     });
 });

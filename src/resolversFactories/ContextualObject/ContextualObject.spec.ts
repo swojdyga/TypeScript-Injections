@@ -2,7 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import ContextualObject from './ContextualObject';
 import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
-import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
+import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
 
 describe(`ContextualObject`, () => {
     it(`Should inject class via inject hook in correct context, which is exactly same as context object.`, () => {
@@ -41,13 +41,15 @@ describe(`ContextualObject`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+        const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context: context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).to.be.equals(MainClass);
     });
@@ -89,13 +91,15 @@ describe(`ContextualObject`, () => {
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+        const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context: context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
-                }).injectedObject
+                })
             : false
+
+        const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });

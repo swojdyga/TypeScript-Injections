@@ -17,14 +17,16 @@ describe(`InjectConstructorParams`, () => {
             ],
         });
 
-        const mainClassInstance = resolvers[0] && resolvers[0].hooks.createInstance
+        const createInstanceHookResult = resolvers[0] && resolvers[0].hooks.createInstance
             ? resolvers[0].hooks.createInstance({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],
-                }).createdInstance
+                })
             : false;
         
+        const mainClassInstance = createInstanceHookResult ? createInstanceHookResult.createdInstance : false;
+
         expect((mainClassInstance as MainClass).welcomeText).to.be.equals(`Hello World!`);
     });
 });

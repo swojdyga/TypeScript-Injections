@@ -2,7 +2,7 @@ import ContextualParams from "./interfaces/ContextualParams";
 import IsInValuesMap from '../IsInValuesMap/IsInValuesMap';
 import ContextualResolverFactoryFactoryParams from "./interfaces/ContextualResolverFactoryFactoryParams";
 import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
-import ResolverAfterResolveHookResult from '../../interfaces/ResolverAfterResolveHookResult';
+import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import ResolverHooks from '../../interfaces/ResolverHooks';
 import ResolverHookParams from '../../interfaces/ResolverHookParams';
 import ResolversCollection from '../../interfaces/ResolversCollection';
@@ -16,10 +16,6 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
                 hooks: {
                     afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                         contextsMap.set(params.object, params.context);
-    
-                        return {
-    
-                        };
                     },
                 },
             },
