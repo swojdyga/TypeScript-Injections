@@ -1,1 +1,1 @@
-export type Context = object;
+export type Context = any;
