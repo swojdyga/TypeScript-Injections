@@ -7,7 +7,7 @@ export default function Inject<F extends object, T extends F>(config: InjectPara
     return [
         {
             hooks: {
-                injectHook<T extends object | F>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                inject<T extends object | F>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
                     if(config.type === params.object) {
                         return {
                             injectedObject: config.to as unknown as T,

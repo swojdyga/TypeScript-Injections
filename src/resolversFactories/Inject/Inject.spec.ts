@@ -17,8 +17,8 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolvers[0] && resolvers[0].hooks.injectHook
-            ? resolvers[0].hooks.injectHook({
+        const injectedClass = resolvers[0] && resolvers[0].hooks.inject
+            ? resolvers[0].hooks.inject({
                     context: this,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
@@ -42,8 +42,8 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectedClass = resolvers[0] && resolvers[0].hooks.injectHook
-            ? resolvers[0].hooks.injectHook({
+        const injectedClass = resolvers[0] && resolvers[0].hooks.inject
+            ? resolvers[0].hooks.inject({
                     context: this,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
@@ -64,8 +64,8 @@ describe(`Inject`, () => {
             to: mainObject,
         });
 
-        const injectedObject = resolvers[0] && resolvers[0].hooks.injectHook
-            ? resolvers[0].hooks.injectHook({
+        const injectedObject = resolvers[0] && resolvers[0].hooks.inject
+            ? resolvers[0].hooks.inject({
                     context: this,
                     object: baseObject,
                     calledResolversInInjectHook: [],

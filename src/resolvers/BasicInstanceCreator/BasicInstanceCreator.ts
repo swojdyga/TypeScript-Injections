@@ -6,7 +6,7 @@ import ResolversCollection from '../../interfaces/ResolversCollection';
 export const BasicInstanceCreator: ResolversCollection = [
     {
         hooks: {
-            createInstanceHook<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+            createInstance<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                 return {
                     //can't detect at runtime is it an abstract class :(
                     createdInstance: new (params.constructor as Class<T>)(),

@@ -17,7 +17,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
             resolverIdentity,
             resolverParams: config,
             hooks: {
-                createInstanceHook<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                createInstance<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
                     if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
                         return {
@@ -54,7 +54,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                         createdInstance: catchedInstance as unknown as T,
                     };
                 },
-                afterResolveHook<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                afterResolve<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
                         return {
         

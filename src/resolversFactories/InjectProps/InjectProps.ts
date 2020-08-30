@@ -9,7 +9,7 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
     return [
         {
             hooks: {
-                afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
                         return {
         

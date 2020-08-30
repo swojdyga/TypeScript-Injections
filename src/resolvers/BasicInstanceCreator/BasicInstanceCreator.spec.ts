@@ -8,8 +8,8 @@ describe(`BasicInstanceCreator`, () => {
 
         }
 
-        const instance = BasicInstanceCreator[0] && BasicInstanceCreator[0].hooks.createInstanceHook
-            ? BasicInstanceCreator[0].hooks.createInstanceHook({
+        const instance = BasicInstanceCreator[0] && BasicInstanceCreator[0].hooks.createInstance
+            ? BasicInstanceCreator[0].hooks.createInstance({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],

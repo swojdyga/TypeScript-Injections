@@ -5,7 +5,7 @@ import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams'
 import ResolverInjectHookResult from '../../interfaces/ResolverInjectHookResult';
 
 describe(`Contextual`, () => {
-    it(`Should inject class via injectHook in correct context, which is instance of Context.`, () => {
+    it(`Should inject class via inject hook in correct context, which is instance of Context.`, () => {
         class SomeContext {
 
         }
@@ -26,7 +26,7 @@ describe(`Contextual`, () => {
                 [
                     {
                         hooks: {
-                            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                            inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
                                 return {
                                     injectedObject: MainClass as unknown as T,
                                 };
@@ -37,16 +37,16 @@ describe(`Contextual`, () => {
             ],
         });
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.injectHook
-            ? resolvers[1].hooks.injectHook({
+        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+            ? resolvers[1].hooks.inject({
                     context: context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],
@@ -56,7 +56,7 @@ describe(`Contextual`, () => {
         expect(injectedClass).to.be.equals(MainClass);
     });
 
-    it(`Should not inject class via injectHook in incorrect context, which is not instance of Context.`, () => {
+    it(`Should not inject class via inject hook in incorrect context, which is not instance of Context.`, () => {
         class SomeContext {
 
         }
@@ -81,7 +81,7 @@ describe(`Contextual`, () => {
                 [
                     {
                         hooks: {
-                            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                            inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
                                 return {
                                     injectedObject: MainClass as unknown as T,
                                 };
@@ -92,16 +92,16 @@ describe(`Contextual`, () => {
             ],
         });
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: context,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].hooks.injectHook
-            ? resolvers[1].hooks.injectHook({
+        const injectedClass = resolvers[1] && resolvers[1].hooks.inject
+            ? resolvers[1].hooks.inject({
                     context: context,
                     object: BaseClass,
                     calledResolversInInjectHook: [],

@@ -17,8 +17,8 @@ describe(`InjectProps`, () => {
 
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: mainClass,
                 calledResolversInAfterResolveHook: [],
@@ -46,8 +46,8 @@ describe(`InjectProps`, () => {
 
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: mainClass,
                 calledResolversInAfterResolveHook: [],
@@ -71,8 +71,8 @@ describe(`InjectProps`, () => {
 
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: mainClass,
                 calledResolversInAfterResolveHook: [],
@@ -81,8 +81,8 @@ describe(`InjectProps`, () => {
 
         mainClass.someProp = false;
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
-            resolvers[0].hooks.afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
                 context: this,
                 object: mainClass,
                 calledResolversInAfterResolveHook: [],

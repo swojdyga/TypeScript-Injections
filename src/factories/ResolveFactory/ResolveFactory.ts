@@ -25,8 +25,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
             .flat()
             .reduce(
                 (object, resolver) => {
-                    if(resolver.hooks.injectHook) {
-                        const injectedObject = resolver.hooks.injectHook({
+                    if(resolver.hooks.inject) {
+                        const injectedObject = resolver.hooks.inject({
                             context,
                             object,
                             calledResolversInInjectHook,
@@ -47,8 +47,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
         const calledResolversInResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
             for(const resolver of resolvers.flat()) {
-                if(resolver.hooks.resolveHook) {
-                    const resolvedObject = resolver.hooks.resolveHook({
+                if(resolver.hooks.resolve) {
+                    const resolvedObject = resolver.hooks.resolve({
                         context,
                         object: injectedObject,
                         calledResolversInResolveHook,
@@ -68,8 +68,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
         const calledResolversInCreateInstanceHook: Resolver[] = [];
         const instance = (() => {
             for(const resolver of resolvers.flat()) {
-                if(resolver.hooks.createInstanceHook) {
-                    const createdInstance = resolver.hooks.createInstanceHook({
+                if(resolver.hooks.createInstance) {
+                    const createdInstance = resolver.hooks.createInstance({
                         context,
                         constructor: resolvedObject,
                         calledResolversInCreateInstanceHook,
@@ -90,8 +90,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
 
         const calledResolversInAfterResolveHook: Resolver[] = [];
         resolvers.flat().forEach((resolver) => {
-            if(resolver.hooks.afterResolveHook) {
-                resolver.hooks.afterResolveHook({
+            if(resolver.hooks.afterResolve) {
+                resolver.hooks.afterResolve({
                     context,
                     object: instance,
                     calledResolversInAfterResolveHook,

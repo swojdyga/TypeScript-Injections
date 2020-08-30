@@ -14,7 +14,7 @@ export default function ContextualResolverFactoryFactory<C extends object>(facto
         return [
             {
                 hooks: {
-                    afterResolveHook<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                         contextsMap.set(params.object, params.context);
     
                         return {

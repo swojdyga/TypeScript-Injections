@@ -8,7 +8,7 @@ export default function InjectConstructorParams<I extends object, L extends Clas
     return [
         {
             hooks: {
-                createInstanceHook<T extends object | I>(params: ResolverCreateInstanceHookParams<T | I>): ResolverCreateInstanceHookResult<T> {
+                createInstance<T extends object | I>(params: ResolverCreateInstanceHookParams<T | I>): ResolverCreateInstanceHookResult<T> {
                     if(params.constructor === config.type) {
                         return {
                             createdInstance: (new config.type(...config.params)) as T,

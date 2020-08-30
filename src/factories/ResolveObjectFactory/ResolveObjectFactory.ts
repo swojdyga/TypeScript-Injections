@@ -18,8 +18,8 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
             .flat()
             .reduce(
                 (object, resolver) => {
-                    if(resolver.hooks.injectHook) {
-                        const injectedObject = resolver.hooks.injectHook({
+                    if(resolver.hooks.inject) {
+                        const injectedObject = resolver.hooks.inject({
                             context,
                             object,
                             calledResolversInInjectHook,
@@ -40,8 +40,8 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
         const calledResolversInResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
             for(const resolver of resolvers.flat()) {
-                if(resolver.hooks.resolveHook) {
-                    const resolvedObject = resolver.hooks.resolveHook({
+                if(resolver.hooks.resolve) {
+                    const resolvedObject = resolver.hooks.resolve({
                         context,
                         object: injectedObject,
                         calledResolversInResolveHook,
@@ -60,8 +60,8 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
 
         const calledResolversInAfterResolveHook: Resolver[] = [];
         resolvers.flat().forEach((resolver) => {
-            if(resolver.hooks.afterResolveHook) {
-                resolver.hooks.afterResolveHook({
+            if(resolver.hooks.afterResolve) {
+                resolver.hooks.afterResolve({
                     context,
                     object: resolvedObject,
                     calledResolversInAfterResolveHook,
