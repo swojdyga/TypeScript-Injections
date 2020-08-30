@@ -1,7 +1,7 @@
-import { Resolver } from '../../types/Resolver';
+import ResolversCollection from '../../interfaces/ResolversCollection';
 
-export default function DefineFactory(definedResolvers: Resolver[]) {
-    return function Define(resolvers: Resolver[]): void {
+export default function DefineFactory(definedResolvers: ResolversCollection[]) {
+    return function Define(resolvers: ResolversCollection[]): void {
         resolvers.forEach((definition) => definedResolvers.push(definition));
     };
 }

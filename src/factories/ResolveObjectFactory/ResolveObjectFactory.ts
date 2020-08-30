@@ -1,33 +1,31 @@
 import { Context } from "../../types/Context";
-import { Resolver } from '../../types/Resolver';
-import ResolverInjectHook from '../../interfaces/ResolverInjectHook';
-import ResolverResolveHook from '../../interfaces/ResolverResolveHook';
-import ResolverAfterResolveHook from '../../interfaces/ResolverAfterResolveHook';
+import ResolversCollection from '../../interfaces/ResolversCollection';
+import Resolver from '../../interfaces/Resolver';
 
-export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) {
+export default function ResolveObjectFactory(definedResolvers: Array<ResolversCollection>) {
     return function ResolveObject<C extends Context, O extends object>(
         context: C,
         object: O,
-        additionalResolvers: Array<Resolver> = [],
+        additionalResolvers: Array<ResolversCollection> = [],
     ): O {
         const resolvers = [
             ...definedResolvers,
             ...additionalResolvers,
         ];
 
-        const calledResolversInInjectHook: ResolverInjectHook[] = [];
+        const calledResolversInInjectHook: Resolver[] = [];
         const injectedObject = resolvers
             .flat()
             .reduce(
                 (object, resolver) => {
-                    if(resolver.injectHook) {
-                        const injectedObject = resolver.injectHook({
+                    if(resolver.hooks.injectHook) {
+                        const injectedObject = resolver.hooks.injectHook({
                             context,
                             object,
                             calledResolversInInjectHook,
                         }).injectedObject;
 
-                        calledResolversInInjectHook.push(resolver as ResolverInjectHook);
+                        calledResolversInInjectHook.push(resolver);
 
                         if(injectedObject) {
                             return injectedObject;
@@ -39,17 +37,17 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
                 object,
             );
         
-        const calledResolversInResolveHook: ResolverResolveHook[] = [];
+        const calledResolversInResolveHook: Resolver[] = [];
         const resolvedObject = (() => {
             for(const resolver of resolvers.flat()) {
-                if(resolver.resolveHook) {
-                    const resolvedObject = resolver.resolveHook({
+                if(resolver.hooks.resolveHook) {
+                    const resolvedObject = resolver.hooks.resolveHook({
                         context,
                         object: injectedObject,
                         calledResolversInResolveHook,
                     }).resolvedObject;
 
-                    calledResolversInResolveHook.push(resolver as ResolverResolveHook);
+                    calledResolversInResolveHook.push(resolver);
 
                     if(resolvedObject) {
                         return resolvedObject;
@@ -60,16 +58,16 @@ export default function ResolveObjectFactory(definedResolvers: Array<Resolver>) 
             return injectedObject;
         })();
 
-        const calledResolversInAfterResolveHook: ResolverAfterResolveHook[] = [];
+        const calledResolversInAfterResolveHook: Resolver[] = [];
         resolvers.flat().forEach((resolver) => {
-            if(resolver.afterResolveHook) {
-                resolver.afterResolveHook({
+            if(resolver.hooks.afterResolveHook) {
+                resolver.hooks.afterResolveHook({
                     context,
                     object: resolvedObject,
                     calledResolversInAfterResolveHook,
                 });
                 
-                calledResolversInAfterResolveHook.push(resolver as ResolverAfterResolveHook);
+                calledResolversInAfterResolveHook.push(resolver);
             }
         });
 

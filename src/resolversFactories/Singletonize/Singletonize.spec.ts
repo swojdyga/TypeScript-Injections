@@ -1,8 +1,6 @@
 import "mocha";
 import { expect } from "chai";
 import Singletonize from "./Singletonize";
-import ResolverAfterResolveHook from '../../../build/es6/interfaces/ResolverAfterResolveHook';
-import ResolverCreateInstanceHook from '../../../build/es6/interfaces/ResolverCreateInstanceHook';
 
 describe(`Singletonize`, () => {
     it(`Should return excaly the same instance of MainClass class, which is given as class in Singletonize resolver.`, () => {
@@ -14,32 +12,32 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstMainClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const firstMainClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new MainClass()
             : false;
 
-        if(firstMainClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(firstMainClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: firstMainClassInstance,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        const secondMainClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const secondMainClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new MainClass()
             : false;
 
-        if(secondMainClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(secondMainClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: secondMainClassInstance,
                 calledResolversInAfterResolveHook: [],
@@ -62,32 +60,32 @@ describe(`Singletonize`, () => {
 
         }
 
-        const firstMainClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const firstMainClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new MainClass()
             : false;
 
-        if(firstMainClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(firstMainClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: firstMainClassInstance,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        const secondMainClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const secondMainClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: MainClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new MainClass()
             : false;
 
-        if(secondMainClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(secondMainClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: secondMainClassInstance,
                 calledResolversInAfterResolveHook: [],
@@ -110,16 +108,16 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const baseClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const baseClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new BaseClass()
             : false;
 
-        if(baseClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(baseClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: baseClassInstance,
                 calledResolversInAfterResolveHook: [],
@@ -142,32 +140,32 @@ describe(`Singletonize`, () => {
             type: MainClass,
         });
 
-        const firstBaseClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const firstBaseClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new BaseClass()
             : false;
 
-        if(firstBaseClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(firstBaseClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: firstBaseClassInstance,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        const secondBaseClassInstance = resolvers[0] && resolvers[0].createInstanceHook
-            ? resolvers[0].createInstanceHook({
+        const secondBaseClassInstance = resolvers[0] && resolvers[0].hooks.createInstanceHook
+            ? resolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: BaseClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance || new BaseClass()
             : false;
 
-        if(secondBaseClassInstance && resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(secondBaseClassInstance && resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: secondBaseClassInstance,
                 calledResolversInAfterResolveHook: [],
@@ -197,38 +195,38 @@ describe(`Singletonize`, () => {
         const firstObject = new FirstClass();
         const secondObject = new SecondClass();
 
-        if(firstResolvers[0] && firstResolvers[0].afterResolveHook) {
-            firstResolvers[0].afterResolveHook({
+        if(firstResolvers[0] && firstResolvers[0].hooks.afterResolveHook) {
+            firstResolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: firstObject,
                 calledResolversInAfterResolveHook: [],
             });
         }
 
-        if(firstResolvers[0] && firstResolvers[0].afterResolveHook && secondResolvers[0] && secondResolvers[0].afterResolveHook) {
-            secondResolvers[0].afterResolveHook({
+        if(firstResolvers[0] && firstResolvers[0].hooks.afterResolveHook && secondResolvers[0] && secondResolvers[0].hooks.afterResolveHook) {
+            secondResolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: secondObject,
                 calledResolversInAfterResolveHook: [
-                    (firstResolvers[0] as ResolverAfterResolveHook),
+                    firstResolvers[0],
                 ],
             });
         }
         
-        const singletonizedFirstObject = firstResolvers[0] && firstResolvers[0].createInstanceHook
-            ? firstResolvers[0].createInstanceHook({
+        const singletonizedFirstObject = firstResolvers[0] && firstResolvers[0].hooks.createInstanceHook
+            ? firstResolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: FirstClass,
                     calledResolversInCreateInstanceHook: [],
                 }).createdInstance
             : false;
         
-        const singletonizedSecondObject = firstResolvers[0] && firstResolvers[0].createInstanceHook && secondResolvers[0] && secondResolvers[0].createInstanceHook
-            ? secondResolvers[0].createInstanceHook({
+        const singletonizedSecondObject = firstResolvers[0] && firstResolvers[0].hooks.createInstanceHook && secondResolvers[0] && secondResolvers[0].hooks.createInstanceHook
+            ? secondResolvers[0].hooks.createInstanceHook({
                     context: this,
                     constructor: SecondClass,
                     calledResolversInCreateInstanceHook: [
-                        (firstResolvers[0] as ResolverCreateInstanceHook),
+                        firstResolvers[0],
                     ],
                 }).createdInstance
             : false;

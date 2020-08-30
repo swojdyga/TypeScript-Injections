@@ -19,30 +19,33 @@ describe(`ContextualObject`, () => {
         const resolvers = ContextualObject({
             context: context,
             resolvers: [
-                {
-                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                        return {
-                            injectedObject: MainClass as unknown as T,
-                        };
+                [
+                    {
+                        hooks: {
+                            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                                return {
+                                    injectedObject: MainClass as unknown as T,
+                                };
+                            },
+                        },
                     },
-                }
+                ],
             ],
         });
 
-        if(resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: context,
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
+                calledResolversInAfterResolveHook: [],
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].injectHook
-            ? resolvers[1].injectHook({
+        const injectedClass = resolvers[1] && resolvers[1].hooks.injectHook
+            ? resolvers[1].hooks.injectHook({
                     context: context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false
 
@@ -64,30 +67,33 @@ describe(`ContextualObject`, () => {
         const resolvers = ContextualObject({
             context: someContext,
             resolvers: [
-                {
-                    injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
-                        return {
-                            injectedObject: MainClass as unknown as T,
-                        };
+                [
+                    {
+                        hooks: {
+                            injectHook<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                                return {
+                                    injectedObject: MainClass as unknown as T,
+                                };
+                            },
+                        },
                     },
-                }
+                ]
             ],
         });
 
-        if(resolvers[0] && resolvers[0].afterResolveHook) {
-            resolvers[0].afterResolveHook({
+        if(resolvers[0] && resolvers[0].hooks.afterResolveHook) {
+            resolvers[0].hooks.afterResolveHook({
                 context: this,
                 object: context,
-                wasUsedInjectHook: false,
-                wasUsedResolveHook: false,
-                wasUsedCreateInstanceHook: false,
+                calledResolversInAfterResolveHook: [],
             });
         }
 
-        const injectedClass = resolvers[1] && resolvers[1].injectHook
-            ? resolvers[1].injectHook({
+        const injectedClass = resolvers[1] && resolvers[1].hooks.injectHook
+            ? resolvers[1].hooks.injectHook({
                     context: context,
                     object: BaseClass,
+                    calledResolversInInjectHook: [],
                 }).injectedObject
             : false
 

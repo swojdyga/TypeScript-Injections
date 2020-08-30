@@ -1,7 +1,7 @@
 import "mocha";
 import { expect } from "chai";
 import DefineFactory from "./DefineFactory";
-import { Resolver } from '../../types/Resolver';
+import ResolversCollection from '../../interfaces/ResolversCollection';
 
 describe(`DefineFactory`, () => {
     it(`Should return the Define function from DefineFactory function.`, () => {
@@ -9,20 +9,18 @@ describe(`DefineFactory`, () => {
         expect(define).to.be.instanceOf(Function);
     });
 
-    it(`Should add resolver to set set in the DefineFactory function in the Define function returned from DefineFactory.`, () => {
-        const resolvers = new Array<Resolver>();
-        const Define = DefineFactory(resolvers);
+    it(`Should add resolvers collection to set setted in the DefineFactory function in the Define function returned from DefineFactory.`, () => {
+        const resolversCollection = new Array<ResolversCollection>();
+        const Define = DefineFactory(resolversCollection);
 
-        const emptyResolver = [
-            {
-
-            },
+        const emptyResolversCollection = [
+            
         ];
 
         Define([
-            emptyResolver,
+            emptyResolversCollection,
         ])
 
-        expect(resolvers.find((resolver) => resolver === emptyResolver)).to.be.equals(emptyResolver);
+        expect(resolversCollection.find((resolverCollection) => resolverCollection === emptyResolversCollection)).to.be.equals(emptyResolversCollection);
     });
 });

@@ -1,6 +1,6 @@
-import { Resolver } from '../../../types/Resolver';
+import ResolversCollection from '../../../interfaces/ResolversCollection';
 
 export default interface ContextualParams<C> {
     context: C;
-    resolvers: Resolver[];
+    resolvers: ResolversCollection[];
 }

@@ -1,4 +1,4 @@
-import { Resolver } from '../../../types/Resolver';
 import SingletonizeResolver from '../interfaces/SingletonizeResolver';
+import Resolver from '../../../interfaces/Resolver';
 
-export type SingletonizeResult<T> = Resolver & Array<SingletonizeResolver<T>>;
+export type SingletonizeResult<T> = Array<Resolver & SingletonizeResolver<T>>;

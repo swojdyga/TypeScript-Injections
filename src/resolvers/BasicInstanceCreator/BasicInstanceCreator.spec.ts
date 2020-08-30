@@ -8,11 +8,13 @@ describe(`BasicInstanceCreator`, () => {
 
         }
 
-        const instance = BasicInstanceCreator[0].createInstanceHook({
-            context: this,
-            constructor: MainClass,
-            calledResolversInCreateInstanceHook: [],
-        }).createdInstance;
+        const instance = BasicInstanceCreator[0] && BasicInstanceCreator[0].hooks.createInstanceHook
+            ? BasicInstanceCreator[0].hooks.createInstanceHook({
+                    context: this,
+                    constructor: MainClass,
+                    calledResolversInCreateInstanceHook: [],
+                }).createdInstance
+            : false;
 
         expect(instance).to.be.instanceOf(MainClass);
     });

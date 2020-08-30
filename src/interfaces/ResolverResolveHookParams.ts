@@ -1,8 +1,7 @@
-import { Context } from '../types/Context';
-import ResolverResolveHook from './ResolverResolveHook';
+import Resolver from './Resolver';
+import ResolverHookParams from './ResolverHookParams';
 
-export default interface ResolverResolveHookParams<T extends object> {
-    context: Context;
+export default interface ResolverResolveHookParams<T extends object> extends ResolverHookParams {
     object: T;
-    calledResolversInResolveHook: ResolverResolveHook[];
+    calledResolversInResolveHook: Resolver[];
 }
