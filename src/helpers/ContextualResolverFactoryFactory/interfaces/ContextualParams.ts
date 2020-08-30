@@ -1,6 +1,6 @@
-import ResolversCollection from '../../../interfaces/ResolversCollection';
+import { Context } from "../../../types/Context";
 
-export default interface ContextualParams<C> {
+export default interface ContextualParams<C extends Context, T extends unknown[]> {
     context: C;
-    resolvers: ResolversCollection[];
+    resolvers: readonly [...T];
 }

@@ -1,15 +1,14 @@
 import SingletonizeParams from "./interfaces/SingletonizeParams";
-import { SingletonizeResult } from './types/SingletonizeResult';
 import IsConstructorExtendsOf from "./helpers/IsConstructorExtendsOf/IsConstructorExtendsOf";
 import IsConstructor from './helpers/IsConstructor/IsConstructor';
-import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
-import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import SingletonizeResolver from './interfaces/SingletonizeResolver';
+import SingletonizeCreateInstanceHookParams from './interfaces/SingletonizeCreateInstanceHookParams';
+import SingletonizeAfterResolveHookParams from './interfaces/SingletonizeAfterResolveHookParams';
 
 const resolverIdentity = Symbol();
-export default function Singletonize<I extends object>(config: SingletonizeParams<I>): SingletonizeResult<I> {
+export default function Singletonize<I extends object>(config: SingletonizeParams<I>) {
     const catchedInstances: I[] = [];
 
     return [
@@ -17,7 +16,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
             resolverIdentity,
             resolverParams: config,
             hooks: {
-                createInstance<T extends object | I>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                createInstance<T extends object | I>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
                     if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
                         return;
@@ -48,7 +47,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                         createdInstance: catchedInstance as unknown as T,
                     };
                 },
-                afterResolve<T extends object | I>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                afterResolve<T extends object | I>(params: SingletonizeAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
                         return;
                     }

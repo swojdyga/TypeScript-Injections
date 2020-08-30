@@ -10,9 +10,7 @@ describe(`BasicInstanceCreator`, () => {
 
         const createInstanceHook = BasicInstanceCreator[0] && BasicInstanceCreator[0].hooks.createInstance
             ? BasicInstanceCreator[0].hooks.createInstance({
-                    context: this,
                     constructor: MainClass,
-                    calledResolversInCreateInstanceHook: [],
                 })
             : false;
 

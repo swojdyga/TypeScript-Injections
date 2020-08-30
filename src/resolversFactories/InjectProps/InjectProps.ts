@@ -1,15 +1,14 @@
 import InjectPropsParams from "./interfaces/InjectPropsParams";
-import ResolverAfterResolveHookParams from '../../interfaces/ResolverAfterResolveHookParams';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
-import ResolversCollection from '../../interfaces/ResolversCollection';
+import InjectPropsAfterResolveHookParams from './interfaces/InjectPropsAfterResolveHookParams';
 
-export default function InjectProps<I extends object>(config: InjectPropsParams<I>): ResolversCollection {
+export default function InjectProps<I extends object>(config: InjectPropsParams<I>) {
     const injectedObjects: WeakSet<I> = new WeakSet();
 
     return [
         {
             hooks: {
-                afterResolve<T extends object>(params: ResolverAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                afterResolve<T extends object>(params: InjectPropsAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
                     if(!(params.object instanceof config.type)) {
                         return;
                     }

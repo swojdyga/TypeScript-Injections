@@ -19,9 +19,7 @@ describe(`InjectConstructorParams`, () => {
 
         const createInstanceHookResult = resolvers[0] && resolvers[0].hooks.createInstance
             ? resolvers[0].hooks.createInstance({
-                    context: this,
                     constructor: MainClass,
-                    calledResolversInCreateInstanceHook: [],
                 })
             : false;
         

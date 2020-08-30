@@ -1,12 +1,11 @@
 import { Class } from 'typescript-class-types';
-import ResolverCreateInstanceHookParams from '../../interfaces/ResolverCreateInstanceHookParams';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
-import ResolversCollection from '../../interfaces/ResolversCollection';
+import BasicInstanceCreatorCreateInstanceHookParams from './interfaces/BasicInstanceCreatorCreateInstanceHookParams';
 
-export const BasicInstanceCreator: ResolversCollection = [
+export const BasicInstanceCreator = [
     {
         hooks: {
-            createInstance<T extends object>(params: ResolverCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+            createInstance<T extends object>(params: BasicInstanceCreatorCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                 return {
                     //can't detect at runtime is it an abstract class :(
                     createdInstance: new (params.constructor as Class<T>)(),

@@ -1,13 +1,12 @@
 import InjectParams from './interfaces/InjectParams';
-import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
 import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
-import ResolversCollection from '../../interfaces/ResolversCollection';
+import InjectInjectHookParams from './interfaces/InjectInjectHookParams';
 
-export default function Inject<F extends object, T extends F>(config: InjectParams<F, T>): ResolversCollection {
+export default function Inject<F extends object, T extends F>(config: InjectParams<F, T>) {
     return [
         {
             hooks: {
-                inject<T extends object | F>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                inject<T extends object | F>(params: InjectInjectHookParams<T>): ResolverInjectHookResult<T> {
                     if(config.type === params.object) {
                         return {
                             injectedObject: config.to as unknown as T,

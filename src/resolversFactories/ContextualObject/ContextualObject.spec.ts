@@ -1,8 +1,9 @@
 import "mocha";
 import { expect } from "chai";
 import ContextualObject from './ContextualObject';
-import ResolverInjectHookParams from '../../interfaces/ResolverInjectHookParams';
 import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
+import ContextualResolverParams
+    from "../../helpers/ContextualResolverFactoryFactory/interfaces/ContextualResolverParams";
 
 describe(`ContextualObject`, () => {
     it(`Should inject class via inject hook in correct context, which is exactly same as context object.`, () => {
@@ -22,7 +23,7 @@ describe(`ContextualObject`, () => {
                 [
                     {
                         hooks: {
-                            inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                            inject<T extends object>(params: ContextualResolverParams): ResolverInjectHookResult<T> {
                                 return {
                                     injectedObject: MainClass as unknown as T,
                                 };
@@ -37,15 +38,12 @@ describe(`ContextualObject`, () => {
             resolvers[0].hooks.afterResolve({
                 context: this,
                 object: context,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
         const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
                     context: context,
-                    object: BaseClass,
-                    calledResolversInInjectHook: [],
                 })
             : false
 
@@ -72,7 +70,7 @@ describe(`ContextualObject`, () => {
                 [
                     {
                         hooks: {
-                            inject<T extends object>(params: ResolverInjectHookParams<T>): ResolverInjectHookResult<T> {
+                            inject<T extends object>(params: ContextualResolverParams): ResolverInjectHookResult<T> {
                                 return {
                                     injectedObject: MainClass as unknown as T,
                                 };
@@ -87,15 +85,12 @@ describe(`ContextualObject`, () => {
             resolvers[0].hooks.afterResolve({
                 context: this,
                 object: context,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
         const injectHookResult = resolvers[1] && resolvers[1].hooks.inject
             ? resolvers[1].hooks.inject({
-                    context: context,
-                    object: BaseClass,
-                    calledResolversInInjectHook: [],
+                    context: this,
                 })
             : false
 

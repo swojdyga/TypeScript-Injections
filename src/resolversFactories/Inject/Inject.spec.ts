@@ -19,9 +19,7 @@ describe(`Inject`, () => {
 
         const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
-                    context: this,
                     object: BaseClass,
-                    calledResolversInInjectHook: [],
                 })
             : false;
 
@@ -46,9 +44,7 @@ describe(`Inject`, () => {
 
         const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
-                    context: this,
                     object: BaseClass,
-                    calledResolversInInjectHook: [],
                 })
             : false;
 
@@ -70,9 +66,7 @@ describe(`Inject`, () => {
 
         const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
             ? resolvers[0].hooks.inject({
-                    context: this,
                     object: baseObject,
-                    calledResolversInInjectHook: [],
                 })
             : false;
         

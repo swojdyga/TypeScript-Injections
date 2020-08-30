@@ -19,9 +19,7 @@ describe(`InjectProps`, () => {
 
         if(resolvers[0] && resolvers[0].hooks.afterResolve) {
             resolvers[0].hooks.afterResolve({
-                context: this,
                 object: mainClass,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
@@ -48,9 +46,7 @@ describe(`InjectProps`, () => {
 
         if(resolvers[0] && resolvers[0].hooks.afterResolve) {
             resolvers[0].hooks.afterResolve({
-                context: this,
                 object: mainClass,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
@@ -73,9 +69,7 @@ describe(`InjectProps`, () => {
 
         if(resolvers[0] && resolvers[0].hooks.afterResolve) {
             resolvers[0].hooks.afterResolve({
-                context: this,
                 object: mainClass,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
@@ -83,9 +77,7 @@ describe(`InjectProps`, () => {
 
         if(resolvers[0] && resolvers[0].hooks.afterResolve) {
             resolvers[0].hooks.afterResolve({
-                context: this,
                 object: mainClass,
-                calledResolversInAfterResolveHook: [],
             });
         }
 
