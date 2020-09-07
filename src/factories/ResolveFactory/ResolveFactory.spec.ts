@@ -6,6 +6,7 @@ import { ResolverResolveHookResult } from '../../types/ResolverResolveHookResult
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import Resolver from "../../interfaces/Resolver"
+import { ResolvingElement } from '../../types/ResolvingElement';
 import { Context } from "../../types/Context";
 
 describe(`ResolveFactory`, () => {
@@ -857,5 +858,121 @@ describe(`ResolveFactory`, () => {
         const object = resolve(this, MainClass);
 
         expect(object.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set correct resolving element in inject hook.`, () => {
+        class BaseClass {
+        }
+
+        class MainClass {
+        }
+
+        const resolversCollection = [
+            {
+                hooks: {
+                    inject<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverInjectHookResult<T> {
+                        if(params.resolvingElement === BaseClass) {
+                            return {
+                                injectedObject: MainClass as unknown as T,
+                            }
+                        }
+                    }
+                }
+            }
+        ];
+
+        const resolve = ResolveFactory([
+            resolversCollection,
+        ]);
+
+        const object = resolve(this, BaseClass);
+        
+        expect(object).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should set correct resolving element in resolve hook.`, () => {
+        class BaseClass {
+        }
+
+        class MainClass {
+        }
+
+        const resolversCollection = [
+            {
+                hooks: {
+                    resolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverResolveHookResult<T> {
+                        if(params.resolvingElement === BaseClass) {
+                            return {
+                                resolvedObject: MainClass as unknown as T,
+                            };
+                        }
+                    },
+                }
+            }
+        ];
+
+        const resolve = ResolveFactory([
+            resolversCollection,
+        ]);
+
+        const object = resolve(this, BaseClass);
+        
+        expect(object).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should set correct resolving element in create instance hook.`, () => {
+        class BaseClass {
+        }
+
+        class MainClass {
+        }
+
+        const resolversCollection = [
+            {
+                hooks: {
+                    createInstance<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverCreateInstanceHookResult<T> {
+                        if(params.resolvingElement === BaseClass) {
+                            return {
+                                createdInstance: new MainClass() as unknown as T,
+                            };
+                        }
+                    },
+                }
+            }
+        ];
+
+        const resolve = ResolveFactory([
+            resolversCollection,
+        ]);
+
+        const object = resolve(this, BaseClass);
+        
+        expect(object).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should set correct resolving element in after resolve hook.`, () => {
+        class MainClass {
+            public someProperty = false;
+        }
+
+        const resolversCollection = [
+            {
+                hooks: {
+                    afterResolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R, object: T }): ResolverAfterResolveHookResult<T> {
+                        if(params.resolvingElement === MainClass && params.object instanceof MainClass) {
+                            params.object.someProperty = true;
+                        }
+                    },
+                }
+            }
+        ];
+
+        const resolve = ResolveFactory([
+            resolversCollection,
+        ]);
+
+        const object = resolve(this, MainClass);
+        
+        expect(object.someProperty).to.be.equals(true);
     });
 });

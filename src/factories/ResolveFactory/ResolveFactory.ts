@@ -28,6 +28,7 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                     if(resolver.hooks.inject) {
                         const injectHookResult = resolver.hooks.inject({
                             context,
+                            resolvingElement: type,
                             object,
                             calledResolversInInjectHook,
                         });
@@ -50,6 +51,7 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                 if(resolver.hooks.resolve) {
                     const resolveHookResult = resolver.hooks.resolve({
                         context,
+                        resolvingElement: type,
                         object: injectedObject,
                         calledResolversInResolveHook,
                     });
@@ -71,6 +73,7 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                 if(resolver.hooks.createInstance) {
                     const createInstanceHookResult = resolver.hooks.createInstance({
                         context,
+                        resolvingElement: type,
                         constructor: resolvedObject,
                         calledResolversInCreateInstanceHook,
                     });
@@ -93,6 +96,7 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
             if(resolver.hooks.afterResolve) {
                 resolver.hooks.afterResolve({
                     context,
+                    resolvingElement: type,
                     object: instance,
                     calledResolversInAfterResolveHook,
                 });

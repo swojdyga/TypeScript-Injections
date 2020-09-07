@@ -7,6 +7,7 @@ import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolve
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { Context } from '../../types/Context';
 import Resolver from '../../interfaces/Resolver';
+import { ResolvingElement } from '../../types/ResolvingElement';
 
 describe(`ResolveObjectFactory`, () => {
     it(`Should return the ResolveObject function from ResolveObjectFactory function.`, () => {
@@ -637,5 +638,91 @@ describe(`ResolveObjectFactory`, () => {
         const object = resolve(this, mainObject);
 
         expect(object.someProperty).to.be.equals(false);
+    });
+
+    it(`Should set correct resolving element in inject hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    hooks: {
+                        inject<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverInjectHookResult<T> {
+                            if(params.resolvingElement === baseObject) {
+                                return {
+                                    injectedObject: mainObject as unknown as T,
+                                };
+                            }
+                        },
+                    },
+                },
+            ],
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject).to.be.eq(mainObject);
+    });
+
+    it(`Should set correct resolving element in resolve hook.`, () => {
+        const baseObject = {
+        };
+
+        const mainObject = {
+            ...baseObject,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    hooks: {
+                        resolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverResolveHookResult<T> {
+                            if(params.resolvingElement === baseObject) {
+                                return {
+                                    resolvedObject: mainObject as unknown as T,
+                                };
+                            }
+                        },
+                    },
+                },
+            ],
+        ]);
+
+        const resolvedObject = resolveObject(this, baseObject);
+
+        expect(resolvedObject).to.be.eq(mainObject);
+    });
+
+    it(`Should set correct resolving element in after resolve hook.`, () => {
+        interface MainObjectInterface {
+            someProperty: boolean;
+        }
+
+        const mainObject: MainObjectInterface = {
+            someProperty: false,
+        };
+
+        const resolveObject = ResolveObjectFactory([
+            [
+                {
+                    hooks: {
+                        afterResolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R, object: T }): ResolverAfterResolveHookResult<T> {
+                            if(params.resolvingElement === mainObject) {
+                                ((params.object as MainObjectInterface)).someProperty = true;
+                            }
+                        },
+                    },
+                },
+            ],
+        ]);
+
+        const resolvedMainObject = resolveObject(this, mainObject);
+
+        expect(resolvedMainObject.someProperty).to.be.equals(true);
     });
 });

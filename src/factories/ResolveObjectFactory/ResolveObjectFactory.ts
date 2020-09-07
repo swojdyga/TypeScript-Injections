@@ -21,6 +21,7 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
                     if(resolver.hooks.inject) {
                         const injectHookResult = resolver.hooks.inject({
                             context,
+                            resolvingElement: object,
                             object,
                             calledResolversInInjectHook,
                         });
@@ -43,6 +44,7 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
                 if(resolver.hooks.resolve) {
                     const resolveHookResult = resolver.hooks.resolve({
                         context,
+                        resolvingElement: object,
                         object: injectedObject,
                         calledResolversInResolveHook,
                     });
@@ -63,6 +65,7 @@ export default function ResolveObjectFactory(definedResolvers: Array<ResolversCo
             if(resolver.hooks.afterResolve) {
                 resolver.hooks.afterResolve({
                     context,
+                    resolvingElement: object,
                     object: resolvedObject,
                     calledResolversInAfterResolveHook,
                 });
