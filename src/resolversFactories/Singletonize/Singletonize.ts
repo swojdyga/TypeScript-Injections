@@ -1,11 +1,11 @@
 import SingletonizeParams from "./interfaces/SingletonizeParams";
-import IsConstructorExtendsOf from "./helpers/IsConstructorExtendsOf/IsConstructorExtendsOf";
-import IsConstructor from './helpers/IsConstructor/IsConstructor';
+import IsConstructor from '../../helpers/IsConstructor/IsConstructor';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import SingletonizeResolver from './interfaces/SingletonizeResolver';
 import SingletonizeCreateInstanceHookParams from './interfaces/SingletonizeCreateInstanceHookParams';
 import SingletonizeAfterResolveHookParams from './interfaces/SingletonizeAfterResolveHookParams';
+import IsConstructorExtendsOf from '../../helpers/IsConstructorExtendsOf/IsConstructorExtendsOf';
 
 const resolverIdentity = Symbol();
 export default function Singletonize<I extends object>(config: SingletonizeParams<I>) {
