@@ -9,6 +9,7 @@ import { FlatArray } from '../../types/FlatArray';
 import {ContextualResult} from "./interfaces/ContextualResult";
 import { Context } from "../../types/Context";
 import ContextualResolverParams from "./interfaces/ContextualResolverParams";
+import { ResolvingElement } from '../../types/ResolvingElement';
 
 export default function ContextualResolverFactoryFactory<C extends Context>(factoryParams: ContextualResolverFactoryFactoryParams) {
     return function Contextual<T extends ResolversCollection[]>(config: ContextualParams<C, T>): ContextualResult<T> {
@@ -17,7 +18,7 @@ export default function ContextualResolverFactoryFactory<C extends Context>(fact
         return [
             {
                 hooks: {
-                    afterResolve<T extends object>(params: ContextualAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    afterResolve<R extends ResolvingElement, T extends object>(params: ContextualAfterResolveHookParams<R, T>): ResolverAfterResolveHookResult<T> {
                         contextsMap.set(params.object, params.context);
                     },
                 },
@@ -25,7 +26,7 @@ export default function ContextualResolverFactoryFactory<C extends Context>(fact
             ...config.resolvers.flatMap((resolvers) => resolvers).map((resolver) => {
                 const resolverHooks: Partial<ResolverHooks> = {};
                 Object.keys(resolver.hooks).forEach((hookName) => {
-                    resolverHooks[hookName] = (params: ContextualResolverParams) => {
+                    resolverHooks[hookName] = <R extends ResolvingElement>(params: ContextualResolverParams<R>) => {
                         if(IsInValuesMap({
                             valuesMap: contextsMap,
                             searchValue: config.context,
@@ -34,10 +35,10 @@ export default function ContextualResolverFactoryFactory<C extends Context>(fact
                         })) {
                             return resolver.hooks[hookName].call(resolver, params);
                         }
-
-                        return {
-
-                        };
+                        
+                        if(factoryParams.resolvingElementToContextCompare(params.resolvingElement, config.context)) {
+                            return resolver.hooks[hookName].call(resolver, params);
+                        }
                     };
                 })
 

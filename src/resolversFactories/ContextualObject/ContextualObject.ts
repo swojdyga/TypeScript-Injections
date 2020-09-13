@@ -5,6 +5,9 @@ const ContextualObject = ContextualResolverFactoryFactory<object>({
         contextA: unknown,
         contextB: unknown | Function,
     ) => contextA === contextB,
+
+    resolvingElementToContextCompare: (resolvingElement, context) => 
+        resolvingElement === context,
 });
 
 export default ContextualObject;
