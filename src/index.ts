@@ -15,11 +15,12 @@ import ResolverInjectHook from './interfaces/ResolverInjectHook';
 import DefineFactory from "./factories/DefineFactory/DefineFactory";
 import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
 import ResolveObjectFactory from "./factories/ResolveObjectFactory/ResolveObjectFactory";
-import Contextual from './resolversFactories/Contextual/Contextual';
-import ContextualObject from './resolversFactories/ContextualObject/ContextualObject';
-import ContextualParams from './helpers/ContextualResolverFactoryFactory/interfaces/ContextualParams';
 import Resolver from './interfaces/Resolver';
 import ResolversCollection from './interfaces/ResolversCollection';
+import Contextual from './resolversFactories/Contextual/Contextual';
+import ContextualParams from './resolversFactories/Contextual/interfaces/ContextualParams';
+import ContextType from './resolversFactories/Contextual/factories/ContextType/ContextType';
+import ContextObject from './resolversFactories/Contextual/factories/ContextObject/ContextObject';
 
 
 const definedResolvers: ResolversCollection[] = [];
@@ -36,8 +37,10 @@ export {
     ResolveObject,
 
     Contextual,
-    ContextualObject,
     ContextualParams,
+
+    ContextType,
+    ContextObject,
 
     Inject,
     InjectParams,

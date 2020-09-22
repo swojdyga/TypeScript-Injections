@@ -1,7 +1,7 @@
 import IsInValuesMapParams from "./interfaces/IsInValuesMapParams";
 
 export default function IsInValuesMap<T extends object>(params: IsInValuesMapParams<T>): boolean {
-    if(params.compareCallback(params.value, params.searchValue)) {
+    if(params.isCorrectValue(params.value)) {
         return true;
     }
 

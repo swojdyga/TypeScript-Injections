@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Define, Inject, Resolve, InjectProps, Singletonize, Contextual } from "../src/index";
+import { Define, Inject, Resolve, InjectProps, Singletonize, Contextual, ContextType } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject MySQLConnection object into Connection place.`, () => {
@@ -164,7 +164,9 @@ describe(`Integration tests from README`, () => {
                 },
             }),
             Contextual({
-                context: ConsoleApplication,
+                contexts: [
+                    ContextType(ConsoleApplication),
+                ],
                 resolvers: [
                     InjectProps({
                         type: MySQLConnection,

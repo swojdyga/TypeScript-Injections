@@ -12,9 +12,8 @@ describe(`IsInValuesMap`, () => {
 
         const result = IsInValuesMap({
             valuesMap,
-            searchValue,
             value,
-            compareCallback: (a: unknown, b: unknown) => a === b,
+            isCorrectValue: (value: unknown) => value === searchValue,
         });
 
         expect(result).to.be.equals(true);
@@ -29,9 +28,8 @@ describe(`IsInValuesMap`, () => {
 
         const result = IsInValuesMap({
             valuesMap,
-            searchValue,
             value: {},
-            compareCallback: (a: unknown, b: unknown) => a === b,
+            isCorrectValue: (value: unknown) => value === searchValue,
         });
 
         expect(result).to.be.equals(false);
@@ -48,9 +46,8 @@ describe(`IsInValuesMap`, () => {
 
         const result = IsInValuesMap({
             valuesMap,
-            searchValue,
             value: nestedValue,
-            compareCallback: (a: unknown, b: unknown) => a === b,
+            isCorrectValue: (value: unknown) => value === searchValue,
         });
 
         expect(result).to.be.equals(true);
@@ -67,9 +64,8 @@ describe(`IsInValuesMap`, () => {
 
         const result = IsInValuesMap({
             valuesMap,
-            searchValue,
             value: {},
-            compareCallback: (a: unknown, b: unknown) => a === b,
+            isCorrectValue: (value: unknown) => value === searchValue,
         });
 
         expect(result).to.be.equals(false);
