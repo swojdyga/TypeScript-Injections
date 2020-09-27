@@ -3,6 +3,9 @@ import { AbstractClass } from 'typescript-class-types';
 import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
 import Resolver from '../../interfaces/Resolver';
 import ResolversCollection from '../../interfaces/ResolversCollection';
+import Contextual from '../../resolversFactories/Contextual/Contextual';
+import ContextType from '../../resolversFactories/Contextual/factories/ContextType/ContextType';
+import ContextObject from '../../resolversFactories/Contextual/factories/ContextObject/ContextObject';
 
 export default function ResolveFactory(definedResolvers: Array<ResolversCollection>) {
     return function Resolve<C extends Context, O extends object>(
@@ -14,9 +17,17 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
             BasicInstanceCreator,
         ];
 
-        const resolvers = [
+        const contextualTypeAdditionalResolvers = Contextual({
+            contexts: [
+                ContextType(type),
+            ],
+            resolvers: additionalResolvers,
+        });
+
+        definedResolvers.push(contextualTypeAdditionalResolvers);
+
+        const resolvers: ResolversCollection[] = [
             ...definedResolvers,
-            ...additionalResolvers,
             ...predefinedResolvers,
         ];
 
@@ -90,6 +101,22 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
         if(!instance) {
             throw new Error('Failed to create object instance.');
         }
+
+        const contextualTypeAdditionalResolversIndex = definedResolvers.findIndex((definedResolver) => definedResolver === contextualTypeAdditionalResolvers);
+        if(!~contextualTypeAdditionalResolversIndex) {
+            throw new Error("Failed to find ContextualAdditionalResolvers in definedResolvers for unknown reason.");
+        }
+
+        definedResolvers.splice(contextualTypeAdditionalResolversIndex, 1);
+
+        const contextualObjectAdditionalResolvers = Contextual({
+            contexts: [
+                ContextObject(instance),
+            ],
+            resolvers: additionalResolvers,
+        });
+
+        definedResolvers.push(contextualObjectAdditionalResolvers);
 
         const calledResolversInAfterResolveHook: Resolver[] = [];
         resolvers.flat().forEach((resolver) => {

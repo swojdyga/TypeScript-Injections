@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Define, Inject, Resolve, InjectProps, Singletonize, Contextual, ContextType } from "../src/index";
+import { Define, Inject, Resolve, InjectProps, Singletonize, Contextual, ContextType, ContextObject } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject MySQLConnection object into Connection place.`, () => {
@@ -17,14 +17,12 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        Define([
+        const connection = Resolve(this, Connection, [
             Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
         ]);
-
-        const connection = Resolve(this, Connection);
 
         expect(connection).to.be.instanceOf(MySQLConnection);
     });
@@ -48,7 +46,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        Define([
+        const connection = Resolve(this, Connection, [
             Inject({
                 type: Connection,
                 to: MySQLConnection,
@@ -63,8 +61,6 @@ describe(`Integration tests from README`, () => {
                 },
             }),
         ]);
-
-        const connection = Resolve(this, Connection);
 
         expect(connection).to.be.instanceOf(MySQLConnection);
         expect((connection as MySQLConnection).hostname).to.be.equals(`localhost`);
@@ -89,24 +85,29 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        Define([
-            Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
-            InjectProps({
-                type: MySQLConnection,
-                props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "main",
-                },
-            }),
-            Singletonize({
-                type: MySQLConnection,
-            }),
-        ]);
+        Define({
+            contexts: [
+                ContextType(Connection),
+            ],
+            resolvers: [
+                Inject({
+                    type: Connection,
+                    to: MySQLConnection,
+                }),
+                InjectProps({
+                    type: MySQLConnection,
+                    props: {
+                        hostname: "localhost",
+                        login: "root",
+                        password: "",
+                        database: "main",
+                    },
+                }),
+                Singletonize({
+                    type: MySQLConnection,
+                }),
+            ],
+        });
 
         const connection = Resolve(this, Connection);
         const secondConnection = Resolve(this, Connection);
@@ -148,8 +149,8 @@ describe(`Integration tests from README`, () => {
                 return this.connection;
             }
         }
-
-        Define([
+        
+        const application = Resolve(this, Application, [
             Inject({
                 type: Connection,
                 to: MySQLConnection,
@@ -163,32 +164,29 @@ describe(`Integration tests from README`, () => {
                     database: "main",
                 },
             }),
-            Contextual({
-                contexts: [
-                    ContextType(ConsoleApplication),
-                ],
-                resolvers: [
-                    InjectProps({
-                        type: MySQLConnection,
-                        props: {
-                            hostname: "localhost",
-                            login: "root",
-                            password: "",
-                            database: "search-results",
-                        },
-                    }),
-                    Singletonize({
-                        type: MySQLConnection,
-                    }),
-                ],
-            }),
             Singletonize({
                 type: MySQLConnection,
             }),
         ]);
 
-        const application = Resolve(this, Application);
-        const consoleApplication = Resolve(this, ConsoleApplication);
+        const consoleApplication = Resolve(this, ConsoleApplication, [
+            Inject({
+                type: Connection,
+                to: MySQLConnection,
+            }),
+            InjectProps({
+                type: MySQLConnection,
+                props: {
+                    hostname: "localhost",
+                    login: "root",
+                    password: "",
+                    database: "search-results",
+                },
+            }),
+            Singletonize({
+                type: MySQLConnection,
+            }),
+        ]);
 
         expect(application.getConnection()).to.be.instanceOf(MySQLConnection);
         expect((application.getConnection() as MySQLConnection).database).to.be.equals("main");

@@ -17,10 +17,11 @@ describe(`DefineFactory`, () => {
             
         ];
 
-        Define([
-            emptyResolversCollection,
-        ])
+        Define({
+            contexts: [],
+            resolvers: emptyResolversCollection,
+        })
 
-        expect(resolversCollection.find((resolverCollection) => resolverCollection === emptyResolversCollection)).to.be.equals(emptyResolversCollection);
+        expect(resolversCollection).to.have.lengthOf(1);
     });
 });
