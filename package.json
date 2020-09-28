@@ -6,10 +6,10 @@
   "jsnext:main": "./build/es6/index.js",
   "types": "./build/es6/index.d.ts",
   "scripts": {
-    "test": "mocha -r esm -r ts-node/register src/**/*.spec.ts tests/**/*.spec.ts",
+    "test": "(shx mkdir .temp && shx cp -r src .temp/src && shx cp -r tests .temp/tests && mocha -r esm -r ts-node/register src '.temp/src/**/*.spec.ts' 'tests/**/*.spec.ts' && shx rm -r .temp) || shx rm -r .temp",
     "build": "npm run build-commonjs && npm run build-es6",
-    "build-commonjs": "(rimraf -r build/commonjs/* && tsc --project tsconfig-commonjs.json) || rimraf -r build/commonjs/*",
-    "build-es6": "(rimraf -r build/es6/* && tsc --project tsconfig-es6.json) || rimraf -r build/es6/*",
+    "build-commonjs": "(shx rm -r build/commonjs/* && tsc --project tsconfig-commonjs.json) || shx rm -r build/commonjs/*",
+    "build-es6": "(shx rm -r build/es6/* && tsc --project tsconfig-es6.json) || shx rm -r build/es6/*",
     "main": "npm run test && npm run build",
     "prepublishOnly": "npm run main"
   },
@@ -23,7 +23,8 @@
     "jsdom": "^16.2.2",
     "jsdom-global": "^3.0.2",
     "mocha": "^7.2.0",
-    "ts-node": "^7.0.1",
+    "shx": "^0.3.2",
+    "ts-node": "^9.0.0",
     "typescript": "^3.8.3",
     "vue": "^2.6.11",
     "vue-property-decorator": "^8.4.2",
