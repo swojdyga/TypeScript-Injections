@@ -1,6 +1,7 @@
 import InjectPropsParams from "./interfaces/InjectPropsParams";
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import InjectPropsAfterResolveHookParams from './interfaces/InjectPropsAfterResolveHookParams';
+import IsConstructor from '../../helpers/IsConstructor/IsConstructor';
 
 export default function InjectProps<I extends object>(config: InjectPropsParams<I>) {
     const injectedObjects: WeakSet<I> = new WeakSet();
@@ -8,12 +9,12 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
     return [
         {
             hooks: {
-                afterResolve<T extends object>(params: InjectPropsAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    if(!(params.object instanceof config.type)) {
+                afterResolve<T extends object>(params: InjectPropsAfterResolveHookParams<T | I>): ResolverAfterResolveHookResult<T> {
+                    if(!IsConstructor(config.type) || !(params.object instanceof config.type)) {
                         return;
                     }
         
-                    if(injectedObjects.has(params.object)) {
+                    if(injectedObjects.has(params.object as unknown as I)) {
                         return;
                     }
         
@@ -22,7 +23,7 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
                         params.object[propKey] = config.props[propKey];
                     });
         
-                    injectedObjects.add(params.object);
+                    injectedObjects.add(params.object as unknown as I);
                 },
             },
         },
