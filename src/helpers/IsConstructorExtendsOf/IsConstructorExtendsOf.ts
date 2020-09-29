@@ -1,7 +1,7 @@
-import { Class } from "typescript-class-types";
+import { AbstractClass } from 'typescript-class-types';
 import { BasePrototype } from './consts/BasePrototype';
 
-export default function IsConstructorExtendsOf(constructor: Class, baseConstructor: Class): boolean {
+export default function IsConstructorExtendsOf(constructor: AbstractClass, baseConstructor: AbstractClass): boolean {
     if(constructor === baseConstructor) {
         return true;
     }
