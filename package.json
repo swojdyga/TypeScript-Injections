@@ -6,10 +6,10 @@
   "jsnext:main": "./build/es6/index.js",
   "types": "./build/es6/index.d.ts",
   "scripts": {
-    "test": "(shx mkdir .temp && shx cp -r src .temp/src && shx cp -r tests .temp/tests && mocha -r esm -r ts-node/register src '.temp/src/**/*.spec.ts' 'tests/**/*.spec.ts' && shx rm -r .temp) || shx rm -r .temp",
+    "test": "(shx mkdir .temp && shx cp -r src .temp/src && shx cp -r tests .temp/tests && mocha -r esm -r ts-node/register src '.temp/src/**/*.spec.ts' 'tests/**/*.spec.ts' && shx rm -rf .temp) || shx rm -rf .temp",
     "build": "npm run build-commonjs && npm run build-es6",
-    "build-commonjs": "(shx rm -r build/commonjs/* && tsc --project tsconfig-commonjs.json) || shx rm -r build/commonjs/*",
-    "build-es6": "(shx rm -r build/es6/* && tsc --project tsconfig-es6.json) || shx rm -r build/es6/*",
+    "build-commonjs": "(shx rm -rf build/commonjs/* && tsc --project tsconfig-commonjs.json) || shx rm -rf build/commonjs/*",
+    "build-es6": "(shx rm -rf build/es6/* && tsc --project tsconfig-es6.json) || shx rm -rf build/es6/*",
     "main": "npm run test && npm run build",
     "prepublishOnly": "npm run main"
   },
