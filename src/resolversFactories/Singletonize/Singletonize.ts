@@ -16,7 +16,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
             resolverIdentity,
             resolverParams: config,
             hooks: {
-                createInstance<T extends object | I>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                createInstance<T extends object>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
                     if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
                         return;
@@ -47,8 +47,8 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                         createdInstance: catchedInstance as unknown as T,
                     };
                 },
-                afterResolve<T extends object | I>(params: SingletonizeAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    if(!(params.object instanceof config.type)) {
+                afterResolve<T extends object>(params: SingletonizeAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
+                    if(!IsConstructor(config.type) ||!(params.object instanceof config.type)) {
                         return;
                     }
         
@@ -68,11 +68,11 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                         return;
                     }
         
-                    if(catchedInstances.find((catchedInstance) => catchedInstance === params.object)) {
+                    if(catchedInstances.find((catchedInstance) => catchedInstance === params.object as unknown as I)) {
                         return;
                     }
                 
-                    catchedInstances.push(params.object);
+                    catchedInstances.push(params.object as unknown as I);
                 },
             },
         },
