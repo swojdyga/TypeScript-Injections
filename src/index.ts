@@ -10,7 +10,6 @@ import InjectConstructorParams from './resolversFactories/InjectConstructorParam
 import { Context } from './types/Context';
 import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
-import ResolverResolveHook from './interfaces/ResolverResolveHook';
 import ResolverInjectHook from './interfaces/ResolverInjectHook';
 import DefineFactory from "./factories/DefineFactory/DefineFactory";
 import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
@@ -57,7 +56,6 @@ export {
     Resolver,
     ResolversCollection,
     ResolverInjectHook,
-    ResolverResolveHook,
     ResolverCreateInstanceHook,
     ResolverAfterResolveHook,
 };

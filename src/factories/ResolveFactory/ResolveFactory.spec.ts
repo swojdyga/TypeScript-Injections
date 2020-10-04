@@ -2,7 +2,6 @@ import "mocha";
 import { expect } from "chai";
 import ResolveFactory from './ResolveFactory';
 import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
-import { ResolverResolveHookResult } from '../../types/ResolverResolveHookResult';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import Resolver from "../../interfaces/Resolver"
@@ -57,34 +56,6 @@ describe(`ResolveFactory`, () => {
                         inject<T extends object>(): ResolverInjectHookResult<T> {
                             return {
                                 injectedObject: MainClass as unknown as T,
-                            };
-                        },
-                    },
-                },
-            ],
-        ]);
-
-        const baseClass = resolve(this, BaseClass);
-
-        expect(baseClass).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should inject class via resolve hook.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const resolve = ResolveFactory([
-            [
-                {
-                    hooks: {
-                        resolve<T extends object>(): ResolverResolveHookResult<T> {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
                             };
                         },
                     },
@@ -207,37 +178,6 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should set correct context in resolve hook.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const currentContext = this;
-        const resolve = ResolveFactory([
-            [
-                {
-                    hooks: {
-                        resolve<T extends object>(params: { context: Context }): ResolverResolveHookResult<T> {
-                            if(params.context === currentContext) {
-                                return {
-                                    resolvedObject: MainClass as unknown as T,
-                                };
-                            }
-                        },
-                    },
-                },
-            ],
-        ]);
-
-        const baseClass = resolve(currentContext, BaseClass);
-
-        expect(baseClass).to.be.instanceOf(MainClass);
-    });
-
     it(`Should set correct context in createInstance hook.`, () => {
         class BaseClass {
 
@@ -315,35 +255,6 @@ describe(`ResolveFactory`, () => {
                         inject<T extends object>(): ResolverInjectHookResult<T> {
                             return {
                                 injectedObject: MainClass as unknown as T,
-                            };
-                        },
-                    },
-                },
-            ],
-        ]);
-
-        expect(baseClass).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should inject class via resolve hook during resolving concrete definition.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const resolve = ResolveFactory([
-        ]);
-
-        const baseClass = resolve(this, BaseClass, [
-            [
-                {
-                    hooks: {
-                        resolve<T extends object>(): ResolverResolveHookResult<T> {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
                             };
                         },
                     },
@@ -513,122 +424,6 @@ describe(`ResolveFactory`, () => {
                     },
                 },
             },
-        ];
-
-        const resolve = ResolveFactory([
-            resolversCollection,
-        ]);
-
-        const object = resolve(this, BaseClass);
-
-        expect(object).not.to.be.instanceOf(MainClass);
-    });
-
-    it(`Should add previously used resolver to calledResolversInResolveHook array in resolve hook.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const firstResolversCollection = [
-            {
-                hooks: {
-                    resolve<T extends object>(): ResolverResolveHookResult<T> {
-                        
-                    },
-                },
-            },
-        ];
-
-        const secondResolversCollection = [
-            {
-                hooks: {
-                    resolve<T extends object>(params: { calledResolversInResolveHook: Resolver[] }): ResolverResolveHookResult<T> {
-                        if(params.calledResolversInResolveHook.find((resolver) => resolver === firstResolversCollection[0])) {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
-                            };
-                        }
-                    },
-                },
-            },
-        ];
-
-        const resolve = ResolveFactory([
-            firstResolversCollection,
-            secondResolversCollection,
-        ]);
-
-        const object = resolve(this, BaseClass);
-
-        expect(object).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should not add previously resolver, which was not used, to calledResolversInResolveHook array in resolve hook.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const firstResolversCollection = [
-            {
-                hooks: {
-
-                },
-            }
-        ];
-
-        const secondResolversCollection = [
-            {
-                hooks: {
-                    resolve<T extends object>(params: { calledResolversInResolveHook: Resolver[] }): ResolverResolveHookResult<T> {
-                        if(params.calledResolversInResolveHook.find((resolver) => resolver === firstResolversCollection[0])) {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
-                            };
-                        }
-                    }
-                },
-            },
-        ];
-
-        const resolve = ResolveFactory([
-            firstResolversCollection,
-            secondResolversCollection,
-        ]);
-
-        const object = resolve(this, BaseClass);
-
-        expect(object).not.to.be.instanceOf(MainClass);
-    });
-
-    it(`Should not add current resolver to calledResolversInResolveHook array in resolve hook.`, () => {
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const resolversCollection = [
-            {
-                hooks: {
-                    resolve<T extends object>(params: { calledResolversInResolveHook: Resolver[] }): ResolverResolveHookResult<T> {
-                        if(params.calledResolversInResolveHook.find((calledResolver) => calledResolver === resolversCollection[0])) {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
-                            };
-                        }
-                    },
-                },
-            }
         ];
 
         const resolve = ResolveFactory([
@@ -877,36 +672,6 @@ describe(`ResolveFactory`, () => {
                             }
                         }
                     }
-                }
-            }
-        ];
-
-        const resolve = ResolveFactory([
-            resolversCollection,
-        ]);
-
-        const object = resolve(this, BaseClass);
-        
-        expect(object).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should set correct resolving element in resolve hook.`, () => {
-        class BaseClass {
-        }
-
-        class MainClass {
-        }
-
-        const resolversCollection = [
-            {
-                hooks: {
-                    resolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverResolveHookResult<T> {
-                        if(params.resolvingElement === BaseClass) {
-                            return {
-                                resolvedObject: MainClass as unknown as T,
-                            };
-                        }
-                    },
                 }
             }
         ];

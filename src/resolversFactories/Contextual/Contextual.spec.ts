@@ -1,7 +1,6 @@
 import "mocha";
 import { expect } from "chai";
 import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
-import { ResolverResolveHookResult } from '../../types/ResolverResolveHookResult';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
 import Resolver from '../../interfaces/Resolver';
@@ -219,112 +218,6 @@ describe(`ContextualResolverFactoryFactory`, () => {
             : false;
 
         const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
-
-        expect(injectedClass).not.to.be.equals(MainClass);
-    });
-
-    it(`Should inject class via resolve hook in correct context.`, () => {
-        const context = {};
-
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const resolvers = Contextual({
-            contexts: [
-                {
-                    isInExpectedContext: () => true,
-                    isExpectedResolvingElement: () => true,
-                },
-            ],
-            resolvers: [
-                [
-                    {
-                        hooks: {
-                            resolve<R extends ResolvingElement, T extends object>(params: ContextualResolverParams<R>): ResolverResolveHookResult<T> {
-                                return {
-                                    resolvedObject: MainClass as unknown as T,
-                                };
-                            },
-                        },
-                    },
-                ],
-            ],
-        });
-
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                context: this,
-                resolvingElement: BaseClass,
-                object: context,
-            });
-        }
-
-        const resolveHookResult = resolvers[1] && resolvers[1].hooks.resolve
-            ? resolvers[1].hooks.resolve({
-                    context,
-                    resolvingElement: BaseClass,
-                })
-            : false;
-
-        const injectedClass = resolveHookResult ? resolveHookResult.resolvedObject : false;
-
-        expect(injectedClass).to.be.equals(MainClass);
-    });
-
-    it(`Should not inject class via resolve hook in incorrect context.`, () => {
-        const context = {};
-
-        class BaseClass {
-
-        }
-
-        class MainClass extends BaseClass {
-
-        }
-
-        const resolvers = Contextual({
-            contexts: [
-                {
-                    isInExpectedContext: () => false,
-                    isExpectedResolvingElement: () => false,
-                },
-            ],
-            resolvers: [
-                [
-                    {
-                        hooks: {
-                            resolve<R extends ResolvingElement, T extends object>(params: ContextualResolverParams<R>): ResolverResolveHookResult<T> {
-                                return {
-                                    resolvedObject: MainClass as unknown as T,
-                                };
-                            },
-                        },
-                    },
-                ],
-            ],
-        });
-
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                context: this,
-                resolvingElement: BaseClass,
-                object: context,
-            });
-        }
-
-        const resolveHookResult = resolvers[1] && resolvers[1].hooks.resolve
-            ? resolvers[1].hooks.resolve({
-                    context,
-                    resolvingElement: BaseClass,
-                })
-            : false;
-
-        const injectedClass = resolveHookResult ? resolveHookResult.resolvedObject : false;
 
         expect(injectedClass).not.to.be.equals(MainClass);
     });
