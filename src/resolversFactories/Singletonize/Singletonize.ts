@@ -6,6 +6,7 @@ import SingletonizeResolver from './interfaces/SingletonizeResolver';
 import SingletonizeCreateInstanceHookParams from './interfaces/SingletonizeCreateInstanceHookParams';
 import SingletonizeAfterResolveHookParams from './interfaces/SingletonizeAfterResolveHookParams';
 import IsConstructorExtendsOf from '../../helpers/IsConstructorExtendsOf/IsConstructorExtendsOf';
+import { Class } from "typescript-class-types";
 
 const resolverIdentity = Symbol();
 export default function Singletonize<I extends object>(config: SingletonizeParams<I>) {
@@ -16,7 +17,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
             resolverIdentity,
             resolverParams: config,
             hooks: {
-                createInstance<T extends object>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                createInstance<T extends Class>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
                     if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
                         return;
@@ -44,7 +45,7 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                     }
                     
                     return {
-                        createdInstance: catchedInstance as unknown as T,
+                        createdInstance: catchedInstance as InstanceType<T>,
                     };
                 },
                 afterResolve<T extends object>(params: SingletonizeAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {

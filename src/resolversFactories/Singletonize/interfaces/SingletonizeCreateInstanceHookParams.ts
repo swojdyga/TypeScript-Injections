@@ -1,7 +1,7 @@
-import { AbstractClass } from 'typescript-class-types';
+import { Class } from 'typescript-class-types';
 import Resolver from '../../../interfaces/Resolver';
 
-export default interface SingletonizeCreateInstanceHookParams<T extends object> {
-    constructor: AbstractClass<T>;
+export default interface SingletonizeCreateInstanceHookParams<T extends Class> {
+    constructor: T;
     calledResolversInCreateInstanceHook: Resolver[];
 }

@@ -8,6 +8,7 @@ import ContextualResolverParams from "./interfaces/ContextualResolverParams";
 import { ResolvingElement } from '../../types/ResolvingElement';
 import Contextual from "./Contextual";
 import { Context } from '../../types/Context';
+import { Class } from "typescript-class-types";
 
 describe(`ContextualResolverFactoryFactory`, () => {
     it(`Should return the Contextual Resolver Factory function from ContextualResolverFactoryFactory function.`, () => {
@@ -244,9 +245,9 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 [
                     {
                         hooks: {
-                            createInstance<R extends ResolvingElement, T extends object>(params: ContextualResolverParams<R>): ResolverCreateInstanceHookResult<T> {
+                            createInstance<R extends ResolvingElement, T extends Class>(params: ContextualResolverParams<R>): ResolverCreateInstanceHookResult<T> {
                                 return {
-                                    createdInstance: new MainClass() as unknown as T,
+                                    createdInstance: new MainClass() as InstanceType<T>,
                                 };
                             },
                         },
@@ -297,9 +298,9 @@ describe(`ContextualResolverFactoryFactory`, () => {
                 [
                     {
                         hooks: {
-                            createInstance<R extends ResolvingElement, T extends object>(params: ContextualResolverParams<R>): ResolverCreateInstanceHookResult<T> {
+                            createInstance<R extends ResolvingElement, T extends Class>(params: ContextualResolverParams<R>): ResolverCreateInstanceHookResult<T> {
                                 return {
-                                    createdInstance: new MainClass() as unknown as T,
+                                    createdInstance: new MainClass() as InstanceType<T>,
                                 };
                             },
                         },

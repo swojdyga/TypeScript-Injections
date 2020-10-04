@@ -3,7 +3,7 @@ import { expect } from "chai";
 import InjectConstructorParams from './InjectConstructorParams';
 
 describe(`InjectConstructorParams`, () => {
-    it(`Should inject constructor params.`, () => {
+    it(`Should return constructor params in beforeCreateInstance hook.`, () => {
         class MainClass {
             constructor(public welcomeText: string = "") {
 
@@ -17,14 +17,16 @@ describe(`InjectConstructorParams`, () => {
             ],
         });
 
-        const createInstanceHookResult = resolvers[0] && resolvers[0].hooks.createInstance
-            ? resolvers[0].hooks.createInstance({
+        const beforeCreateInstanceHookResult = resolvers[0] && resolvers[0].hooks.beforeCreateInstance
+            ? resolvers[0].hooks.beforeCreateInstance({
                     constructor: MainClass,
+                    constructorParams: [],
                 })
             : false;
-        
-        const mainClassInstance = createInstanceHookResult ? createInstanceHookResult.createdInstance : false;
 
-        expect((mainClassInstance as MainClass).welcomeText).to.be.equals(`Hello World!`);
+        const constructorParams = beforeCreateInstanceHookResult ? beforeCreateInstanceHookResult.constructorParams : false;
+
+        expect(constructorParams).to.be.instanceOf(Array);
+        expect((constructorParams as string[])[0]).to.be.equals(`Hello World!`);
     });
 });

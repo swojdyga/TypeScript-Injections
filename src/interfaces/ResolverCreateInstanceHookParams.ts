@@ -1,12 +1,13 @@
-import { AbstractClass } from 'typescript-class-types';
+import { Class } from 'typescript-class-types';
 import Resolver from './Resolver';
 import ResolverHookParams from './ResolverHookParams';
 import { ResolvingElement } from '../types/ResolvingElement';
 
 export default interface ResolverCreateInstanceHookParams<
-    T extends object, 
+    T extends Class, 
     R extends ResolvingElement,
 > extends ResolverHookParams<R> {
-    constructor: AbstractClass<T>;
+    constructor: T;
+    constructorParams: ConstructorParameters<T>;
     calledResolversInCreateInstanceHook: Resolver[];
 }

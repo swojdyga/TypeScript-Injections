@@ -1,20 +1,24 @@
 import { Context } from '../../types/Context';
-import { AbstractClass } from 'typescript-class-types';
-import { BasicInstanceCreator } from '../../resolvers/BasicInstanceCreator/BasicInstanceCreator';
+import { AbstractClass, Class } from 'typescript-class-types';
+import { InstanceCreator } from '../../resolvers/InstanceCreator/InstanceCreator';
 import Resolver from '../../interfaces/Resolver';
 import ResolversCollection from '../../interfaces/ResolversCollection';
 import Contextual from '../../resolversFactories/Contextual/Contextual';
 import ContextType from '../../resolversFactories/Contextual/factories/ContextType/ContextType';
 import ContextObject from '../../resolversFactories/Contextual/factories/ContextObject/ContextObject';
+import IsConstructor from '../../helpers/IsConstructor/IsConstructor';
 
 export default function ResolveFactory(definedResolvers: Array<ResolversCollection>) {
-    return function Resolve<C extends Context, O extends object>(
+    return function Resolve<
+        C extends Context,
+        T extends AbstractClass | Class,
+    >(
         context: C,
-        type: AbstractClass<O>,
+        type: T,
         additionalResolvers: Array<ResolversCollection> = [],
-    ): O {
+    ): T extends AbstractClass<infer U> ? U : never {
         const predefinedResolvers: Array<ResolversCollection> = [
-            BasicInstanceCreator,
+            InstanceCreator,
         ];
 
         const contextualTypeAdditionalResolvers = Contextual({
@@ -56,6 +60,31 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                 type,
             );
 
+        if(!IsConstructor(injectedObject)) {
+            throw new Error("Injected object is not a constructor.");
+        }
+
+        const calledResolversInBeforeCreateInstanceHook: Resolver[] = [];
+        const constructorParams = resolvers.flat().reduce((constructorParams, resolver) => {
+            if(resolver.hooks.beforeCreateInstance) {
+                const beforeCreateInstanceHookResult = resolver.hooks.beforeCreateInstance({
+                    context,
+                    resolvingElement: type,
+                    constructor: injectedObject,
+                    constructorParams,
+                    calledResolversInBeforeCreateInstanceHook,
+                });
+
+                calledResolversInBeforeCreateInstanceHook.push(resolver);
+
+                if(beforeCreateInstanceHookResult && beforeCreateInstanceHookResult.constructorParams) {
+                    return beforeCreateInstanceHookResult.constructorParams;
+                }
+            }
+
+            return constructorParams;
+        }, [] as []);
+            
         const calledResolversInCreateInstanceHook: Resolver[] = [];
         const instance = (() => {
             for(const resolver of resolvers.flat()) {
@@ -64,6 +93,9 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                         context,
                         resolvingElement: type,
                         constructor: injectedObject,
+                        // forcing type, because we can not verify it is correct constructor params,
+                        // length can be different, because some of constructor params can be optional
+                        constructorParams: constructorParams as ConstructorParameters<T & Class>,
                         calledResolversInCreateInstanceHook,
                     });
 
@@ -110,6 +142,6 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
             }
         });
 
-        return instance;
+        return instance as unknown as T extends AbstractClass<infer U> ? U : never;
     };
 }

@@ -2,7 +2,7 @@ import SingletonizeParams from './resolversFactories/Singletonize/interfaces/Sin
 import InjectPropsParams from './resolversFactories/InjectProps/interfaces/InjectPropsParams';
 import InjectConstructorParamsParams from './resolversFactories/InjectConstructorParams/interfaces/InjectConstructorParamsParams';
 import InjectParams from './resolversFactories/Inject/interfaces/InjectParams';
-import { BasicInstanceCreator } from './resolvers/BasicInstanceCreator/BasicInstanceCreator';
+import { InstanceCreator } from './resolvers/InstanceCreator/InstanceCreator';
 import Singletonize from './resolversFactories/Singletonize/Singletonize';
 import Inject from './resolversFactories/Inject/Inject';
 import InjectProps from './resolversFactories/InjectProps/InjectProps';
@@ -50,7 +50,7 @@ export {
     Singletonize,
     SingletonizeParams,
 
-    BasicInstanceCreator,
+    InstanceCreator,
 
     Context,
     Resolver,
