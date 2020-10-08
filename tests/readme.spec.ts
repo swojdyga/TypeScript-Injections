@@ -54,10 +54,10 @@ describe(`Integration tests from README`, () => {
             InjectProps({
                 type: MySQLConnection,
                 props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "main",
+                    hostname: () => "localhost",
+                    login: () => "root",
+                    password: () => "",
+                    database: () => "main",
                 },
             }),
         ]);
@@ -97,10 +97,10 @@ describe(`Integration tests from README`, () => {
                 InjectProps({
                     type: MySQLConnection,
                     props: {
-                        hostname: "localhost",
-                        login: "root",
-                        password: "",
-                        database: "main",
+                        hostname: () => "localhost",
+                        login: () => "root",
+                        password: () => "",
+                        database: () => "main",
                     },
                 }),
                 Singletonize({
@@ -158,10 +158,10 @@ describe(`Integration tests from README`, () => {
             InjectProps({
                 type: MySQLConnection,
                 props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "main",
+                    hostname: () => "localhost",
+                    login: () => "root",
+                    password: () => "",
+                    database: () => "main",
                 },
             }),
             Singletonize({
@@ -177,10 +177,10 @@ describe(`Integration tests from README`, () => {
             InjectProps({
                 type: MySQLConnection,
                 props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "search-results",
+                    hostname: () => "localhost",
+                    login: () => "root",
+                    password: () => "",
+                    database: () => "search-results",
                 },
             }),
             Singletonize({

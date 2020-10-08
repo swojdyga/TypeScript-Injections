@@ -11,7 +11,7 @@ describe(`InjectProps`, () => {
         const resolvers = InjectProps({
             type: MainClass,
             props: {
-                someProp: true,
+                someProp: () => true,
             },
         });
 
@@ -27,6 +27,7 @@ describe(`InjectProps`, () => {
     });
 
     it(`Should inject someProp property from BaseClass into extended class.`, () => {
+
         class BaseClass {
             public someProp = false;
         }
@@ -38,7 +39,7 @@ describe(`InjectProps`, () => {
         const resolvers = InjectProps({
             type: BaseClass,
             props: {
-                someProp: true,
+                someProp: () => true,
             },
         });
 
@@ -54,6 +55,7 @@ describe(`InjectProps`, () => {
     });
 
     it(`Should inject someProp property exactly once on concrete object.`, () => {
+
         class MainClass {
             public someProp: boolean | null = null;
         }
@@ -61,7 +63,7 @@ describe(`InjectProps`, () => {
         const resolvers = InjectProps({
             type: MainClass,
             props: {
-                someProp: true,
+                someProp: () => true,
             },
         });
 
@@ -82,5 +84,29 @@ describe(`InjectProps`, () => {
         }
 
         expect(mainClass.someProp).to.be.equals(false);
+    });
+
+    it(`Should have access to context in concrete property return method.`, () => {
+
+        class MainClass {
+            public someProp: boolean | null = null;
+        }
+
+        const resolvers = InjectProps({
+            type: MainClass,
+            props: {
+                someProp: ({context}) => context instanceof MainClass,
+            },
+        });
+
+        const mainClass = new MainClass();
+
+        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
+            resolvers[0].hooks.afterResolve({
+                object: mainClass,
+            });
+        }
+
+        expect(mainClass.someProp).to.be.equals(true);
     });
 });
