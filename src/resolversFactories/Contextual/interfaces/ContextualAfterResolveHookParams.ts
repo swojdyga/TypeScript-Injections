@@ -1,4 +1,3 @@
-import { Context } from '../../../types/Context';
 import ContextualResolverParams from './ContextualResolverParams';
 import { ResolvingElement } from '../../../types/ResolvingElement';
 

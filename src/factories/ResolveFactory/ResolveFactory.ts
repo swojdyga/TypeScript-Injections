@@ -82,8 +82,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                 }
             }
 
-            return constructorParams;
-        }, [] as []);
+            return constructorParams as unknown as ConstructorParameters<T & Class>;
+        }, [] as [] | ConstructorParameters<T & Class>);
             
         const calledResolversInCreateInstanceHook: Resolver[] = [];
         const instance = (() => {
@@ -106,6 +106,8 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
                     }
                 }
             }
+
+            return;
         })();
 
         if(!instance) {

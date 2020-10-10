@@ -1,1 +1,0 @@
-export type OptionalObjectParams<I> = {[key in keyof I]?: I[key]};

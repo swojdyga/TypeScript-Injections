@@ -21,12 +21,12 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
         
                     const propsKeys = Object.keys(config.props);
                     propsKeys.forEach((propKey) => {
-                        if(config.props[propKey]) {
-                            const paramValueAccess = config.props[propKey] as InjectPropsParamsParams<T>[keyof InjectPropsParamsParams<T>];
+                        if(config.props[propKey as keyof InjectPropsParamsParams<I>]) {
+                            const paramValueAccess = config.props[propKey as keyof InjectPropsParamsParams<I>] as InjectPropsParamsParams<I>[keyof InjectPropsParamsParams<I>];
                             
                             params.object[propKey as keyof T] = paramValueAccess({
                                 context: params.object,
-                            }) as T[keyof T];
+                            }) as unknown as T[keyof T];
                         }
                     });
         

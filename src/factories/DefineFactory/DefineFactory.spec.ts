@@ -13,7 +13,7 @@ describe(`DefineFactory`, () => {
         const resolversCollection = new Array<ResolversCollection>();
         const Define = DefineFactory(resolversCollection);
 
-        const emptyResolversCollection = [
+        const emptyResolversCollection: ResolversCollection[] = [
             
         ];
 

@@ -31,8 +31,6 @@ describe(`InjectConstructorParams`, () => {
     });
 
     it(`Should have access to context in concrete property return method.`, () => {
-        const context = this;
-
         class MainClass {
             constructor(public someProp: boolean) {
 

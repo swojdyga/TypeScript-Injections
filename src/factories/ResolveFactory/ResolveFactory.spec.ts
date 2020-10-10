@@ -8,7 +8,6 @@ import Resolver from "../../interfaces/Resolver"
 import { ResolvingElement } from '../../types/ResolvingElement';
 import { Context } from "../../types/Context";
 import { ResolverBeforeCreateInstanceHookResult } from '../../types/ResolverBeforeCreateInstanceHookResult';
-import ResolverBeforeCreateInstanceHookParams from '../../interfaces/ResolverBeforeCreateInstanceHookParams';
 import { Class } from "typescript-class-types";
 
 describe(`ResolveFactory`, () => {
@@ -86,7 +85,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello World!",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         },
                     },
@@ -114,7 +113,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         },
                     },
@@ -126,11 +125,15 @@ describe(`ResolveFactory`, () => {
                         beforeCreateInstance<
                             T extends Class,
                         >(params: { constructorParams: ConstructorParameters<T> | [] }): ResolverBeforeCreateInstanceHookResult<T> {
-                            return {
-                                constructorParams: [
-                                    params.constructorParams?.[0] + " World!",
-                                ] as ConstructorParameters<T>,
-                            };
+                            const paramsConstructorParams = params.constructorParams;
+                            
+                            if(Array.isArray(paramsConstructorParams) && paramsConstructorParams.length) {
+                                return {
+                                    constructorParams: [
+                                        params.constructorParams[0] + " World!",
+                                    ] as unknown as ConstructorParameters<T>,
+                                };
+                            }
                         },
                     }
                 }
@@ -310,7 +313,7 @@ describe(`ResolveFactory`, () => {
                                 return {
                                     constructorParams: [
                                         "Hello World!",
-                                    ] as ConstructorParameters<T>,
+                                    ] as unknown as ConstructorParameters<T>,
                                 };
                             }
                         },
@@ -429,7 +432,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello World!",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         },
                     },
@@ -562,7 +565,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello World!",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         }
                     },
@@ -726,7 +729,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello World!",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         }
                     },
@@ -869,7 +872,7 @@ describe(`ResolveFactory`, () => {
                             return {
                                 constructorParams: [
                                     "Hello World!",
-                                ] as ConstructorParameters<T>,
+                                ] as unknown as ConstructorParameters<T>,
                             };
                         }
                     },
@@ -992,7 +995,7 @@ describe(`ResolveFactory`, () => {
                                 return {
                                     constructorParams: [
                                         "Hello World!",
-                                    ] as ConstructorParameters<T>,
+                                    ] as unknown as ConstructorParameters<T>,
                                 };
                             }
                         },

@@ -20,7 +20,6 @@ import ContextualParams from './resolversFactories/Contextual/interfaces/Context
 import ContextType from './resolversFactories/Contextual/factories/ContextType/ContextType';
 import ContextObject from './resolversFactories/Contextual/factories/ContextObject/ContextObject';
 
-
 const definedResolvers: ResolversCollection[] = [];
 
 const Define = DefineFactory(definedResolvers);
