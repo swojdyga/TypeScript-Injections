@@ -26,6 +26,22 @@ describe(`ContextType`, () => {
         expect(contextualParamsContext.isInExpectedContext(context)).to.be.equals(true);
     });
 
+    it(`Should return true when given context is instance which extends type given in ContextType method.`, () => {
+        class SomeClass {
+
+        }
+
+        class ExtendedClass extends SomeClass {
+
+        }
+
+        const contextualParamsContext = ContextType(SomeClass);
+
+        const context = new ExtendedClass();
+
+        expect(contextualParamsContext.isInExpectedContext(context)).to.be.equals(true);
+    });
+
     it(`Should return false when given context is not instance of type given in ContextType method.`, () => {
         class SomeClass {
 
@@ -38,7 +54,35 @@ describe(`ContextType`, () => {
         expect(contextualParamsContext.isInExpectedContext(context)).to.be.equals(false);
     });
 
-    it(`Should return true when given resolvingElement is exactly same as type given in ContextObject method.`, () => {
+    it(`Should return true when given context is exacly same as type given in ContextType method.`, () => {
+        class SomeClass {
+
+        }
+
+        const contextualParamsContext = ContextType(SomeClass);
+
+        const context = SomeClass;
+
+        expect(contextualParamsContext.isInExpectedContext(context)).to.be.equals(true);
+    });
+
+    it(`Should return true when given context extends type given in ContextType method.`, () => {
+        class SomeClass {
+
+        }
+
+        class ExtendedClass extends SomeClass {
+
+        }
+
+        const contextualParamsContext = ContextType(SomeClass);
+
+        const context = ExtendedClass;
+
+        expect(contextualParamsContext.isInExpectedContext(context)).to.be.equals(true);
+    });
+
+    it(`Should return true when given resolvingElement is exactly same as type given in ContextType method.`, () => {
         class SomeClass {
 
         }
@@ -48,7 +92,7 @@ describe(`ContextType`, () => {
         expect(contextualParamsContext.isExpectedResolvingElement(SomeClass)).to.be.equals(true);
     });
 
-    it(`Should return true when given resolvingElement extends type given in ContextObject method.`, () => {
+    it(`Should return true when given resolvingElement extends type given in ContextType method.`, () => {
         class SomeClass {
 
         }
@@ -62,7 +106,7 @@ describe(`ContextType`, () => {
         expect(contextualParamsContext.isExpectedResolvingElement(ResolvingElement)).to.be.equals(true);
     });
 
-    it(`Should return false when given resolvingElement is not same as type given in ContextObject method.`, () => {
+    it(`Should return false when given resolvingElement is not same as type given in ContextType method.`, () => {
         class SomeClass {
 
         }

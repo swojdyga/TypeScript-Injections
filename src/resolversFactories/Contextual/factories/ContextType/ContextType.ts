@@ -7,7 +7,7 @@ import IsConstructorExtendsOf from '../../../../helpers/IsConstructorExtendsOf/I
 
 export default function ContextType(type: AbstractClass<object>): ContextualParamsContext {
     return {
-        isInExpectedContext: (context: Context) => type instanceof Function && context instanceof type,
+        isInExpectedContext: (context: Context) => IsConstructor(type) && (context instanceof type || IsConstructor(context) && IsConstructorExtendsOf(context, type)),
         isExpectedResolvingElement: (resolvingElement: ResolvingElement) => IsConstructor(resolvingElement) && IsConstructorExtendsOf(resolvingElement, type),
     };
 }
