@@ -1,4 +1,4 @@
-export default interface InjectParams<F, T extends F> {
+export default interface InjectParams<F, T> {
     type: F;
     to: T;
 }

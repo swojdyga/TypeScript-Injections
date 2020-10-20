@@ -1,8 +1,9 @@
 import InjectParams from './interfaces/InjectParams';
 import { ResolverInjectHookResult } from '../../types/ResolverInjectHookResult';
 import InjectInjectHookParams from './interfaces/InjectInjectHookParams';
+import { AbstractClass, Class } from 'typescript-class-types';
 
-export default function Inject<F extends object, T extends F>(config: InjectParams<F, T>) {
+export default function Inject<I extends object, F extends Class<I> | AbstractClass<I>, T extends Class<I>>(config: InjectParams<F, T>) {
     return [
         {
             hooks: {

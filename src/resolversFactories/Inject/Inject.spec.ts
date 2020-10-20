@@ -52,26 +52,4 @@ describe(`Inject`, () => {
 
         expect(injectedClass).to.be.equals(MainClass);
     });
-
-    it(`Should inject mainObject into baseObject place.`, () => {
-        const baseObject = {};
-        const mainObject = {
-            ...baseObject,
-        };
-
-        const resolvers = Inject({
-            type: baseObject,
-            to: mainObject,
-        });
-
-        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
-            ? resolvers[0].hooks.inject({
-                    object: baseObject,
-                })
-            : false;
-        
-        const injectedObject = injectHookResult ? injectHookResult.injectedObject : false;
-
-        expect(injectedObject).to.be.equals(mainObject);
-    });
 });
