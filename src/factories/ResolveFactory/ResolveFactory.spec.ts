@@ -57,7 +57,7 @@ describe(`ResolveFactory`, () => {
                     hooks: {
                         inject<T extends object>(): ResolverInjectHookResult<T> {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             };
                         },
                     },
@@ -282,7 +282,7 @@ describe(`ResolveFactory`, () => {
                         inject<T extends object>(params: { context: Context }): ResolverInjectHookResult<T> {
                             if(params.context === currentContext) {
                                 return {
-                                    injectedObject: MainClass as unknown as T,
+                                    injectedObject: MainClass as T,
                                 };
                             }
                         },
@@ -403,7 +403,7 @@ describe(`ResolveFactory`, () => {
                     hooks: {
                         inject<T extends object>(): ResolverInjectHookResult<T> {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             };
                         },
                     },
@@ -497,6 +497,74 @@ describe(`ResolveFactory`, () => {
         expect(mainClass.someProperty).to.be.equals(true);
     });
 
+    it(`Should inject correct implementation in SomeDependency dependency during resolve constructor params Application implementation.`, () => {
+        abstract class Application {
+
+        }
+
+        abstract class SomeDependency {
+
+        }
+
+        class SomeApplication implements Application {
+            public constructor(public dependency: SomeDependency) {
+
+            }
+        }
+
+        class SomeDependencyImplementation implements SomeDependency {
+
+        }
+
+        const resolve = ResolveFactory([
+
+        ]);
+
+        const mainClass = resolve(this, Application, [
+            [
+                {
+                    hooks: {
+                        inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                            if(params.object === Application) {
+                                return {
+                                    injectedObject: SomeApplication as T,
+                                };
+                            }
+                        },
+                    },
+                },
+            ],
+            [
+                {
+                    hooks: {
+                        inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                            if(params.object === SomeDependency) {
+                                return {
+                                    injectedObject: SomeDependencyImplementation as T,
+                                };
+                            }
+                        },
+                    },
+                },
+            ],
+            [
+                {
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(params: { constructor: T; }): ResolverBeforeCreateInstanceHookResult<T> {
+                            return {
+                                constructorParams: [
+                                    resolve(params.constructor, SomeDependency),
+                                ] as unknown as ConstructorParameters<T>
+                            }
+                        }
+                    },
+                },
+            ],
+        ]);
+
+        expect((mainClass as SomeApplication).dependency).to.be.instanceOf(SomeDependencyImplementation);
+    });
+
     it(`Should add previously used resolver to calledResolversInInjectHook array in inject hook.`, () => {
         class BaseClass {
 
@@ -522,7 +590,7 @@ describe(`ResolveFactory`, () => {
                     inject<T extends object>(params: { calledResolversInInjectHook: Resolver[] }): ResolverInjectHookResult<T> {
                         if(params.calledResolversInInjectHook.find((resolver) => resolver === firstResolversCollection[0])) {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             };
                         }
                     },
@@ -688,7 +756,7 @@ describe(`ResolveFactory`, () => {
                     inject<T extends object>(params: { calledResolversInInjectHook: Resolver[] }): ResolverInjectHookResult<T> {
                         if(params.calledResolversInInjectHook.find((resolver) => resolver === firstResolversCollection[0])) {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             };
                         }
                     },
@@ -840,7 +908,7 @@ describe(`ResolveFactory`, () => {
                     inject<T extends object>(params: { calledResolversInInjectHook: Resolver[] }): ResolverInjectHookResult<T> {
                         if(params.calledResolversInInjectHook.find((calledResolver) => calledResolver === resolversCollection[0])) {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             };
                         }
                     },
@@ -962,7 +1030,7 @@ describe(`ResolveFactory`, () => {
                     inject<R extends ResolvingElement, T extends object>(params: { resolvingElement: R }): ResolverInjectHookResult<T> {
                         if(params.resolvingElement === BaseClass) {
                             return {
-                                injectedObject: MainClass as unknown as T,
+                                injectedObject: MainClass as T,
                             }
                         }
                     }

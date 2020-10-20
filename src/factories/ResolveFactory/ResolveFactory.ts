@@ -64,6 +64,15 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
             throw new Error("Injected object is not a constructor.");
         }
 
+        const injectedContextualTypeAdditionalResolvers = Contextual({
+            contexts: [
+                ContextType(injectedObject),
+            ],
+            resolvers: additionalResolvers,
+        });
+
+        definedResolvers.push(injectedContextualTypeAdditionalResolvers);
+
         const calledResolversInBeforeCreateInstanceHook: Resolver[] = [];
         const constructorParams = resolvers.flat().reduce((constructorParams, resolver) => {
             if(resolver.hooks.beforeCreateInstance) {
@@ -120,6 +129,13 @@ export default function ResolveFactory(definedResolvers: Array<ResolversCollecti
         }
 
         definedResolvers.splice(contextualTypeAdditionalResolversIndex, 1);
+
+        const injectedContextualTypeAdditionalResolversIndex = definedResolvers.findIndex((definedResolver) => definedResolver === injectedContextualTypeAdditionalResolvers);
+        if(!~injectedContextualTypeAdditionalResolversIndex) {
+            throw new Error("Failed to find InjectedContextualAdditionalResolvers in definedResolvers for unknown reason.");
+        }
+
+        definedResolvers.splice(injectedContextualTypeAdditionalResolversIndex, 1);
 
         const contextualObjectAdditionalResolvers = Contextual({
             contexts: [
