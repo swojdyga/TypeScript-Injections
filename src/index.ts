@@ -11,7 +11,6 @@ import { Context } from './types/Context';
 import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
 import ResolverInjectHook from './interfaces/ResolverInjectHook';
-import DefineFactory from "./factories/DefineFactory/DefineFactory";
 import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
 import Resolver from './interfaces/Resolver';
 import ResolversCollection from './interfaces/ResolversCollection';
@@ -36,14 +35,10 @@ import { ResolvingElement } from './types/ResolvingElement';
 import ContextualParamsContext from './resolversFactories/Contextual/interfaces/ContextualParamsContext';
 
 const definedResolvers: ResolversCollection[] = [];
-
-const Define = DefineFactory(definedResolvers);
 const Resolve = ResolveFactory(definedResolvers);
 
 export {
     definedResolvers,
-
-    Define,
     Resolve,
 
     Contextual,
