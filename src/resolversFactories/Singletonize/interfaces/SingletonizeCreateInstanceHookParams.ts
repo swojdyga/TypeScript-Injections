@@ -3,5 +3,5 @@ import { ResolvingElement } from '../../../types/ResolvingElement';
 
 export default interface SingletonizeCreateInstanceHookParams<R extends ResolvingElement, T extends Class> {
     resolvingElement: R;
-    constructor: T;
+    type: T;
 }

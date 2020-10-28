@@ -57,7 +57,7 @@ export default function Resolve<
         if(resolver.hooks.beforeCreateInstance) {
             const result = resolver.hooks.beforeCreateInstance({
                 resolvingElement: type,
-                constructor: injectedObject,
+                type: injectedObject,
                 constructorParams,
                 calledResolversInBeforeCreateInstanceHook,
             });
@@ -80,7 +80,7 @@ export default function Resolve<
             if(resolver.hooks.createInstance) {
                 const result = resolver.hooks.createInstance({
                     resolvingElement: type,
-                    constructor: injectedObject,
+                    type: injectedObject,
                     // forcing type, because we can not verify it is correct constructor params,
                     // length can be different, because some of constructor params can be optional
                     constructorParams: constructorParams as ConstructorParameters<T & Class>,

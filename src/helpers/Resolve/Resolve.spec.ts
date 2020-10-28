@@ -291,8 +291,8 @@ describe(`ResolveFactory`, () => {
             [
                 {
                     hooks: {
-                        beforeCreateInstance<T extends Class | Class<SomeApplication>>(params: { constructor: T; }): ResolverBeforeCreateInstanceHookResult<T> {
-                            if(params.constructor === SomeApplication) {
+                        beforeCreateInstance<T extends Class | Class<SomeApplication>>(params: { type: T; }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === SomeApplication) {
                                 return {
                                     constructorParams: [
                                         Resolve(SomeDependency, definitions),

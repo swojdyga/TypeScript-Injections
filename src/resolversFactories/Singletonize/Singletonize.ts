@@ -15,13 +15,13 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
         {
             hooks: {
                 createInstance<R extends ResolvingElement, T extends Class>(params: SingletonizeCreateInstanceHookParams<R, T>): ResolverCreateInstanceHookResult<T> {
-                    const constructor = params.constructor;
+                    const type = params.type;
                     
-                    if((!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) && (!IsConstructor(params.resolvingElement) || !IsConstructorExtendsOf(params.resolvingElement, config.type))) {
+                    if((!IsConstructor(type) || !IsConstructorExtendsOf(type, config.type)) && (!IsConstructor(params.resolvingElement) || !IsConstructorExtendsOf(params.resolvingElement, config.type))) {
                         return;
                     }
 
-                    const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
+                    const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof type);
                     if(!catchedInstance) {
                         return;
                     }

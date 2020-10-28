@@ -7,7 +7,7 @@ export default interface ResolverBeforeCreateInstanceHookParams<
     T extends Class,
     R extends ResolvingElement,
 > extends ResolverHookParams<R> {
-    constructor: T;
+    type: T;
     constructorParams: ConstructorParameters<T> | [];
     calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[];
 }

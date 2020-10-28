@@ -9,7 +9,7 @@ export default function InjectConstructorParams<I extends Class>(config: InjectC
         {
             hooks: {
                 beforeCreateInstance<T extends Class | I>(params: InjectConstructorParamsBeforeCreateInstanceHookParams<T>): ResolverBeforeCreateInstanceHookResult<T> {
-                    if(params.constructor === config.type) {
+                    if(params.type === config.type) {
                         return {
                             constructorParams: config.params
                                 .map((param: (params: InjectConstructorParamsParamsParamsParamParams) => keyof ConstructorParameters<T>) => {

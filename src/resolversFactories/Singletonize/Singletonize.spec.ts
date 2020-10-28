@@ -14,7 +14,7 @@ describe(`Singletonize`, () => {
 
         const firstCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: MainClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const firstMainClassInstance = firstCreateInstanceHookResult && firstCreateInstanceHookResult.createdInstance
@@ -29,7 +29,7 @@ describe(`Singletonize`, () => {
 
         const secondCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: MainClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const secondMainClassInstance = secondCreateInstanceHookResult && secondCreateInstanceHookResult.createdInstance
@@ -65,7 +65,7 @@ describe(`Singletonize`, () => {
 
         const firstCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: MainClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const firstMainClassInstance = firstCreateInstanceHookResult && firstCreateInstanceHookResult.createdInstance
@@ -81,7 +81,7 @@ describe(`Singletonize`, () => {
 
         const secondCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: MainClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const secondMainClassInstance = secondCreateInstanceHookResult && secondCreateInstanceHookResult.createdInstance
@@ -116,7 +116,7 @@ describe(`Singletonize`, () => {
 
         const createInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: BaseClass,
-            constructor: BaseClass,
+            type: BaseClass,
         });
 
         const baseClassInstance = createInstanceHookResult && createInstanceHookResult.createdInstance
@@ -148,7 +148,7 @@ describe(`Singletonize`, () => {
 
         const firstCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: BaseClass,
-            constructor: BaseClass,
+            type: BaseClass,
         });
 
         const firstBaseClassInstance = firstCreateInstanceHookResult && firstCreateInstanceHookResult.createdInstance
@@ -164,7 +164,7 @@ describe(`Singletonize`, () => {
 
         const secondCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: BaseClass,
-            constructor: BaseClass,
+            type: BaseClass,
         });
 
         const secondBaseClassInstance = secondCreateInstanceHookResult && secondCreateInstanceHookResult.createdInstance
@@ -241,14 +241,14 @@ describe(`Singletonize`, () => {
         
         const firstCreateInstanceHookResult = firstResolvers[0].hooks.createInstance({
             resolvingElement: FirstClass,
-            constructor: FirstClass,
+            type: FirstClass,
         });
 
         const singletonizedFirstObject = firstCreateInstanceHookResult ? firstCreateInstanceHookResult.createdInstance : false;
         
         const secondCreateInstanceHookResult = secondResolvers[0].hooks.createInstance({
             resolvingElement: SecondClass,
-            constructor: SecondClass,
+            type: SecondClass,
         });
 
         const singletonizedSecondObject = secondCreateInstanceHookResult ? secondCreateInstanceHookResult.createdInstance : false;
@@ -309,7 +309,7 @@ describe(`Singletonize`, () => {
 
         const secondResolverCreateInstanceHookResult = secondResolvers[0].hooks.createInstance({
             resolvingElement: MainClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const secondResolverMainClassInstance = secondResolverCreateInstanceHookResult && secondResolverCreateInstanceHookResult.createdInstance
@@ -335,7 +335,7 @@ describe(`Singletonize`, () => {
 
         const firstCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: BaseClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const firstMainClassInstance = firstCreateInstanceHookResult && firstCreateInstanceHookResult.createdInstance
@@ -350,7 +350,7 @@ describe(`Singletonize`, () => {
 
         const secondCreateInstanceHookResult = resolvers[0].hooks.createInstance({
             resolvingElement: BaseClass,
-            constructor: MainClass,
+            type: MainClass,
         });
 
         const secondMainClassInstance = secondCreateInstanceHookResult && secondCreateInstanceHookResult.createdInstance

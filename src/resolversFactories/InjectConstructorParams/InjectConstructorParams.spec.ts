@@ -19,7 +19,7 @@ describe(`InjectConstructorParams`, () => {
 
         const beforeCreateInstanceHookResult = resolvers[0] && resolvers[0].hooks.beforeCreateInstance
             ? resolvers[0].hooks.beforeCreateInstance({
-                    constructor: MainClass,
+                    type: MainClass,
                     constructorParams: [],
                 })
             : false;
