@@ -2,43 +2,25 @@ import SingletonizeParams from "./interfaces/SingletonizeParams";
 import IsConstructor from '../../helpers/IsConstructor/IsConstructor';
 import { ResolverCreateInstanceHookResult } from '../../types/ResolverCreateInstanceHookResult';
 import { ResolverAfterResolveHookResult } from '../../types/ResolverAfterResolveHookResult';
-import SingletonizeResolver from './interfaces/SingletonizeResolver';
 import SingletonizeCreateInstanceHookParams from './interfaces/SingletonizeCreateInstanceHookParams';
 import SingletonizeAfterResolveHookParams from './interfaces/SingletonizeAfterResolveHookParams';
 import IsConstructorExtendsOf from '../../helpers/IsConstructorExtendsOf/IsConstructorExtendsOf';
 import { Class } from "typescript-class-types";
+import { ResolvingElement } from '../../types/ResolvingElement';
 
-const resolverIdentity = Symbol();
 export default function Singletonize<I extends object>(config: SingletonizeParams<I>) {
     const catchedInstances: I[] = [];
 
     return [
         {
-            resolverIdentity,
-            resolverParams: config,
             hooks: {
-                createInstance<T extends Class>(params: SingletonizeCreateInstanceHookParams<T>): ResolverCreateInstanceHookResult<T> {
+                createInstance<R extends ResolvingElement, T extends Class>(params: SingletonizeCreateInstanceHookParams<R, T>): ResolverCreateInstanceHookResult<T> {
                     const constructor = params.constructor;
-                    if(!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) {
+                    
+                    if((!IsConstructor(constructor) || !IsConstructorExtendsOf(constructor, config.type)) && (!IsConstructor(params.resolvingElement) || !IsConstructorExtendsOf(params.resolvingElement, config.type))) {
                         return;
                     }
-        
-                    const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInCreateInstanceHook.find((resolver) => {
-                        if(!resolver.hasOwnProperty('resolverIdentity')) {
-                            return false;
-                        }
-        
-                        if((resolver as unknown as SingletonizeResolver<I>).resolverIdentity !== resolverIdentity) {
-                            return false;
-                        }
-        
-                        return (resolver as unknown as SingletonizeResolver<I>).resolverParams.type === config.type;
-                    });
-        
-                    if(wasCalledOtherSingletoneResolverWithSameType) {
-                        return;
-                    }
-        
+
                     const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof constructor);
                     if(!catchedInstance) {
                         return;
@@ -48,24 +30,26 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                         createdInstance: catchedInstance as InstanceType<T>,
                     };
                 },
-                afterResolve<T extends object>(params: SingletonizeAfterResolveHookParams<T>): ResolverAfterResolveHookResult<T> {
-                    if(!IsConstructor(config.type) ||!(params.object instanceof config.type)) {
+                afterResolve<R extends ResolvingElement, T extends object>(params: SingletonizeAfterResolveHookParams<R, T>): ResolverAfterResolveHookResult<T> {
+                    if((!IsConstructor(config.type) || !(params.object instanceof config.type)) && (!IsConstructor(params.resolvingElement) || !IsConstructorExtendsOf(params.resolvingElement, config.type))) {
                         return;
                     }
-        
-                    const wasCalledOtherSingletoneResolverWithSameType = !!params.calledResolversInAfterResolveHook.find((resolver) => {
-                        if(!resolver.hasOwnProperty('resolverIdentity')) {
+
+                    if(params.calledResolversInAfterResolveHook.some((calledResolver) => {
+                        if(!calledResolver.result) {
                             return false;
                         }
-        
-                        if((resolver as unknown as SingletonizeResolver<I>).resolverIdentity !== resolverIdentity) {
+
+                        if(!('Singletonize' in calledResolver.result)) {
                             return false;
                         }
-                        
-                        return (resolver as unknown as SingletonizeResolver<I>).resolverParams.type === config.type;
-                    });
-        
-                    if(wasCalledOtherSingletoneResolverWithSameType) {
+
+                        if((calledResolver.result as { Singletonize: typeof Singletonize }).Singletonize !== Singletonize) {
+                            return false;
+                        }
+
+                        return true;
+                    })) {
                         return;
                     }
         
@@ -74,6 +58,10 @@ export default function Singletonize<I extends object>(config: SingletonizeParam
                     }
                 
                     catchedInstances.push(params.object as unknown as I);
+
+                    return {
+                        Singletonize,
+                    };
                 },
             },
         },

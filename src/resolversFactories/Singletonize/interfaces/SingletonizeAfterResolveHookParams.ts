@@ -1,6 +1,8 @@
-import Resolver from "../../../interfaces/Resolver";
+import CalledResolverInAfterResolveHook from '../../../interfaces/CalledResolverInAfterResolveHook';
+import { ResolvingElement } from '../../../types/ResolvingElement';
 
-export default interface SingletonizeAfterResolveHookParams<T extends object> {
+export default interface SingletonizeAfterResolveHookParams<R extends ResolvingElement, T extends object> {
+    resolvingElement: R;
     object: T;
-    calledResolversInAfterResolveHook: Resolver[];
+    calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[];
 }
