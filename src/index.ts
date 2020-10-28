@@ -10,7 +10,6 @@ import InjectConstructorParams from './resolversFactories/InjectConstructorParam
 import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
 import ResolverInjectHook from './interfaces/ResolverInjectHook';
-import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
 import Resolver from './interfaces/Resolver';
 import ResolversCollection from './interfaces/ResolversCollection';
 import ResolverBeforeCreateInstanceHook from './interfaces/ResolverBeforeCreateInstanceHook';
@@ -27,12 +26,14 @@ import ResolverAfterResolveHookParams from './interfaces/ResolverAfterResolveHoo
 import { ResolverAfterResolveHookResult } from './types/ResolverAfterResolveHookResult';
 import ResolverAfterResolveHookResolveResult from './interfaces/ResolverAfterResolveHookResolveResult';
 import { ResolvingElement } from './types/ResolvingElement';
-
-const definedResolvers: ResolversCollection[] = [];
-const Resolve = ResolveFactory(definedResolvers);
+import CalledResolver from './interfaces/CalledResolver';
+import CalledResolverInInjectHook from './interfaces/CalledResolverInInjectHook';
+import CalledResolverInBeforeCreateInstanceHook from './interfaces/CalledResolverInBeforeCreateInstanceHook';
+import CalledResolverInCreateInstanceHook from './interfaces/CalledResolverInCreateInstanceHook';
+import CalledResolverInAfterResolveHook from './interfaces/CalledResolverInAfterResolveHook';
+import Resolve from './helpers/Resolve/Resolve';
 
 export {
-    definedResolvers,
     Resolve,
 
 
@@ -73,4 +74,10 @@ export {
     ResolverAfterResolveHookParams,
     ResolverAfterResolveHookResult,
     ResolverAfterResolveHookResolveResult,
+
+    CalledResolver,
+    CalledResolverInInjectHook,
+    CalledResolverInBeforeCreateInstanceHook,
+    CalledResolverInCreateInstanceHook,
+    CalledResolverInAfterResolveHook,
 };

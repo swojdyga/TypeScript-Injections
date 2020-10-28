@@ -1,7 +1,7 @@
 import ResolverHookParams from './ResolverHookParams';
 import { ResolvingElement } from '../types/ResolvingElement';
 import { Class } from 'typescript-class-types';
-import Resolver from './Resolver';
+import CalledResolverInBeforeCreateInstanceHook from './CalledResolverInBeforeCreateInstanceHook';
 
 export default interface ResolverBeforeCreateInstanceHookParams<
     T extends Class,
@@ -9,5 +9,5 @@ export default interface ResolverBeforeCreateInstanceHookParams<
 > extends ResolverHookParams<R> {
     constructor: T;
     constructorParams: ConstructorParameters<T> | [];
-    calledResolversInBeforeCreateInstanceHook: Resolver[];
+    calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[];
 }
