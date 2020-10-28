@@ -1,199 +1,313 @@
 import "mocha";
 import { expect } from "chai";
-import { Define, Inject, Resolve, InjectProps, Singletonize, ContextType } from "../src/index";
+import { Inject, Resolve, InjectConstructorParams, InjectProps, Singletonize, ResolversCollection } from "../src/index";
 
 describe(`Integration tests from README`, () => {
-    it(`Should inject MySQLConnection object into Connection place.`, () => {
-        class Connection {
-            public ping(): void {
-        
-            }
+    it(`Should inject HelloWorldApplication object into Application place.`, () => {
+        abstract class Application {
+            public abstract run(): string;
         }
-        
-        class MySQLConnection extends Connection {
-            public ping(): void {
-                super.ping();
-                // some stuff
+
+        class HelloWorldApplication implements Application {
+            public run(): string {
+                return `Hello World!`;
             }
         }
 
-        const connection = Resolve(this, Connection, [
+        const definitions: ResolversCollection[] = [
+            Inject({
+                type: Application,
+                to: HelloWorldApplication,
+            }),
+        ];
+        
+        const application = Resolve(Application, definitions);
+        const output = application.run();
+
+        expect(output).to.be.equals('Hello World!');
+    });
+
+    it(`Should inject constructor params.`, () => {
+        abstract class Application {
+            public abstract run(): string;
+        }
+
+        class HelloWorldApplication implements Application {
+            public constructor(private name: string) {
+        
+            }
+        
+            public run(): string {
+                return `Hello, ${this.name}!`;
+            }
+        }
+
+        const definitions: ResolversCollection[] = [
+            Inject({
+                type: Application,
+                to: HelloWorldApplication,
+            }),
+            InjectConstructorParams({
+                type: HelloWorldApplication,
+                params: [
+                    () => 'John',
+                ],
+            }),
+        ];
+
+        const application = Resolve(Application, definitions);
+        const output = application.run();
+
+        expect(output).to.be.equals('Hello, John!');
+    });
+
+    it(`Should create instance of dependency exactly before create instance of implementation, which require that dependency.`, () => {
+        const outputs: string[] = [];
+        abstract class Application {
+            public abstract run(): void;
+        }
+
+        abstract class Connection {
+            public abstract ping(): void;
+        }
+
+        class HelloWorldApplication implements Application {
+            public constructor(private connection: Connection) {
+                outputs.push(`HelloWorldApplication constructor`);
+            }
+        
+            public run(): void {
+                this.connection.ping();
+                outputs.push(`Application run`);
+            }
+        }
+
+        class MySQLConnection implements Connection {
+            public constructor() {
+                outputs.push(`MySQLConnection constructor`);
+            }
+        
+            public ping(): void {
+                //do something
+            }
+        }
+
+        const definitions: ResolversCollection[] = [
+            Inject({
+                type: Application,
+                to: HelloWorldApplication,
+            }),
             Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
-        ]);
+            InjectConstructorParams({
+                type: HelloWorldApplication,
+                params: [
+                    () => Resolve(Connection, definitions),
+                ],
+            }),
+        ];
+        
+        outputs.push(`After definitions`);
+        
+        const application = Resolve(Application, definitions);
+        application.run();
 
-        expect(connection).to.be.instanceOf(MySQLConnection);
+        expect(outputs).to.be.eql([
+            'After definitions',
+            'MySQLConnection constructor',
+            'HelloWorldApplication constructor',
+            'Application run',
+        ]);
     });
 
-    it(`Should inject props into Connection instance.`, () => {
-        class Connection {
-            public ping(): void {
-        
-            }
+    it(`Should inject instance properties.`, () => {
+        abstract class Application {
+            public abstract run(): string;
         }
-        
-        class MySQLConnection extends Connection {
-            public hostname: string | null = null;
-            public login: string | null = null;
-            public password: string | null = null;
-            public database: string | null = null;
 
-            public ping(): void {
-                super.ping();
-                // some stuff
+        class HelloWorldApplication implements Application {
+            public name = "guest";
+        
+            public run(): string {
+                return `Hello, ${this.name}!`;
             }
         }
 
-        const connection = Resolve(this, Connection, [
+        const definitions: ResolversCollection[] = [
             Inject({
-                type: Connection,
-                to: MySQLConnection,
+                type: Application,
+                to: HelloWorldApplication,
             }),
             InjectProps({
-                type: MySQLConnection,
+                type: HelloWorldApplication,
                 props: {
-                    hostname: () => "localhost",
-                    login: () => "root",
-                    password: () => "",
-                    database: () => "main",
+                    name: () => 'John',
                 },
             }),
-        ]);
+        ];
+    
+        const application = Resolve(Application, definitions);
+        const output = application.run();
 
-        expect(connection).to.be.instanceOf(MySQLConnection);
-        expect((connection as MySQLConnection).hostname).to.be.equals(`localhost`);
+        expect(output).to.be.equals('Hello, John!');
     });
 
-    it(`Should always return exactly the same instance.`, () => {
-        class Connection {
+    it(`Should inject exactly same instance of Connection in several different places.`, () => {
+        abstract class Application {
+            public abstract run(): boolean;
+        }
+
+        abstract class Connection {
+            public abstract ping(): void;
+        }
+
+        class HelloWorldApplication implements Application {
+            public constructor(private connection: Connection, private otherConnection: Connection) {
+                
+            }
+        
+            public run(): boolean {
+                return this.connection === this.otherConnection;
+            }
+        }
+
+        class MySQLConnection implements Connection {
             public ping(): void {
-        
-            }
-        }
-        
-        class MySQLConnection extends Connection {
-            public hostname: string | null = null;
-            public login: string | null = null;
-            public password: string | null = null;
-            public database: string | null = null;
-
-            public ping(): void {
-                super.ping();
-                // some stuff
+                //do something
             }
         }
 
-        Define({
-            contexts: [
-                ContextType(Connection),
-            ],
-            resolvers: [
-                Inject({
-                    type: Connection,
-                    to: MySQLConnection,
-                }),
-                InjectProps({
-                    type: MySQLConnection,
-                    props: {
-                        hostname: () => "localhost",
-                        login: () => "root",
-                        password: () => "",
-                        database: () => "main",
-                    },
-                }),
-                Singletonize({
-                    type: MySQLConnection,
-                }),
-            ],
-        });
-
-        const connection = Resolve(this, Connection);
-        const secondConnection = Resolve(this, Connection);
-
-        expect(connection).to.be.equals(secondConnection);
-    });
-
-    it(`Should return different instance on different context.`, () => {
-        class Connection {
-            public ping(): void {
-        
-            }
-        }
-        
-        class MySQLConnection extends Connection {
-            public hostname: string | null = null;
-            public login: string | null = null;
-            public password: string | null = null;
-            public database: string | null = null;
-
-            public ping(): void {
-                super.ping();
-                // some stuff
-            }
-        }
-
-        class Application {
-            private readonly connection = Resolve(this, Connection);
-
-            public getConnection(): Connection {
-                return this.connection;
-            }
-        }
-
-        class ConsoleApplication {
-            private readonly connection = Resolve(this, Connection);
-
-            public getConnection(): Connection {
-                return this.connection;
-            }
-        }
-        
-        const application = Resolve(this, Application, [
+        const definitions: ResolversCollection[] = [
+            Inject({
+                type: Application,
+                to: HelloWorldApplication,
+            }),
             Inject({
                 type: Connection,
                 to: MySQLConnection,
-            }),
-            InjectProps({
-                type: MySQLConnection,
-                props: {
-                    hostname: () => "localhost",
-                    login: () => "root",
-                    password: () => "",
-                    database: () => "main",
-                },
             }),
             Singletonize({
-                type: MySQLConnection,
+                type: Connection,
             }),
-        ]);
+            InjectConstructorParams({
+                type: HelloWorldApplication,
+                params: [
+                    () => Resolve(Connection, definitions),
+                    () => Resolve(Connection, definitions),
+                ],
+            }),
+        ];
+        
+        const application = Resolve(Application, definitions);
+        const output = application.run();
 
-        const consoleApplication = Resolve(this, ConsoleApplication, [
+        expect(output).to.be.equals(true);
+    });
+
+    it(`Should inject different instance of connection in different contexts.`, () => {
+        abstract class Application {
+            public abstract run(): void;
+        }
+
+        abstract class Connection {
+            public abstract database: string;
+            public abstract ping(): void;
+        }
+
+        abstract class Repository<Entity extends {}> {
+            public abstract connection: Connection;
+            public abstract getAll(): Entity[];
+        }
+
+        class HelloWorldApplication implements Application {
+            public constructor(public repository: Repository<{}>, public connection: Connection) {
+        
+            }
+
+            public run(): [string, string] {
+                return [
+                    this.connection.database,
+                    this.repository.connection.database,
+                ];
+            }
+        }
+
+        class MySQLConnection implements Connection {
+            public constructor(public database: string) {
+
+            }
+        
+            public ping(): void {
+                //do something
+            }
+        }
+
+        class UsersRepository implements Repository<{id: number, name: string}> {
+            public constructor(public connection: Connection) {
+                
+            }
+        
+            public getAll(): Array<{id: number, name: string}> {
+                return [];
+            }
+        }
+
+        const definitions: ResolversCollection[] = [
+            Inject({
+                type: Application,
+                to: HelloWorldApplication,
+            }),
             Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
-            InjectProps({
+            InjectConstructorParams({
                 type: MySQLConnection,
-                props: {
-                    hostname: () => "localhost",
-                    login: () => "root",
-                    password: () => "",
-                    database: () => "search-results",
-                },
+                params: [
+                    () => "database",
+                ],
             }),
             Singletonize({
-                type: MySQLConnection,
+                type: Connection,
             }),
-        ]);
+            InjectConstructorParams({
+                type: HelloWorldApplication,
+                params: [
+                    () => Resolve(UsersRepository, definitions),
+                    () => Resolve(Connection, definitions),
+                ],
+            }),
+            InjectConstructorParams({
+                type: UsersRepository,
+                params: [
+                    () => Resolve(
+                        MySQLConnection, 
+                        [
+                            ...definitions,
+                            Inject({
+                                type: Connection,
+                                to: MySQLConnection,
+                            }),
+                            InjectConstructorParams({
+                                type: MySQLConnection,
+                                params: [
+                                    () => "database2",
+                                ],
+                            }),
+                            Singletonize({
+                                type: Connection,
+                            }),
+                        ],
+                    ),
+                ],
+            }),
+        ];
+        
+        const application = Resolve(Application, definitions);
+        const output = application.run();
 
-        expect(application.getConnection()).to.be.instanceOf(MySQLConnection);
-        expect((application.getConnection() as MySQLConnection).database).to.be.equals("main");
-
-        expect(application.getConnection()).not.to.equals(consoleApplication.getConnection());
-
-        expect(consoleApplication.getConnection()).to.be.instanceOf(MySQLConnection);
-        expect((consoleApplication.getConnection() as MySQLConnection).database).to.be.equals("search-results");
+        expect(output).to.be.eql(['database', 'database2']);
     });
 });
