@@ -33,7 +33,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class HelloWorldApplication implements Application {
-            public constructor(private name: string) {
+            public constructor(private readonly name: string) {
         
             }
         
@@ -72,7 +72,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class HelloWorldApplication implements Application {
-            public constructor(private connection: Connection) {
+            public constructor(private readonly connection: Connection) {
                 outputs.push(`HelloWorldApplication constructor`);
             }
         
@@ -164,7 +164,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class HelloWorldApplication implements Application {
-            public constructor(private connection: Connection, private otherConnection: Connection) {
+            public constructor(private readonly connection: Connection, private readonly otherConnection: Connection) {
                 
             }
         
@@ -222,7 +222,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class HelloWorldApplication implements Application {
-            public constructor(public repository: Repository<{}>, public connection: Connection) {
+            public constructor(public readonly repository: Repository<{}>, public readonly connection: Connection) {
         
             }
 
@@ -235,7 +235,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class MySQLConnection implements Connection {
-            public constructor(public database: string) {
+            public constructor(public readonly database: string) {
 
             }
         
@@ -245,7 +245,7 @@ describe(`Integration tests from README`, () => {
         }
 
         class UsersRepository implements Repository<{id: number, name: string}> {
-            public constructor(public connection: Connection) {
+            public constructor(public readonly connection: Connection) {
                 
             }
         

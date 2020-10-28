@@ -22,7 +22,7 @@ describe(`InstanceCreator`, () => {
 
     it(`Should set correct constructor params during create instance of given class.`, () => {
         class MainClass {
-            public constructor(public welcomeTest: string) {
+            public constructor(public readonly welcomeTest: string) {
 
             }
         }

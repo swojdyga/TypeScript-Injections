@@ -61,7 +61,7 @@ describe(`ResolveFactory`, () => {
 
     it(`Should inject constructor props via beforeCreateInstance hook.`, () => {
         class MainClass {
-            public constructor(public welcomeText: string) {
+            public constructor(public readonly welcomeText: string) {
 
             }
         }
@@ -87,7 +87,7 @@ describe(`ResolveFactory`, () => {
 
     it(`Should has access to previous constructor props in beforeCreateInstance hook.`, () => {
         class MainClass {
-            public constructor(public welcomeText: string) {
+            public constructor(public readonly welcomeText: string) {
 
             }
         }
@@ -252,7 +252,7 @@ describe(`ResolveFactory`, () => {
         }
 
         class SomeApplication implements Application {
-            public constructor(public dependency: SomeDependency) {
+            public constructor(public readonly dependency: SomeDependency) {
 
             }
         }
@@ -351,7 +351,7 @@ describe(`ResolveFactory`, () => {
 
     it(`Should add previously used resolver result to calledResolversInBeforeCreateInstanceHook array in beforeCreateInstance hook.`, () => {
         class MainClass {
-            public constructor(public welcomeText: string) {
+            public constructor(public readonly welcomeText: string) {
 
             }
         }
@@ -499,7 +499,7 @@ describe(`ResolveFactory`, () => {
 
     it(`Should not add previously resolver result, which was not used, to calledResolversInBeforeCreateInstanceHook array in beforeCreateInstance hook.`, () => {
         class MainClass {
-            public constructor(public welcomeText: string) {
+            public constructor(public readonly welcomeText: string) {
 
             }
         }
@@ -628,7 +628,7 @@ describe(`ResolveFactory`, () => {
 
     it(`Should set correct resolving element in beforeCreateInstance hook.`, () => {
         class MainClass {
-            public constructor(public welcomeText: string) {
+            public constructor(public readonly welcomeText: string) {
 
             }
         }
