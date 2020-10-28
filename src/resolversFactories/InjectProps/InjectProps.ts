@@ -24,9 +24,7 @@ export default function InjectProps<I extends object>(config: InjectPropsParams<
                         if(config.props[propKey as keyof InjectPropsParamsParams<I>]) {
                             const paramValueAccess = config.props[propKey as keyof InjectPropsParamsParams<I>] as InjectPropsParamsParams<I>[keyof InjectPropsParamsParams<I>];
                             
-                            params.object[propKey as keyof T] = paramValueAccess({
-                                context: params.object,
-                            }) as unknown as T[keyof T];
+                            params.object[propKey as keyof T] = paramValueAccess({}) as unknown as T[keyof T];
                         }
                     });
         

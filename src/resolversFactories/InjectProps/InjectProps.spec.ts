@@ -85,28 +85,4 @@ describe(`InjectProps`, () => {
 
         expect(mainClass.someProp).to.be.equals(false);
     });
-
-    it(`Should have access to context in concrete property return method.`, () => {
-
-        class MainClass {
-            public someProp: boolean | null = null;
-        }
-
-        const resolvers = InjectProps({
-            type: MainClass,
-            props: {
-                someProp: ({context}) => context instanceof MainClass,
-            },
-        });
-
-        const mainClass = new MainClass();
-
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                object: mainClass,
-            });
-        }
-
-        expect(mainClass.someProp).to.be.equals(true);
-    });
 });

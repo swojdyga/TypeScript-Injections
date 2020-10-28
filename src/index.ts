@@ -7,17 +7,12 @@ import Singletonize from './resolversFactories/Singletonize/Singletonize';
 import Inject from './resolversFactories/Inject/Inject';
 import InjectProps from './resolversFactories/InjectProps/InjectProps';
 import InjectConstructorParams from './resolversFactories/InjectConstructorParams/InjectConstructorParams';
-import { Context } from './types/Context';
 import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
 import ResolverInjectHook from './interfaces/ResolverInjectHook';
 import ResolveFactory from "./factories/ResolveFactory/ResolveFactory";
 import Resolver from './interfaces/Resolver';
 import ResolversCollection from './interfaces/ResolversCollection';
-import Contextual from './resolversFactories/Contextual/Contextual';
-import ContextualParams from './resolversFactories/Contextual/interfaces/ContextualParams';
-import ContextType from './resolversFactories/Contextual/factories/ContextType/ContextType';
-import ContextObject from './resolversFactories/Contextual/factories/ContextObject/ContextObject';
 import ResolverBeforeCreateInstanceHook from './interfaces/ResolverBeforeCreateInstanceHook';
 import { ResolverInjectHookResult } from './types/ResolverInjectHookResult';
 import ResolverInjectHookParams from './interfaces/ResolverInjectHookParams';
@@ -32,7 +27,6 @@ import ResolverAfterResolveHookParams from './interfaces/ResolverAfterResolveHoo
 import { ResolverAfterResolveHookResult } from './types/ResolverAfterResolveHookResult';
 import ResolverAfterResolveHookResolveResult from './interfaces/ResolverAfterResolveHookResolveResult';
 import { ResolvingElement } from './types/ResolvingElement';
-import ContextualParamsContext from './resolversFactories/Contextual/interfaces/ContextualParamsContext';
 
 const definedResolvers: ResolversCollection[] = [];
 const Resolve = ResolveFactory(definedResolvers);
@@ -41,12 +35,6 @@ export {
     definedResolvers,
     Resolve,
 
-    Contextual,
-    ContextualParams,
-
-    ContextType,
-    ContextObject,
-    ContextualParamsContext,
 
     Inject,
     InjectParams,
@@ -62,7 +50,6 @@ export {
 
     InstanceCreator,
 
-    Context,
     Resolver,
     ResolvingElement,
     ResolversCollection,
