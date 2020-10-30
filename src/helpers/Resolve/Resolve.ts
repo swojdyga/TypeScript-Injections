@@ -22,9 +22,10 @@ export default function Resolve<
         ...predefinedResolvers,
     ];
 
+    const processResolvers = allResolvers.flat().map((resolver) => resolver.process());
+
     const calledResolversInInjectHook: CalledResolverInInjectHook<T>[] = [];
-    const injectedObject = allResolvers
-        .flat()
+    const injectedObject = processResolvers
         .reduce(
             (object, resolver) => {
                 if(resolver.hooks.inject) {
@@ -53,7 +54,7 @@ export default function Resolve<
     }
 
     const calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T & Class>[] = [];
-    const constructorParams = allResolvers.flat().reduce((constructorParams, resolver) => {
+    const constructorParams = processResolvers.reduce((constructorParams, resolver) => {
         if(resolver.hooks.beforeCreateInstance) {
             const result = resolver.hooks.beforeCreateInstance({
                 resolvingElement: type,
@@ -76,7 +77,7 @@ export default function Resolve<
         
     const calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T & Class>[] = [];
     const instance = (() => {
-        for(const resolver of allResolvers.flat()) {
+        for(const resolver of processResolvers) {
             if(resolver.hooks.createInstance) {
                 const result = resolver.hooks.createInstance({
                     resolvingElement: type,
@@ -105,7 +106,7 @@ export default function Resolve<
     }
 
     const calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[] = [];
-    allResolvers.flat().forEach((resolver) => {
+    processResolvers.forEach((resolver) => {
         if(resolver.hooks.afterResolve) {
             const result = resolver.hooks.afterResolve({
                 resolvingElement: type,

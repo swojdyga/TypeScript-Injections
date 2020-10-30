@@ -15,13 +15,13 @@ describe(`InjectProps`, () => {
             },
         });
 
+        const resolverProcess = resolvers[0].process();
+
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                object: mainClass,
-            });
-        }
+        resolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
 
         expect(mainClass.someProp).to.be.equals(true);
     });
@@ -45,12 +45,12 @@ describe(`InjectProps`, () => {
 
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                object: mainClass,
-            });
-        }
+        const resolverProcess = resolvers[0].process();
 
+        resolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
+        
         expect(mainClass.someProp).to.be.equals(true);
     });
 
@@ -69,20 +69,56 @@ describe(`InjectProps`, () => {
 
         const mainClass = new MainClass();
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                object: mainClass,
-            });
-        }
+        const resolverProcess = resolvers[0].process();
+        
+        resolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
 
         mainClass.someProp = false;
 
-        if(resolvers[0] && resolvers[0].hooks.afterResolve) {
-            resolvers[0].hooks.afterResolve({
-                object: mainClass,
-            });
-        }
+        resolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
 
         expect(mainClass.someProp).to.be.equals(false);
+    });
+
+    it(`Should inject someProp property exactly once on concrete object per process.`, () => {
+        class MainClass {
+            public someProp: boolean | null = null;
+        }
+
+        const resolvers = InjectProps({
+            type: MainClass,
+            props: {
+                someProp: () => true,
+            },
+        });
+
+        const mainClass = new MainClass();
+
+        const firstResolverProcess = resolvers[0].process();
+        
+        firstResolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
+
+        const somePropValueAfterFirstResolverProcess = mainClass.someProp;
+
+        mainClass.someProp = false;
+
+
+        const secondResolverProcess = resolvers[0].process();
+
+        secondResolverProcess.hooks.afterResolve({
+            object: mainClass,
+        });
+
+        const somePropValueAfterSecondResolverProcess = mainClass.someProp;
+
+
+        expect(somePropValueAfterFirstResolverProcess).to.be.equals(true);
+        expect(somePropValueAfterSecondResolverProcess).to.be.equals(true);
     });
 });

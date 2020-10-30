@@ -17,11 +17,11 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
-            ? resolvers[0].hooks.inject({
-                    object: BaseClass,
-                })
-            : false;
+        const resolverProcess = resolvers[0].process();
+
+        const injectHookResult = resolverProcess.hooks.inject({
+            object: BaseClass,
+        });
 
         const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 
@@ -42,11 +42,11 @@ describe(`Inject`, () => {
             to: MainClass,
         });
 
-        const injectHookResult = resolvers[0] && resolvers[0].hooks.inject
-            ? resolvers[0].hooks.inject({
-                    object: BaseClass,
-                })
-            : false;
+        const resolverProcess = resolvers[0].process();
+
+        const injectHookResult = resolverProcess.hooks.inject({
+            object: BaseClass,
+        });
 
         const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
 

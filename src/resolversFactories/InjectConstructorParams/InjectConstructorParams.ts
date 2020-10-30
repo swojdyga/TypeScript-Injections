@@ -7,18 +7,20 @@ import InjectConstructorParamsParamsParamsParamParams from './interfaces/InjectC
 export default function InjectConstructorParams<I extends Class>(config: InjectConstructorParamsParams<I>) {
     return [
         {
-            hooks: {
-                beforeCreateInstance<T extends Class | I>(params: InjectConstructorParamsBeforeCreateInstanceHookParams<T>): ResolverBeforeCreateInstanceHookResult<T> {
-                    if(params.type === config.type) {
-                        return {
-                            constructorParams: config.params
-                                .map((param: (params: InjectConstructorParamsParamsParamsParamParams) => keyof ConstructorParameters<T>) => {
-                                    return param({});
-                                }) as ConstructorParameters<T>,
-                        };
-                    }
+            process: () => ({
+                hooks: {
+                    beforeCreateInstance<T extends Class | I>(params: InjectConstructorParamsBeforeCreateInstanceHookParams<T>): ResolverBeforeCreateInstanceHookResult<T> {
+                        if(params.type === config.type) {
+                            return {
+                                constructorParams: config.params
+                                    .map((param: (params: InjectConstructorParamsParamsParamsParamParams) => keyof ConstructorParameters<T>) => {
+                                        return param({});
+                                    }) as ConstructorParameters<T>,
+                            };
+                        }
+                    },
                 },
-            },
+            }),
         },
     ];
 };

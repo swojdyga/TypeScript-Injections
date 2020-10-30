@@ -8,12 +8,10 @@ describe(`InstanceCreator`, () => {
 
         }
 
-        const createInstanceHook = InstanceCreator[0] && InstanceCreator[0].hooks.createInstance
-            ? InstanceCreator[0].hooks.createInstance({
-                    type: MainClass,
-                    constructorParams: [],
-                })
-            : false;
+        const createInstanceHook = InstanceCreator[0].process().hooks.createInstance({
+            type: MainClass,
+            constructorParams: [],
+        });
 
         const instance = createInstanceHook ? createInstanceHook.createdInstance : false;
 
@@ -27,14 +25,12 @@ describe(`InstanceCreator`, () => {
             }
         }
 
-        const createInstanceHook = InstanceCreator[0] && InstanceCreator[0].hooks.createInstance
-            ? InstanceCreator[0].hooks.createInstance({
-                    type: MainClass,
-                    constructorParams: [
-                        "Hello World!",
-                    ],
-                })
-            : false;
+        const createInstanceHook = InstanceCreator[0].process().hooks.createInstance({
+            type: MainClass,
+            constructorParams: [
+                "Hello World!",
+            ],
+        });
 
         const instance = createInstanceHook ? createInstanceHook.createdInstance : false;
 
