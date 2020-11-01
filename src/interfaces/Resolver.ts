@@ -1,7 +1,5 @@
-import ResolverHooks from './ResolverHooks';
+import ProcessResolver from './ProcessResolver';
 
 export default interface Resolver {
-    process: () => ({
-        hooks: Partial<ResolverHooks>,
-    }),
+    process: () => ProcessResolver,
 }

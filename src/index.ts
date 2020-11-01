@@ -32,10 +32,11 @@ import CalledResolverInBeforeCreateInstanceHook from './interfaces/CalledResolve
 import CalledResolverInCreateInstanceHook from './interfaces/CalledResolverInCreateInstanceHook';
 import CalledResolverInAfterResolveHook from './interfaces/CalledResolverInAfterResolveHook';
 import Resolve from './helpers/Resolve/Resolve';
+import { HookResolve } from './types/HookResolve';
+import ProcessResolver from './interfaces/ProcessResolver';
 
 export {
     Resolve,
-
 
     Inject,
     InjectParams,
@@ -52,8 +53,10 @@ export {
     InstanceCreator,
 
     Resolver,
+    ProcessResolver,
     ResolvingElement,
     ResolversCollection,
+    HookResolve,
 
     ResolverInjectHook,
     ResolverInjectHookParams,

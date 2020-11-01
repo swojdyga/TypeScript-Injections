@@ -6,24 +6,16 @@ import CalledResolverInInjectHook from '../../interfaces/CalledResolverInInjectH
 import CalledResolverInBeforeCreateInstanceHook from '../../interfaces/CalledResolverInBeforeCreateInstanceHook';
 import CalledResolverInCreateInstanceHook from '../../interfaces/CalledResolverInCreateInstanceHook';
 import CalledResolverInAfterResolveHook from '../../interfaces/CalledResolverInAfterResolveHook';
+import { HookResolve } from '../../types/HookResolve';
+import ProcessResolver from '../../interfaces/ProcessResolver';
 
-export default function Resolve<
+function ResolveInternal<
     T extends AbstractClass | Class,
 >(
     type: T,
-    resolvers: Array<ResolversCollection> = []
+    processResolvers: ProcessResolver[],
+    hookResolve: HookResolve,
 ): T extends AbstractClass<infer U> ? U : never {
-    const predefinedResolvers: Array<ResolversCollection> = [
-        InstanceCreator,
-    ];
-
-    const allResolvers = [
-        ...resolvers,
-        ...predefinedResolvers,
-    ];
-
-    const processResolvers = allResolvers.flat().map((resolver) => resolver.process());
-
     const calledResolversInInjectHook: CalledResolverInInjectHook<T>[] = [];
     const injectedObject = processResolvers
         .reduce(
@@ -31,6 +23,7 @@ export default function Resolve<
                 if(resolver.hooks.inject) {
                     const result = resolver.hooks.inject({
                         resolvingElement: type,
+                        resolve: hookResolve,
                         object,
                         calledResolversInInjectHook,
                     });
@@ -58,6 +51,7 @@ export default function Resolve<
         if(resolver.hooks.beforeCreateInstance) {
             const result = resolver.hooks.beforeCreateInstance({
                 resolvingElement: type,
+                resolve: hookResolve,
                 type: injectedObject,
                 constructorParams,
                 calledResolversInBeforeCreateInstanceHook,
@@ -81,6 +75,7 @@ export default function Resolve<
             if(resolver.hooks.createInstance) {
                 const result = resolver.hooks.createInstance({
                     resolvingElement: type,
+                    resolve: hookResolve,
                     type: injectedObject,
                     // forcing type, because we can not verify it is correct constructor params,
                     // length can be different, because some of constructor params can be optional
@@ -110,6 +105,7 @@ export default function Resolve<
         if(resolver.hooks.afterResolve) {
             const result = resolver.hooks.afterResolve({
                 resolvingElement: type,
+                resolve: hookResolve,
                 object: instance,
                 calledResolversInAfterResolveHook,
             });
@@ -121,4 +117,35 @@ export default function Resolve<
     });
 
     return instance as unknown as T extends AbstractClass<infer U> ? U : never;
+}
+
+export default function Resolve<
+    T extends AbstractClass | Class,
+>(
+    type: T,
+    resolvers: Array<ResolversCollection> = []
+): T extends AbstractClass<infer U> ? U : never {
+    const predefinedResolvers: Array<ResolversCollection> = [
+        InstanceCreator,
+    ];
+
+    const allResolvers = [
+        ...resolvers,
+        ...predefinedResolvers,
+    ];
+
+    const processResolvers = allResolvers.flat().map((resolver) => resolver.process());
+
+    const hookResolve: HookResolve = (type, additionalResolvers = []) => {
+        return ResolveInternal(
+            type,
+            [
+                ...processResolvers,
+                ...additionalResolvers.flat().map((resolver) => resolver.process()),
+            ],
+            hookResolve,
+        );
+    }
+
+    return ResolveInternal(type, processResolvers, hookResolve);
 };

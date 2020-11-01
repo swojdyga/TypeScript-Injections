@@ -638,4 +638,255 @@ describe(`ResolveFactory`, () => {
         expect(counter).to.be.equals(2);
     });
 
+    it(`Should resolve dependency using resolve method given in hooks.`, () => {
+        class SomeDependency {
+
+        }
+
+        class MainClass {
+            public constructor(public someDependency: SomeDependency) {
+
+            }
+        }
+
+        const object = Resolve(MainClass, [
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                                if(params.type === MainClass) {
+                                    return {
+                                        constructorParams: [
+                                            params.resolve(SomeDependency),
+                                        ] as unknown as ConstructorParameters<T>,
+                                    }
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+        ]);
+
+        expect(object.someDependency).to.be.instanceOf(SomeDependency);
+    });
+
+    it(`Should use definitions given in main Resolve call in resolve method given in hooks.`, () => {
+        class SomeBaseDependency {
+
+        }
+
+        class SomeDependency extends SomeBaseDependency {
+
+        }
+
+        class MainClass {
+            public constructor(public someDependency: SomeBaseDependency) {
+
+            }
+        }
+
+        const object = Resolve(MainClass, [
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                                if(params.type === MainClass) {
+                                    return {
+                                        constructorParams: [
+                                            params.resolve(SomeBaseDependency),
+                                        ] as unknown as ConstructorParameters<T>,
+                                    }
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                                if(params.object === SomeBaseDependency) {
+                                    return {
+                                        injectedObject: SomeDependency as T,
+                                    };
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+        ]);
+
+        expect(object.someDependency).to.be.instanceOf(SomeDependency);
+    });
+
+    it(`Should use definitions given in main Resolve call, in same process, in resolve method given in hooks.`, () => {
+
+        class SomeDependency {
+
+        }
+
+        class MainClass {
+            public constructor(public someDependency: SomeDependency) {
+
+            }
+        }
+
+        let counter = 0;
+
+        Resolve(MainClass, [
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                                if(params.type === MainClass) {
+                                    return {
+                                        constructorParams: [
+                                            params.resolve(SomeDependency),
+                                        ] as unknown as ConstructorParameters<T>,
+                                    }
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+            [
+                {
+                    process: () => {
+                        counter++;
+
+                        return {
+                            hooks: {
+
+                            },
+                        };
+                    }
+                },
+            ],
+        ]);
+
+        expect(counter).to.be.equals(1);
+    });
+
+    it(`Should use additional definitions given in resolve method given in hooks.`, () => {
+        class SomeBaseDependency {
+
+        }
+
+        class SomeDependency extends SomeBaseDependency {
+
+        }
+
+        class MainClass {
+            public constructor(public someDependency: SomeBaseDependency) {
+
+            }
+        }
+
+        const object = Resolve(MainClass, [
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                                if(params.type === MainClass) {
+                                    return {
+                                        constructorParams: [
+                                            params.resolve(SomeBaseDependency, 
+                                                [
+                                                    [
+                                                        {
+                                                            process: () => ({
+                                                                hooks: {
+                                                                    inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                                                                        if(params.object === SomeBaseDependency) {
+                                                                            return {
+                                                                                injectedObject: SomeDependency as T,
+                                                                            };
+                                                                        }
+                                                                    },
+                                                                },
+                                                            }),
+                                                        },
+                                                    ],
+                                                ],
+                                            ),
+                                        ] as unknown as ConstructorParameters<T>,
+                                    }
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+        ]);
+
+        expect(object.someDependency).to.be.instanceOf(SomeDependency);
+    });
+
+    it(`Should not use additional definitions given in resolve method, which was given in hooks, in other resolve method call.`, () => {
+        class SomeBaseDependency {
+
+        }
+
+        class SomeDependency extends SomeBaseDependency {
+
+        }
+
+        class MainClass {
+            public constructor(public someDependency: SomeBaseDependency, public someOtherDependency: SomeBaseDependency) {
+
+            }
+        }
+
+        const object = Resolve(MainClass, [
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                                if(params.type === MainClass) {
+                                    return {
+                                        constructorParams: [
+                                            params.resolve(SomeBaseDependency, 
+                                                [
+                                                    [
+                                                        {
+                                                            process: () => ({
+                                                                hooks: {
+                                                                    inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                                                                        if(params.object === SomeBaseDependency) {
+                                                                            return {
+                                                                                injectedObject: SomeDependency as T,
+                                                                            };
+                                                                        }
+                                                                    },
+                                                                },
+                                                            }),
+                                                        },
+                                                    ],
+                                                ],
+                                            ),
+                                            params.resolve(SomeBaseDependency),
+                                        ] as unknown as ConstructorParameters<T>,
+                                    }
+                                }
+                            },
+                        },
+                    }),
+                },
+            ],
+        ]);
+
+        expect(object.someDependency).to.be.instanceOf(SomeDependency);
+        expect(object.someOtherDependency).to.be.instanceOf(SomeBaseDependency);
+        expect(object.someOtherDependency).not.to.be.instanceOf(SomeDependency);
+    });
 });
