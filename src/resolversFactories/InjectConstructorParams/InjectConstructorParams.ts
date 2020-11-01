@@ -14,7 +14,9 @@ export default function InjectConstructorParams<I extends Class>(config: InjectC
                             return {
                                 constructorParams: config.params
                                     .map((param: (params: InjectConstructorParamsParamsParamsParamParams) => keyof ConstructorParameters<T>) => {
-                                        return param({});
+                                        return param({
+                                            resolve: params.resolve,
+                                        });
                                     }) as ConstructorParameters<T>,
                             };
                         }

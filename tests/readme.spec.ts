@@ -104,7 +104,7 @@ describe(`Integration tests from README`, () => {
             InjectConstructorParams({
                 type: HelloWorldApplication,
                 params: [
-                    () => Resolve(Connection, definitions),
+                    ({resolve}) => resolve(Connection),
                 ],
             }),
         ];
@@ -162,8 +162,8 @@ describe(`Integration tests from README`, () => {
             InjectConstructorParams({
                 type: HelloWorldApplication,
                 params: [
-                    () => Resolve(Connection, definitions),
-                    () => Resolve(Connection, definitions),
+                    ({resolve}) => resolve(Connection),
+                    ({resolve}) => resolve(Connection),
                 ],
             }),
         ];
@@ -243,17 +243,16 @@ describe(`Integration tests from README`, () => {
             InjectConstructorParams({
                 type: HelloWorldApplication,
                 params: [
-                    () => Resolve(UsersRepository, definitions),
-                    () => Resolve(Connection, definitions),
+                    ({resolve}) => resolve(UsersRepository),
+                    ({resolve}) => resolve(Connection),
                 ],
             }),
             InjectConstructorParams({
                 type: UsersRepository,
                 params: [
-                    () => Resolve(
+                    ({resolve}) => resolve(
                         MySQLConnection, 
                         [
-                            ...definitions,
                             Inject({
                                 type: Connection,
                                 to: MySQLConnection,
