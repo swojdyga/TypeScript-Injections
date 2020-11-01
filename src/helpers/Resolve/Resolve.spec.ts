@@ -13,7 +13,7 @@ import CalledResolverInCreateInstanceHook from '../../interfaces/CalledResolverI
 import CalledResolverInAfterResolveHook from '../../interfaces/CalledResolverInAfterResolveHook';
 
 describe(`ResolveFactory`, () => {
-    it(`Should resolve object from resolveDefinition parameter given in Resolve method returned from ResolveFactory.`, () => {
+    it(`Should resolve dependency from type parameter given in Resolve method returned from ResolveFactory.`, () => {
         class MainClass {
 
         }
@@ -23,7 +23,7 @@ describe(`ResolveFactory`, () => {
         expect(mainClass).to.be.instanceOf(MainClass);
     });
     
-    it(`Should resolve object from resolveDefinition parameter, which is abstract class, given in Resolve method returned from ResolveFactory.`, () => {
+    it(`Should resolve dependency from type parameter, which is abstract class, given in Resolve method returned from ResolveFactory.`, () => {
         abstract class MainClass {
 
         }
@@ -61,7 +61,7 @@ describe(`ResolveFactory`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
-    it(`Should inject constructor props via beforeCreateInstance hook.`, () => {
+    it(`Should inject constructor params via beforeCreateInstance hook.`, () => {
         class MainClass {
             public constructor(public readonly welcomeText: string) {
 
