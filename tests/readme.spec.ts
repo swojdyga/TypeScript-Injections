@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, Resolve, InjectConstructorParams, InjectProps, Singletonize, ResolversCollection } from "../src/index";
+import { Inject, Resolve, InjectConstructorParams, Singletonize, ResolversCollection } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -120,38 +120,6 @@ describe(`Integration tests from README`, () => {
             'HelloWorldApplication constructor',
             'Application run',
         ]);
-    });
-
-    it(`Should inject instance properties.`, () => {
-        abstract class Application {
-            public abstract run(): string;
-        }
-
-        class HelloWorldApplication implements Application {
-            public name = "guest";
-        
-            public run(): string {
-                return `Hello, ${this.name}!`;
-            }
-        }
-
-        const definitions: ResolversCollection[] = [
-            Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
-            InjectProps({
-                type: HelloWorldApplication,
-                props: {
-                    name: () => 'John',
-                },
-            }),
-        ];
-    
-        const application = Resolve(Application, definitions);
-        const output = application.run();
-
-        expect(output).to.be.equals('Hello, John!');
     });
 
     it(`Should inject exactly same instance of Connection in several different places.`, () => {

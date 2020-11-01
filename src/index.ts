@@ -1,11 +1,9 @@
 import SingletonizeParams from './resolversFactories/Singletonize/interfaces/SingletonizeParams';
-import InjectPropsParams from './resolversFactories/InjectProps/interfaces/InjectPropsParams';
 import InjectConstructorParamsParams from './resolversFactories/InjectConstructorParams/interfaces/InjectConstructorParamsParams';
 import InjectParams from './resolversFactories/Inject/interfaces/InjectParams';
 import { InstanceCreator } from './resolvers/InstanceCreator/InstanceCreator';
 import Singletonize from './resolversFactories/Singletonize/Singletonize';
 import Inject from './resolversFactories/Inject/Inject';
-import InjectProps from './resolversFactories/InjectProps/InjectProps';
 import InjectConstructorParams from './resolversFactories/InjectConstructorParams/InjectConstructorParams';
 import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
@@ -43,9 +41,6 @@ export {
 
     InjectConstructorParams,
     InjectConstructorParamsParams,
-
-    InjectProps,
-    InjectPropsParams,
 
     Singletonize,
     SingletonizeParams,
