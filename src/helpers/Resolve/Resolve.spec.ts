@@ -11,6 +11,7 @@ import CalledResolverInInjectHook from '../../interfaces/CalledResolverInInjectH
 import CalledResolverInBeforeCreateInstanceHook from '../../interfaces/CalledResolverInBeforeCreateInstanceHook';
 import CalledResolverInCreateInstanceHook from '../../interfaces/CalledResolverInCreateInstanceHook';
 import CalledResolverInAfterResolveHook from '../../interfaces/CalledResolverInAfterResolveHook';
+import { HookResolve } from '../../types/HookResolve';
 
 describe(`ResolveFactory`, () => {
     it(`Should resolve dependency from type parameter given in Resolve method returned from ResolveFactory.`, () => {
@@ -256,80 +257,6 @@ describe(`ResolveFactory`, () => {
         ]);
 
         expect(mainClassInstances.length).to.be.equals(1);
-    });
-
-    it(`Should inject correct implementation in SomeDependency dependency during resolve constructor params Application implementation.`, () => {
-        abstract class Application {
-
-        }
-
-        abstract class SomeDependency {
-
-        }
-
-        class SomeApplication implements Application {
-            public constructor(public readonly dependency: SomeDependency) {
-
-            }
-        }
-
-        class SomeDependencyImplementation implements SomeDependency {
-
-        }
-
-        const definitions = [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
-                                if(params.object === Application) {
-                                    return {
-                                        injectedObject: SomeApplication as T,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
-                                if(params.object === SomeDependency) {
-                                    return {
-                                        injectedObject: SomeDependencyImplementation as T,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<SomeApplication>>(params: { type: T; }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === SomeApplication) {
-                                    return {
-                                        constructorParams: [
-                                            Resolve(SomeDependency, definitions),
-                                        ] as unknown as ConstructorParameters<T>
-                                    }
-                                }
-                            }
-                        },
-                    }),
-                },
-            ],
-        ];
-
-        const mainClass = Resolve(Application, definitions);
-
-        expect((mainClass as SomeApplication).dependency).to.be.instanceOf(SomeDependencyImplementation);
     });
 
     it(`Should add previously used resolver result to calledResolversInInjectHook array in inject hook.`, () => {
@@ -652,7 +579,7 @@ describe(`ResolveFactory`, () => {
         expect(object.someProperty).to.be.equals(false);
     });
 
-    it(`Should set correct resolving element in inject hook.`, () => {
+    it(`Should set correct resolving element in hooks.`, () => {
         class BaseClass {
         }
 
@@ -680,88 +607,6 @@ describe(`ResolveFactory`, () => {
         ]);
         
         expect(object).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should set correct resolving element in beforeCreateInstance hook.`, () => {
-        class MainClass {
-            public constructor(public readonly welcomeText: string) {
-
-            }
-        }
-
-        const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<R extends ResolvingElement, T extends Class>(params: { resolvingElement: R }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.resolvingElement === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            "Hello World!",
-                                        ] as unknown as ConstructorParameters<T>,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
-        ]);
-
-        expect(mainClass.welcomeText).to.be.equals("Hello World!");
-    })
-
-    it(`Should set correct resolving element in createInstance hook.`, () => {
-        class BaseClass {
-        }
-
-        class MainClass {
-        }
-
-        const object = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<R extends ResolvingElement, T extends Class>(params: { resolvingElement: R }): ResolverCreateInstanceHookResult<T> {
-                                if(params.resolvingElement === BaseClass) {
-                                    return {
-                                        createdInstance: new MainClass() as InstanceType<T>,
-                                    };
-                                }
-                            },
-                        }
-                    }),
-                }
-            ],
-        ]);
-        
-        expect(object).to.be.instanceOf(MainClass);
-    });
-
-    it(`Should set correct resolving element in afterResolve hook.`, () => {
-        class MainClass {
-            public someProperty = false;
-        }
-
-        const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            afterResolve<R extends ResolvingElement, T extends object>(params: { resolvingElement: R, object: T }): ResolverAfterResolveHookResult<T> {
-                                if(params.resolvingElement === MainClass && params.object instanceof MainClass) {
-                                    params.object.someProperty = true;
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
-        ]);
-        
-        expect(object.someProperty).to.be.equals(true);
     });
 
     it(`Should call process method on every Resolve call.`, () => {
@@ -792,4 +637,5 @@ describe(`ResolveFactory`, () => {
 
         expect(counter).to.be.equals(2);
     });
+
 });
