@@ -12,14 +12,14 @@ describe(`InjectConstructorParams`, () => {
             }
         }
 
-        const resolvers = InjectConstructorParams({
+        const resolver = InjectConstructorParams({
             type: MainClass,
             params: [
                 () => 'Hello World!',
             ],
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const resolve: HookResolve = <T extends AbstractClass | Class>(type: T) => new (type as unknown as Class<T>)() as unknown as T extends AbstractClass<infer U> ? U : never;
 
@@ -42,14 +42,14 @@ describe(`InjectConstructorParams`, () => {
             }
         }
 
-        const resolvers = InjectConstructorParams({
+        const resolver = InjectConstructorParams({
             type: MainClass,
             params: [
                 ({resolve}) => resolve,
             ],
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const resolve: HookResolve = <T extends AbstractClass | Class>(type: T) => new (type as unknown as Class<T>)() as unknown as T extends AbstractClass<infer U> ? U : never;
 

@@ -8,11 +8,11 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: MainClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const firstCreateInstanceHookResult = resolverProcess.hooks.createInstance({
             resolvingElement: MainClass,
@@ -57,7 +57,7 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: BaseClass,
         });
 
@@ -65,7 +65,7 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const firstCreateInstanceHookResult = resolverProcess.hooks.createInstance({
             resolvingElement: MainClass,
@@ -114,11 +114,11 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: MainClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const createInstanceHookResult = resolverProcess.hooks.createInstance({
             resolvingElement: BaseClass,
@@ -148,11 +148,11 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: MainClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const firstCreateInstanceHookResult = resolverProcess.hooks.createInstance({
             resolvingElement: BaseClass,
@@ -201,17 +201,17 @@ describe(`Singletonize`, () => {
 
         }
 
-        const firstResolvers = Singletonize({
+        const firstResolver = Singletonize({
             type: FirstClass,
         });
 
-        const fistResolverProcess = firstResolvers[0].process();
+        const fistResolverProcess = firstResolver.process();
 
-        const secondResolvers = Singletonize({
+        const secondResolver = Singletonize({
             type: SecondClass,
         });
 
-        const secondResolverProcess = secondResolvers[0].process();
+        const secondResolverProcess = secondResolver.process();
 
 
         const firstObject = new FirstClass();
@@ -274,17 +274,17 @@ describe(`Singletonize`, () => {
 
         }
 
-        const firstResolvers = Singletonize({
+        const firstResolver = Singletonize({
             type: MainClass,
         });
 
-        const fistResolverProcess = firstResolvers[0].process();
+        const fistResolverProcess = firstResolver.process();
 
-        const secondResolvers = Singletonize({
+        const secondResolver = Singletonize({
             type: MainClass,
         });
 
-        const secondResolverProcess = secondResolvers[0].process();
+        const secondResolverProcess = secondResolver.process();
 
         const firstObject = new MainClass();
 
@@ -345,11 +345,11 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: BaseClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const firstCreateInstanceHookResult = resolverProcess.hooks.createInstance({
             resolvingElement: BaseClass,
@@ -394,11 +394,11 @@ describe(`Singletonize`, () => {
 
         }
 
-        const resolvers = Singletonize({
+        const resolver = Singletonize({
             type: MainClass,
         });
 
-        const firstResolverProcess = resolvers[0].process();
+        const firstResolverProcess = resolver.process();
 
         const firstCreateInstanceHookResult = firstResolverProcess.hooks.createInstance({
             resolvingElement: MainClass,
@@ -415,7 +415,7 @@ describe(`Singletonize`, () => {
             calledResolversInAfterResolveHook: [],
         });
 
-        const secondResolverProcess = resolvers[0].process();
+        const secondResolverProcess = resolver.process();
 
         const secondCreateInstanceHookResult = secondResolverProcess.hooks.createInstance({
             resolvingElement: MainClass,

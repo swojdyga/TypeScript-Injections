@@ -9,7 +9,6 @@ import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
 import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
 import ResolverInjectHook from './interfaces/ResolverInjectHook';
 import Resolver from './interfaces/Resolver';
-import ResolversCollection from './interfaces/ResolversCollection';
 import ResolverBeforeCreateInstanceHook from './interfaces/ResolverBeforeCreateInstanceHook';
 import { ResolverInjectHookResult } from './types/ResolverInjectHookResult';
 import ResolverInjectHookParams from './interfaces/ResolverInjectHookParams';
@@ -50,7 +49,6 @@ export {
     Resolver,
     ProcessResolver,
     ResolvingElement,
-    ResolversCollection,
     HookResolve,
 
     ResolverInjectHook,

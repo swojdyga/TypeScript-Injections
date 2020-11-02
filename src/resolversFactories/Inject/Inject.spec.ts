@@ -12,12 +12,12 @@ describe(`Inject`, () => {
 
         }
 
-        const resolvers = Inject({
+        const resolver = Inject({
             type: BaseClass,
             to: MainClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const injectHookResult = resolverProcess.hooks.inject({
             object: BaseClass,
@@ -37,12 +37,12 @@ describe(`Inject`, () => {
 
         }
 
-        const resolvers = Inject({
+        const resolver = Inject({
             type: BaseClass,
             to: MainClass,
         });
 
-        const resolverProcess = resolvers[0].process();
+        const resolverProcess = resolver.process();
 
         const injectHookResult = resolverProcess.hooks.inject({
             object: BaseClass,

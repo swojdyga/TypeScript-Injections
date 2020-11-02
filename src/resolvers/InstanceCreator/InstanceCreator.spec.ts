@@ -8,7 +8,7 @@ describe(`InstanceCreator`, () => {
 
         }
 
-        const createInstanceHook = InstanceCreator[0].process().hooks.createInstance({
+        const createInstanceHook = InstanceCreator.process().hooks.createInstance({
             type: MainClass,
             constructorParams: [],
         });
@@ -25,7 +25,7 @@ describe(`InstanceCreator`, () => {
             }
         }
 
-        const createInstanceHook = InstanceCreator[0].process().hooks.createInstance({
+        const createInstanceHook = InstanceCreator.process().hooks.createInstance({
             type: MainClass,
             constructorParams: [
                 "Hello World!",

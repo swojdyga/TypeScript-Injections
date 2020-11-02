@@ -1,6 +1,5 @@
 import { AbstractClass, Class } from 'typescript-class-types';
 import { InstanceCreator } from '../../resolvers/InstanceCreator/InstanceCreator';
-import ResolversCollection from '../../interfaces/ResolversCollection';
 import IsConstructor from '../IsConstructor/IsConstructor';
 import CalledResolverInInjectHook from '../../interfaces/CalledResolverInInjectHook';
 import CalledResolverInBeforeCreateInstanceHook from '../../interfaces/CalledResolverInBeforeCreateInstanceHook';
@@ -8,6 +7,7 @@ import CalledResolverInCreateInstanceHook from '../../interfaces/CalledResolverI
 import CalledResolverInAfterResolveHook from '../../interfaces/CalledResolverInAfterResolveHook';
 import { HookResolve } from '../../types/HookResolve';
 import ProcessResolver from '../../interfaces/ProcessResolver';
+import Resolver from '../../interfaces/Resolver';
 
 function ResolveInternal<
     T extends AbstractClass | Class,
@@ -123,9 +123,9 @@ export default function Resolve<
     T extends AbstractClass | Class,
 >(
     type: T,
-    resolvers: Array<ResolversCollection> = []
+    resolvers: Resolver[] = []
 ): T extends AbstractClass<infer U> ? U : never {
-    const predefinedResolvers: Array<ResolversCollection> = [
+    const predefinedResolvers: Resolver[] = [
         InstanceCreator,
     ];
 
@@ -134,14 +134,14 @@ export default function Resolve<
         ...predefinedResolvers,
     ];
 
-    const processResolvers = allResolvers.flat().map((resolver) => resolver.process());
+    const processResolvers = allResolvers.map((resolver) => resolver.process());
 
     const hookResolve: HookResolve = (type, additionalResolvers = []) => {
         return ResolveInternal(
             type,
             [
                 ...processResolvers,
-                ...additionalResolvers.flat().map((resolver) => resolver.process()),
+                ...additionalResolvers.map((resolver) => resolver.process()),
             ],
             hookResolve,
         );

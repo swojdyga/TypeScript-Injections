@@ -44,19 +44,17 @@ describe(`ResolveFactory`, () => {
         }
 
         const baseClass = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(): ResolverInjectHookResult<T> {
-                                return {
-                                    injectedObject: MainClass as T,
-                                };
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(): ResolverInjectHookResult<T> {
+                            return {
+                                injectedObject: MainClass as T,
+                            };
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(baseClass).to.be.instanceOf(MainClass);
@@ -70,21 +68,19 @@ describe(`ResolveFactory`, () => {
         }
 
         const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
-                                return {
-                                    constructorParams: [
-                                        "Hello World!",
-                                    ] as unknown as ConstructorParameters<T>,
-                                };
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
+                            return {
+                                constructorParams: [
+                                    "Hello World!",
+                                ] as unknown as ConstructorParameters<T>,
+                            };
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(mainClass.welcomeText).to.be.equals("Hello World!");
@@ -98,42 +94,38 @@ describe(`ResolveFactory`, () => {
         }
 
         const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
+                            return {
+                                constructorParams: [
+                                    "Hello",
+                                ] as unknown as ConstructorParameters<T>,
+                            };
+                        },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<
+                            T extends Class,
+                        >(params: { constructorParams: ConstructorParameters<T> | [] }): ResolverBeforeCreateInstanceHookResult<T> {
+                            const paramsConstructorParams = params.constructorParams;
+                            
+                            if(Array.isArray(paramsConstructorParams) && paramsConstructorParams.length) {
                                 return {
                                     constructorParams: [
-                                        "Hello",
+                                        params.constructorParams[0] + " World!",
                                     ] as unknown as ConstructorParameters<T>,
                                 };
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<
-                                T extends Class,
-                            >(params: { constructorParams: ConstructorParameters<T> | [] }): ResolverBeforeCreateInstanceHookResult<T> {
-                                const paramsConstructorParams = params.constructorParams;
-                                
-                                if(Array.isArray(paramsConstructorParams) && paramsConstructorParams.length) {
-                                    return {
-                                        constructorParams: [
-                                            params.constructorParams[0] + " World!",
-                                        ] as unknown as ConstructorParameters<T>,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                }
-            ]
+                    },
+                }),
+            },
         ]);
 
         expect(mainClass.welcomeText).to.be.equals("Hello World!");
@@ -149,19 +141,17 @@ describe(`ResolveFactory`, () => {
         }
 
         const baseClass = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
-                                return {
-                                    createdInstance: new MainClass() as InstanceType<T>,
-                                };
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
+                            return {
+                                createdInstance: new MainClass() as InstanceType<T>,
+                            };
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(baseClass).to.be.instanceOf(MainClass);
@@ -183,26 +173,24 @@ describe(`ResolveFactory`, () => {
         ]
 
         const baseClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
-                                return {
-                                    constructorParams: constructorParams as ConstructorParameters<T>
-                                }
-                            },
-                            createInstance<T extends Class>(params: { constructorParams: ConstructorParameters<T> }): ResolverCreateInstanceHookResult<T> {
-                                if(params.constructorParams === constructorParams) {
-                                    return {
-                                        createdInstance: new MainClass(constructorParams[0]) as InstanceType<T>,
-                                    };
-                                }
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
+                            return {
+                                constructorParams: constructorParams as ConstructorParameters<T>
+                            }
                         },
-                    }),
-                },
-            ],
+                        createInstance<T extends Class>(params: { constructorParams: ConstructorParameters<T> }): ResolverCreateInstanceHookResult<T> {
+                            if(params.constructorParams === constructorParams) {
+                                return {
+                                    createdInstance: new MainClass(constructorParams[0]) as InstanceType<T>,
+                                };
+                            }
+                        },
+                    },
+                }),
+            },
         ]);
 
         expect(baseClass).to.be.instanceOf(MainClass);
@@ -214,19 +202,17 @@ describe(`ResolveFactory`, () => {
         }
 
         const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            afterResolve<T extends object>(params: { object: T }): ResolverAfterResolveHookResult<T> {
-                                if(params.object instanceof MainClass) {
-                                    params.object.someProperty = true;
-                                }
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        afterResolve<T extends object>(params: { object: T }): ResolverAfterResolveHookResult<T> {
+                            if(params.object instanceof MainClass) {
+                                params.object.someProperty = true;
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            }, 
         ]);
 
         expect(mainClass.someProperty).to.be.equals(true);
@@ -241,19 +227,17 @@ describe(`ResolveFactory`, () => {
         }
 
         Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
-                                return {
-                                    createdInstance: new MainClass() as InstanceType<T>,
-                                };
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
+                            return {
+                                createdInstance: new MainClass() as InstanceType<T>,
+                            };
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(mainClassInstances.length).to.be.equals(1);
@@ -271,32 +255,28 @@ describe(`ResolveFactory`, () => {
         const firstResolverInjectHookResult = {};
 
         const object = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(): ResolverInjectHookResult<T> {
-                                return firstResolverInjectHookResult;
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(): ResolverInjectHookResult<T> {
+                            return firstResolverInjectHookResult;
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(params: { calledResolversInInjectHook: CalledResolverInInjectHook<T>[] }): ResolverInjectHookResult<T> {
-                                if(params.calledResolversInInjectHook.find((calledResolver) => calledResolver.result === firstResolverInjectHookResult)) {
-                                    return {
-                                        injectedObject: MainClass as T,
-                                    };
-                                }
-                            },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(params: { calledResolversInInjectHook: CalledResolverInInjectHook<T>[] }): ResolverInjectHookResult<T> {
+                            if(params.calledResolversInInjectHook.find((calledResolver) => calledResolver.result === firstResolverInjectHookResult)) {
+                                return {
+                                    injectedObject: MainClass as T,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object).to.be.instanceOf(MainClass);
@@ -312,34 +292,30 @@ describe(`ResolveFactory`, () => {
         const firstResolverBeforeCreateInstanceResult = {};
 
         const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
-                                return firstResolverBeforeCreateInstanceResult;
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(): ResolverBeforeCreateInstanceHookResult<T> {
+                            return firstResolverBeforeCreateInstanceResult;
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(params: { calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[] }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.calledResolversInBeforeCreateInstanceHook.find((calledResolver) => calledResolver.result === firstResolverBeforeCreateInstanceResult)) {
-                                    return {
-                                        constructorParams: [
-                                            "Hello World!",
-                                        ] as unknown as ConstructorParameters<T>,
-                                    };
-                                }
-                            },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(params: { calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[] }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.calledResolversInBeforeCreateInstanceHook.find((calledResolver) => calledResolver.result === firstResolverBeforeCreateInstanceResult)) {
+                                return {
+                                    constructorParams: [
+                                        "Hello World!",
+                                    ] as unknown as ConstructorParameters<T>,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(mainClass.welcomeText).to.be.equals("Hello World!");
@@ -357,32 +333,28 @@ describe(`ResolveFactory`, () => {
         const firstResolverCreateInstanceHookResult = {};
 
         const object = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
-                                return firstResolverCreateInstanceHookResult;
+            {
+                process: () => ({
+                    hooks: {
+                        createInstance<T extends Class>(): ResolverCreateInstanceHookResult<T> {
+                            return firstResolverCreateInstanceHookResult;
+                        }
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        createInstance<T extends Class>(params: { calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T>[] }): ResolverCreateInstanceHookResult<T> {
+                            if(params.calledResolversInCreateInstanceHook.find((calledResolver) => calledResolver.result === firstResolverCreateInstanceHookResult)) {
+                                return {
+                                    createdInstance: new MainClass() as InstanceType<T>,
+                                };
                             }
                         },
-                    }),
-                }
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<T extends Class>(params: { calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T>[] }): ResolverCreateInstanceHookResult<T> {
-                                if(params.calledResolversInCreateInstanceHook.find((calledResolver) => calledResolver.result === firstResolverCreateInstanceHookResult)) {
-                                    return {
-                                        createdInstance: new MainClass() as InstanceType<T>,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object).to.be.instanceOf(MainClass);
@@ -396,32 +368,28 @@ describe(`ResolveFactory`, () => {
         const firstResolverAfterResolveHookResult = {};
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            afterResolve<T extends object>(): ResolverAfterResolveHookResult<T> {
-                                return firstResolverAfterResolveHookResult;
-                            },
+            {
+                process: () => ({
+                    hooks: {
+                        afterResolve<T extends object>(): ResolverAfterResolveHookResult<T> {
+                            return firstResolverAfterResolveHookResult;
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }): ResolverAfterResolveHookResult<T> {
-                                if(params.calledResolversInAfterResolveHook.find((calledResolver) => calledResolver.result === firstResolverAfterResolveHookResult)) {
-                                    if(params.object instanceof MainClass) {
-                                        params.object.someProperty = true;
-                                    }
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }): ResolverAfterResolveHookResult<T> {
+                            if(params.calledResolversInAfterResolveHook.find((calledResolver) => calledResolver.result === firstResolverAfterResolveHookResult)) {
+                                if(params.object instanceof MainClass) {
+                                    params.object.someProperty = true;
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someProperty).to.be.equals(true);
@@ -437,30 +405,26 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-    
+            {
+                process: () => ({
+                    hooks: {
+
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(params: { calledResolversInInjectHook: CalledResolverInInjectHook<T>[] }): ResolverInjectHookResult<T> {
+                            if(params.calledResolversInInjectHook.length > 0) {
+                                return {
+                                    injectedObject: MainClass as T,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(params: { calledResolversInInjectHook: CalledResolverInInjectHook<T>[] }): ResolverInjectHookResult<T> {
-                                if(params.calledResolversInInjectHook.length > 0) {
-                                    return {
-                                        injectedObject: MainClass as T,
-                                    };
-                                }
-                            },
-                        }
-                    }),
-                },
-            ],
+                    }
+                }),
+            },
         ]);
 
         expect(object).not.to.be.instanceOf(MainClass);
@@ -474,32 +438,28 @@ describe(`ResolveFactory`, () => {
         }
 
         const mainClass = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                        
+            {
+                process: () => ({
+                    hooks: {
+                    
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class>(params: { calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[] }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.calledResolversInBeforeCreateInstanceHook.length > 0) {
+                                return {
+                                    constructorParams: [
+                                        "Hello World!",
+                                    ] as unknown as ConstructorParameters<T>,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class>(params: { calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T>[] }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.calledResolversInBeforeCreateInstanceHook.length > 0) {
-                                    return {
-                                        constructorParams: [
-                                            "Hello World!",
-                                        ] as unknown as ConstructorParameters<T>,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(mainClass.welcomeText).not.to.be.equals("Hello World!");
@@ -515,30 +475,26 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(BaseClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-    
+            {
+                process: () => ({
+                    hooks: {
+
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        createInstance<T extends Class>(params: { calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T>[] }): ResolverCreateInstanceHookResult<T> {
+                            if(params.calledResolversInCreateInstanceHook.length > 0) {
+                                return {
+                                    createdInstance: new MainClass() as InstanceType<T>,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            createInstance<T extends Class>(params: { calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T>[] }): ResolverCreateInstanceHookResult<T> {
-                                if(params.calledResolversInCreateInstanceHook.length > 0) {
-                                    return {
-                                        createdInstance: new MainClass() as InstanceType<T>,
-                                    };
-                                }
-                            },
-                        },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object).not.to.be.instanceOf(MainClass);
@@ -550,30 +506,26 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-    
-                        },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }): ResolverAfterResolveHookResult<T> {
-                                if(params.calledResolversInAfterResolveHook.length > 0) {
-                                    if(params.object instanceof MainClass) {
-                                        params.object.someProperty = true;
-                                    }
+            {
+                process: () => ({
+                    hooks: {
+
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }): ResolverAfterResolveHookResult<T> {
+                            if(params.calledResolversInAfterResolveHook.length > 0) {
+                                if(params.object instanceof MainClass) {
+                                    params.object.someProperty = true;
                                 }
-                            },
+                            }
                         },
-                    }),
-                }
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someProperty).to.be.equals(false);
@@ -586,7 +538,7 @@ describe(`ResolveFactory`, () => {
         class MainClass {
         }
 
-        const resolversCollection = [
+        const object = Resolve(BaseClass, [
             {
                 process: () => ({
                     hooks: {
@@ -599,11 +551,7 @@ describe(`ResolveFactory`, () => {
                         }
                     },
                 }),
-            }
-        ];
-
-        const object = Resolve(BaseClass, [
-            resolversCollection,
+            },
         ]);
         
         expect(object).to.be.instanceOf(MainClass);
@@ -617,19 +565,17 @@ describe(`ResolveFactory`, () => {
         let counter = 0;
 
         const definitinos = [
-            [
-                {
-                    process: () => {
-                        counter++;
+            {
+                process: () => {
+                    counter++;
 
-                        return {
-                            hooks: {
+                    return {
+                        hooks: {
 
-                            },
-                        };
-                    }
+                        },
+                    };
                 }
-            ]
+            },
         ];
 
         Resolve(MainClass, definitinos);
@@ -650,23 +596,21 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            params.resolve(SomeDependency),
-                                        ] as unknown as ConstructorParameters<T>,
-                                    }
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === MainClass) {
+                                return {
+                                    constructorParams: [
+                                        params.resolve(SomeDependency),
+                                    ] as unknown as ConstructorParameters<T>,
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
@@ -688,38 +632,34 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            params.resolve(SomeBaseDependency),
-                                        ] as unknown as ConstructorParameters<T>,
-                                    }
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === MainClass) {
+                                return {
+                                    constructorParams: [
+                                        params.resolve(SomeBaseDependency),
+                                    ] as unknown as ConstructorParameters<T>,
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
-                                if(params.object === SomeBaseDependency) {
-                                    return {
-                                        injectedObject: SomeDependency as T,
-                                    };
-                                }
-                            },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                            if(params.object === SomeBaseDependency) {
+                                return {
+                                    injectedObject: SomeDependency as T,
+                                };
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
@@ -740,36 +680,32 @@ describe(`ResolveFactory`, () => {
         let counter = 0;
 
         Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            params.resolve(SomeDependency),
-                                        ] as unknown as ConstructorParameters<T>,
-                                    }
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === MainClass) {
+                                return {
+                                    constructorParams: [
+                                        params.resolve(SomeDependency),
+                                    ] as unknown as ConstructorParameters<T>,
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
-            [
-                {
-                    process: () => {
-                        counter++;
+                    },
+                }),
+            },
+            {
+                process: () => {
+                    counter++;
 
-                        return {
-                            hooks: {
+                    return {
+                        hooks: {
 
-                            },
-                        };
-                    }
-                },
-            ],
+                        },
+                    };
+                }
+            },
         ]);
 
         expect(counter).to.be.equals(1);
@@ -791,41 +727,37 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            params.resolve(SomeBaseDependency, 
-                                                [
-                                                    [
-                                                        {
-                                                            process: () => ({
-                                                                hooks: {
-                                                                    inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
-                                                                        if(params.object === SomeBaseDependency) {
-                                                                            return {
-                                                                                injectedObject: SomeDependency as T,
-                                                                            };
-                                                                        }
-                                                                    },
-                                                                },
-                                                            }),
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === MainClass) {
+                                return {
+                                    constructorParams: [
+                                        params.resolve(SomeBaseDependency, 
+                                            [
+                                                {
+                                                    process: () => ({
+                                                        hooks: {
+                                                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                                                                if(params.object === SomeBaseDependency) {
+                                                                    return {
+                                                                        injectedObject: SomeDependency as T,
+                                                                    };
+                                                                }
+                                                            },
                                                         },
-                                                    ],
-                                                ],
-                                            ),
-                                        ] as unknown as ConstructorParameters<T>,
-                                    }
+                                                    }),
+                                                },
+                                            ],
+                                        ),
+                                    ] as unknown as ConstructorParameters<T>,
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
@@ -847,42 +779,38 @@ describe(`ResolveFactory`, () => {
         }
 
         const object = Resolve(MainClass, [
-            [
-                {
-                    process: () => ({
-                        hooks: {
-                            beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
-                                if(params.type === MainClass) {
-                                    return {
-                                        constructorParams: [
-                                            params.resolve(SomeBaseDependency, 
-                                                [
-                                                    [
-                                                        {
-                                                            process: () => ({
-                                                                hooks: {
-                                                                    inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
-                                                                        if(params.object === SomeBaseDependency) {
-                                                                            return {
-                                                                                injectedObject: SomeDependency as T,
-                                                                            };
-                                                                        }
-                                                                    },
-                                                                },
-                                                            }),
+            {
+                process: () => ({
+                    hooks: {
+                        beforeCreateInstance<T extends Class | Class<MainClass>>( params: { type: T, resolve: HookResolve }): ResolverBeforeCreateInstanceHookResult<T> {
+                            if(params.type === MainClass) {
+                                return {
+                                    constructorParams: [
+                                        params.resolve(SomeBaseDependency, 
+                                            [
+                                                {
+                                                    process: () => ({
+                                                        hooks: {
+                                                            inject<T extends object>(params: { object: T; }): ResolverInjectHookResult<T> {
+                                                                if(params.object === SomeBaseDependency) {
+                                                                    return {
+                                                                        injectedObject: SomeDependency as T,
+                                                                    };
+                                                                }
+                                                            },
                                                         },
-                                                    ],
-                                                ],
-                                            ),
-                                            params.resolve(SomeBaseDependency),
-                                        ] as unknown as ConstructorParameters<T>,
-                                    }
+                                                    }),
+                                                },
+                                            ],
+                                        ),
+                                        params.resolve(SomeBaseDependency),
+                                    ] as unknown as ConstructorParameters<T>,
                                 }
-                            },
+                            }
                         },
-                    }),
-                },
-            ],
+                    },
+                }),
+            },
         ]);
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);

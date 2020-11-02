@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, Resolve, InjectConstructorParams, Singletonize, ResolversCollection } from "../src/index";
+import { Inject, Resolve, InjectConstructorParams, Singletonize, Resolver } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -14,7 +14,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        const definitions: ResolversCollection[] = [
+        const definitions: Resolver[] = [
             Inject({
                 type: Application,
                 to: HelloWorldApplication,
@@ -42,7 +42,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        const definitions: ResolversCollection[] = [
+        const definitions: Resolver[] = [
             Inject({
                 type: Application,
                 to: HelloWorldApplication,
@@ -92,7 +92,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        const definitions: ResolversCollection[] = [
+        const definitions: Resolver[] = [
             Inject({
                 type: Application,
                 to: HelloWorldApplication,
@@ -147,7 +147,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        const definitions: ResolversCollection[] = [
+        const definitions: Resolver[] = [
             Inject({
                 type: Application,
                 to: HelloWorldApplication,
@@ -222,7 +222,7 @@ describe(`Integration tests from README`, () => {
             }
         }
 
-        const definitions: ResolversCollection[] = [
+        const definitions: Resolver[] = [
             Inject({
                 type: Application,
                 to: HelloWorldApplication,
