@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, Resolve, InjectConstructorParams, Singletonize, Resolver } from "../src/index";
+import { Inject, Resolve, InjectConstructorParams, Singletonize, Resolver, ConstructorParams } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -47,12 +47,14 @@ describe(`Integration tests from README`, () => {
                 type: Application,
                 to: HelloWorldApplication,
             }),
-            InjectConstructorParams({
-                type: HelloWorldApplication,
-                params: [
-                    () => 'John',
-                ],
-            }),
+            InjectConstructorParams([
+                new ConstructorParams({
+                    type: HelloWorldApplication,
+                    params: [
+                        () => 'John',
+                    ],
+                }),
+            ]),
         ];
 
         const application = Resolve(Application, definitions);
@@ -101,12 +103,14 @@ describe(`Integration tests from README`, () => {
                 type: Connection,
                 to: MySQLConnection,
             }),
-            InjectConstructorParams({
-                type: HelloWorldApplication,
-                params: [
-                    ({resolve}) => resolve(Connection),
-                ],
-            }),
+            InjectConstructorParams([
+                new ConstructorParams({
+                    type: HelloWorldApplication,
+                    params: [
+                        ({resolve}) => resolve(Connection),
+                    ],
+                }),
+            ]),
         ];
         
         outputs.push(`After definitions`);
@@ -159,13 +163,15 @@ describe(`Integration tests from README`, () => {
             Singletonize({
                 type: Connection,
             }),
-            InjectConstructorParams({
-                type: HelloWorldApplication,
-                params: [
-                    ({resolve}) => resolve(Connection),
-                    ({resolve}) => resolve(Connection),
-                ],
-            }),
+            InjectConstructorParams([
+                new ConstructorParams({
+                    type: HelloWorldApplication,
+                    params: [
+                        ({resolve}) => resolve(Connection),
+                        ({resolve}) => resolve(Connection),
+                    ],
+                }),
+            ]),
         ];
         
         const application = Resolve(Application, definitions);
@@ -231,44 +237,48 @@ describe(`Integration tests from README`, () => {
                 type: Connection,
                 to: MySQLConnection,
             }),
-            InjectConstructorParams({
-                type: MySQLConnection,
-                params: [
-                    () => "database",
-                ],
-            }),
+            InjectConstructorParams([
+                new ConstructorParams({
+                    type: MySQLConnection,
+                    params: [
+                        () => "database",
+                    ],
+                }),
+                new ConstructorParams({
+                    type: HelloWorldApplication,
+                    params: [
+                        ({resolve}) => resolve(UsersRepository),
+                        ({resolve}) => resolve(Connection),
+                    ],
+                }),
+                new ConstructorParams({
+                    type: UsersRepository,
+                    params: [
+                        ({resolve}) => resolve(
+                            MySQLConnection, 
+                            [
+                                Inject({
+                                    type: Connection,
+                                    to: MySQLConnection,
+                                }),
+                                InjectConstructorParams([
+                                    new ConstructorParams({
+                                        type: MySQLConnection,
+                                        params: [
+                                            () => "database2",
+                                        ],
+                                    }),
+                                ]),
+                                Singletonize({
+                                    type: Connection,
+                                }),
+                            ],
+                        ),
+                    ],
+                }),
+            ]),
             Singletonize({
                 type: Connection,
-            }),
-            InjectConstructorParams({
-                type: HelloWorldApplication,
-                params: [
-                    ({resolve}) => resolve(UsersRepository),
-                    ({resolve}) => resolve(Connection),
-                ],
-            }),
-            InjectConstructorParams({
-                type: UsersRepository,
-                params: [
-                    ({resolve}) => resolve(
-                        MySQLConnection, 
-                        [
-                            Inject({
-                                type: Connection,
-                                to: MySQLConnection,
-                            }),
-                            InjectConstructorParams({
-                                type: MySQLConnection,
-                                params: [
-                                    () => "database2",
-                                ],
-                            }),
-                            Singletonize({
-                                type: Connection,
-                            }),
-                        ],
-                    ),
-                ],
             }),
         ];
         

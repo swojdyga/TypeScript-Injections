@@ -3,6 +3,7 @@ import { expect } from "chai";
 import InjectConstructorParams from './InjectConstructorParams';
 import { HookResolve } from '../../types/HookResolve';
 import { AbstractClass, Class } from 'typescript-class-types';
+import ConstructorParams from './entities/ConstructorParams/ConstructorParams';
 
 describe(`InjectConstructorParams`, () => {
     it(`Should return constructor params in beforeCreateInstance hook.`, () => {
@@ -12,12 +13,14 @@ describe(`InjectConstructorParams`, () => {
             }
         }
 
-        const resolver = InjectConstructorParams({
-            type: MainClass,
-            params: [
-                () => 'Hello World!',
-            ],
-        });
+        const resolver = InjectConstructorParams([
+            new ConstructorParams({
+                type: MainClass,
+                params: [
+                    () => 'Hello World!',
+                ],
+            }),
+        ]);
 
         const resolverProcess = resolver.process();
 
@@ -42,12 +45,14 @@ describe(`InjectConstructorParams`, () => {
             }
         }
 
-        const resolver = InjectConstructorParams({
-            type: MainClass,
-            params: [
-                ({resolve}) => resolve,
-            ],
-        });
+        const resolver = InjectConstructorParams([
+            new ConstructorParams({
+                type: MainClass,
+                params: [
+                    ({resolve}) => resolve,
+                ],
+            }),
+        ]);
 
         const resolverProcess = resolver.process();
 

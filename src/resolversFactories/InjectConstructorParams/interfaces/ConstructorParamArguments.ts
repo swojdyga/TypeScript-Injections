@@ -1,4 +1,5 @@
 import { HookResolve } from '../../../types/HookResolve';
-export default interface InjectConstructorParamsParamsParamsParamParams {
+
+export default interface ConstructorParamArguments {
     resolve: HookResolve;
 }

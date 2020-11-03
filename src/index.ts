@@ -31,6 +31,7 @@ import CalledResolverInAfterResolveHook from './interfaces/CalledResolverInAfter
 import Resolve from './helpers/Resolve/Resolve';
 import { HookResolve } from './types/HookResolve';
 import ProcessResolver from './interfaces/ProcessResolver';
+import ConstructorParams from './resolversFactories/InjectConstructorParams/entities/ConstructorParams/ConstructorParams';
 
 export {
     Resolve,
@@ -40,6 +41,7 @@ export {
 
     InjectConstructorParams,
     InjectConstructorParamsParams,
+    ConstructorParams,
 
     Singletonize,
     SingletonizeParams,
