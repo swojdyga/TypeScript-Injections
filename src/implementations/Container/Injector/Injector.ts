@@ -2,9 +2,6 @@ import { AbstractClass, Class } from 'typescript-class-types';
 import Container from '../../../abstractions/Container/Container';
 import Resolver from '../../../abstractions/Container/abstractions/Resoler/Resolver';
 import ProcessResolver from '../../../abstractions/Container/abstractions/Resoler/interfaces/ProcessResolver';
-import CalledResolverInInjectHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInInjectHook';
-import CalledResolverInBeforeCreateInstanceHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInBeforeCreateInstanceHook';
-import CalledResolverInCreateInstanceHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInCreateInstanceHook';
 import CalledResolverInAfterResolveHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook';
 
 export default class Injector implements Container {
@@ -26,7 +23,6 @@ export default class Injector implements Container {
     }
 
     private resolveInteral<T extends AbstractClass | Class>(type: T, processResolvers: ProcessResolver[]): T extends AbstractClass<infer U> ? U : never {
-        const calledResolversInInjectHook: CalledResolverInInjectHook<T>[] = [];
         const injectedObject = processResolvers
             .reduce(
                 (object, resolver) => {
@@ -38,11 +34,6 @@ export default class Injector implements Container {
                                 ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
                             ]),
                             object,
-                            calledResolversInInjectHook,
-                        });
-
-                        calledResolversInInjectHook.push({
-                            result,
                         });
 
                         if(result && result.injectedObject) {
@@ -55,7 +46,6 @@ export default class Injector implements Container {
                 type,
             );
 
-        const calledResolversInBeforeCreateInstanceHook: CalledResolverInBeforeCreateInstanceHook<T & Class>[] = [];
         const constructorParams = processResolvers.reduce((constructorParams, resolver) => {
             if(resolver.hooks.beforeCreateInstance) {
                 const result = resolver.hooks.beforeCreateInstance({
@@ -66,11 +56,6 @@ export default class Injector implements Container {
                     ]),
                     type: injectedObject as T & Class,
                     constructorParams,
-                    calledResolversInBeforeCreateInstanceHook,
-                });
-
-                calledResolversInBeforeCreateInstanceHook.push({
-                    result,
                 });
 
                 if(result && result.constructorParams) {
@@ -81,7 +66,6 @@ export default class Injector implements Container {
             return constructorParams as unknown as [] | ConstructorParameters<T & Class>;
         }, [] as [] | ConstructorParameters<T & Class>);
             
-        const calledResolversInCreateInstanceHook: CalledResolverInCreateInstanceHook<T & Class>[] = [];
         const instance = (() => {
             for(const resolver of processResolvers) {
                 if(resolver.hooks.createInstance) {
@@ -95,11 +79,6 @@ export default class Injector implements Container {
                         // forcing type, because we can not verify it is correct constructor params,
                         // length can be different, because some of constructor params can be optional
                         constructorParams: constructorParams as ConstructorParameters<T & Class>,
-                        calledResolversInCreateInstanceHook,
-                    });
-
-                    calledResolversInCreateInstanceHook.push({
-                        result,
                     });
 
                     if(result && result.createdInstance) {
