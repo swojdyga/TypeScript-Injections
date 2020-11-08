@@ -32,6 +32,10 @@ import CalledResolverInInjectHook from "./abstractions/Container/abstractions/Re
 import CalledResolverInBeforeCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInBeforeCreateInstanceHook";
 import CalledResolverInCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInCreateInstanceHook";
 import CalledResolverInAfterResolveHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook";
+import ConstructorParams from "./abstractions/ConstructorParams/ConstructorParams";
+import Container from "./abstractions/Container/Container";
+import InjectParams from "./abstractions/InjectParams/InjectParams";
+import StrictConstructorParams from "./abstractions/StrictConstructorParams/StrictConstructorParams";
 
 const instanceCreator = new InstanceCreator();
 
@@ -64,6 +68,10 @@ export {
     Singletonize,
     InstanceCreator,
 
+    ConstructorParams,
+
+    Container,
+
     Resolver,
     ProcessResolver,
     ResolvingElement,
@@ -94,4 +102,13 @@ export {
     CalledResolverInBeforeCreateInstanceHook,
     CalledResolverInCreateInstanceHook,
     CalledResolverInAfterResolveHook,
+
+
+    InjectParams,
+
+    IsParentConstructor,
+
+    SingletonizeParams,
+    
+    StrictConstructorParams,
 };
