@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, Resolve, InjectConstructorParams, Singletonize, Resolver, ConstructorParams } from "../src/index";
+import { Inject, InjectConstructorParams, Singletonize, Injector, Resolver, ConstructorWithParams } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -15,13 +15,15 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            Inject({
+            new Inject({
                 type: Application,
                 to: HelloWorldApplication,
             }),
         ];
         
-        const application = Resolve(Application, definitions);
+        const injector = new Injector();
+
+        const application = injector.resolve(Application, definitions);
         const output = application.run();
 
         expect(output).to.be.equals('Hello World!');
@@ -43,12 +45,12 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            Inject({
+            new Inject({
                 type: Application,
                 to: HelloWorldApplication,
             }),
-            InjectConstructorParams([
-                new ConstructorParams({
+            new InjectConstructorParams([
+                new ConstructorWithParams({
                     type: HelloWorldApplication,
                     params: [
                         () => 'John',
@@ -57,7 +59,9 @@ describe(`Integration tests from README`, () => {
             ]),
         ];
 
-        const application = Resolve(Application, definitions);
+        const injector = new Injector();
+
+        const application = injector.resolve(Application, definitions);
         const output = application.run();
 
         expect(output).to.be.equals('Hello, John!');
@@ -95,16 +99,16 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            Inject({
+            new Inject({
                 type: Application,
                 to: HelloWorldApplication,
             }),
-            Inject({
+            new Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
-            InjectConstructorParams([
-                new ConstructorParams({
+            new InjectConstructorParams([
+                new ConstructorWithParams({
                     type: HelloWorldApplication,
                     params: [
                         ({resolve}) => resolve(Connection),
@@ -115,7 +119,9 @@ describe(`Integration tests from README`, () => {
         
         outputs.push(`After definitions`);
         
-        const application = Resolve(Application, definitions);
+        const injector = new Injector();
+
+        const application = injector.resolve(Application, definitions);
         application.run();
 
         expect(outputs).to.be.eql([
@@ -152,19 +158,19 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            Inject({
+            new Inject({
                 type: Application,
                 to: HelloWorldApplication,
             }),
-            Inject({
+            new Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
-            Singletonize({
+            new Singletonize({
                 type: Connection,
             }),
-            InjectConstructorParams([
-                new ConstructorParams({
+            new InjectConstructorParams([
+                new ConstructorWithParams({
                     type: HelloWorldApplication,
                     params: [
                         ({resolve}) => resolve(Connection),
@@ -174,7 +180,9 @@ describe(`Integration tests from README`, () => {
             ]),
         ];
         
-        const application = Resolve(Application, definitions);
+        const injector = new Injector();
+
+        const application = injector.resolve(Application, definitions);
         const output = application.run();
 
         expect(output).to.be.equals(true);
@@ -229,47 +237,47 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            Inject({
+            new Inject({
                 type: Application,
                 to: HelloWorldApplication,
             }),
-            Inject({
+            new Inject({
                 type: Connection,
                 to: MySQLConnection,
             }),
-            InjectConstructorParams([
-                new ConstructorParams({
+            new InjectConstructorParams([
+                new ConstructorWithParams({
                     type: MySQLConnection,
                     params: [
                         () => "database",
                     ],
                 }),
-                new ConstructorParams({
+                new ConstructorWithParams({
                     type: HelloWorldApplication,
                     params: [
                         ({resolve}) => resolve(UsersRepository),
                         ({resolve}) => resolve(Connection),
                     ],
                 }),
-                new ConstructorParams({
+                new ConstructorWithParams({
                     type: UsersRepository,
                     params: [
                         ({resolve}) => resolve(
                             MySQLConnection, 
                             [
-                                Inject({
+                                new Inject({
                                     type: Connection,
                                     to: MySQLConnection,
                                 }),
-                                InjectConstructorParams([
-                                    new ConstructorParams({
+                                new InjectConstructorParams([
+                                    new ConstructorWithParams({
                                         type: MySQLConnection,
                                         params: [
                                             () => "database2",
                                         ],
                                     }),
                                 ]),
-                                Singletonize({
+                                new Singletonize({
                                     type: Connection,
                                 }),
                             ],
@@ -277,12 +285,14 @@ describe(`Integration tests from README`, () => {
                     ],
                 }),
             ]),
-            Singletonize({
+            new Singletonize({
                 type: Connection,
             }),
         ];
         
-        const application = Resolve(Application, definitions);
+        const injector = new Injector();
+
+        const application = injector.resolve(Application, definitions);
         const output = application.run();
 
         expect(output).to.be.eql(['database', 'database2']);

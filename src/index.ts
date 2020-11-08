@@ -1,58 +1,74 @@
-import SingletonizeParams from './resolversFactories/Singletonize/interfaces/SingletonizeParams';
-import InjectConstructorParamsParams from './resolversFactories/InjectConstructorParams/interfaces/InjectConstructorParamsParams';
-import InjectParams from './resolversFactories/Inject/interfaces/InjectParams';
-import { InstanceCreator } from './resolvers/InstanceCreator/InstanceCreator';
-import Singletonize from './resolversFactories/Singletonize/Singletonize';
-import Inject from './resolversFactories/Inject/Inject';
-import InjectConstructorParams from './resolversFactories/InjectConstructorParams/InjectConstructorParams';
-import ResolverAfterResolveHook from './interfaces/ResolverAfterResolveHook';
-import ResolverCreateInstanceHook from './interfaces/ResolverCreateInstanceHook';
-import ResolverInjectHook from './interfaces/ResolverInjectHook';
-import Resolver from './interfaces/Resolver';
-import ResolverBeforeCreateInstanceHook from './interfaces/ResolverBeforeCreateInstanceHook';
-import { ResolverInjectHookResult } from './types/ResolverInjectHookResult';
-import ResolverInjectHookParams from './interfaces/ResolverInjectHookParams';
-import ResolverInjectHookResolveResult from './interfaces/ResolverInjectHookResolveResult';
-import ResolverBeforeCreateInstanceHookParams from './interfaces/ResolverBeforeCreateInstanceHookParams';
-import { ResolverBeforeCreateInstanceHookResult } from './types/ResolverBeforeCreateInstanceHookResult';
-import ResolverBeforeCreateInstanceHookResolveResult from './interfaces/ResolverBeforeCreateInstanceHookResolveResult';
-import ResolverCreateInstanceHookParams from './interfaces/ResolverCreateInstanceHookParams';
-import { ResolverCreateInstanceHookResult } from './types/ResolverCreateInstanceHookResult';
-import ResolverCreateInstanceHookResolveResult from './interfaces/ResolverCreateInstanceHookResolveResult';
-import ResolverAfterResolveHookParams from './interfaces/ResolverAfterResolveHookParams';
-import { ResolverAfterResolveHookResult } from './types/ResolverAfterResolveHookResult';
-import ResolverAfterResolveHookResolveResult from './interfaces/ResolverAfterResolveHookResolveResult';
-import { ResolvingElement } from './types/ResolvingElement';
-import CalledResolver from './interfaces/CalledResolver';
-import CalledResolverInInjectHook from './interfaces/CalledResolverInInjectHook';
-import CalledResolverInBeforeCreateInstanceHook from './interfaces/CalledResolverInBeforeCreateInstanceHook';
-import CalledResolverInCreateInstanceHook from './interfaces/CalledResolverInCreateInstanceHook';
-import CalledResolverInAfterResolveHook from './interfaces/CalledResolverInAfterResolveHook';
-import Resolve from './helpers/Resolve/Resolve';
-import { HookResolve } from './types/HookResolve';
-import ProcessResolver from './interfaces/ProcessResolver';
-import ConstructorParams from './resolversFactories/InjectConstructorParams/entities/ConstructorParams/ConstructorParams';
+import ConstructorWithParams from "./implementations/ConstructorParams/ConstructorWithParams/ConstructorWithParams";
+import InjectorBase from "./implementations/Container/Injector/Injector";
+import Inject from "./implementations/Container/implementations/Resolver/Inject/Inject";
+import InjectConstructorParams from "./implementations/Container/implementations/Resolver/InjectConstructorParams/InjectConstructorParams";
+import SingletonizeBase from "./implementations/Container/implementations/Resolver/Singletonize/Singletonize";
+import InstanceCreator from "./implementations/Container/implementations/Resolver/InstanceCreator/InstanceCreator";
+import IsConstructorExtendsOf from "./implementations/IsParentConstructor/IsConstructorExtendsOf/IsConstructorExtendsOf";
+import Resolver from "./abstractions/Container/abstractions/Resoler/Resolver";
+import IsParentConstructor from "./abstractions/IsParentConstructor/IsParentConstructor";
+import SingletonizeParams from "./abstractions/SingletonizeParams/SingletonizeParams";
+import ProcessResolver from "./abstractions/Container/abstractions/Resoler/interfaces/ProcessResolver";
+import { ResolvingElement } from "./abstractions/Container/abstractions/Resoler/types/ResolvingElement";
+import { HookResolve } from "./abstractions/Container/abstractions/Resoler/types/HookResolve";
+import ResolverInjectHook from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverInjectHook";
+import ResolverInjectHookParams from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverInjectHookParams";
+import { ResolverInjectHookResult } from "./abstractions/Container/abstractions/Resoler/types/ResolverInjectHookResult";
+import ResolverInjectHookResolveResult from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverInjectHookResolveResult";
+import ResolverBeforeCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverBeforeCreateInstanceHook";
+import ResolverBeforeCreateInstanceHookParams from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverBeforeCreateInstanceHookParams";
+import { ResolverBeforeCreateInstanceHookResult } from "./abstractions/Container/abstractions/Resoler/types/ResolverBeforeCreateInstanceHookResult";
+import ResolverBeforeCreateInstanceHookResolveResult from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverBeforeCreateInstanceHookResolveResult";
+import ResolverCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverCreateInstanceHook";
+import ResolverCreateInstanceHookParams from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverCreateInstanceHookParams";
+import { ResolverCreateInstanceHookResult } from "./abstractions/Container/abstractions/Resoler/types/ResolverCreateInstanceHookResult";
+import ResolverCreateInstanceHookResolveResult from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverCreateInstanceHookResolveResult";
+import ResolverAfterResolveHook from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverAfterResolveHook";
+import ResolverAfterResolveHookParams from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverAfterResolveHookParams";
+import { ResolverAfterResolveHookResult } from "./abstractions/Container/abstractions/Resoler/types/ResolverAfterResolveHookResult";
+import ResolverAfterResolveHookResolveResult from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverAfterResolveHookResolveResult";
+import CalledResolver from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolver";
+import CalledResolverInInjectHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInInjectHook";
+import CalledResolverInBeforeCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInBeforeCreateInstanceHook";
+import CalledResolverInCreateInstanceHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInCreateInstanceHook";
+import CalledResolverInAfterResolveHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook";
+
+const instanceCreator = new InstanceCreator();
+
+class Injector extends InjectorBase {
+    public constructor(
+        predefinedResolvers: Resolver[] = [
+            instanceCreator,
+        ],
+    ) {
+        super(predefinedResolvers);
+    }
+}
+
+const isParentConstructorImplementation: IsParentConstructor = new IsConstructorExtendsOf();
+
+class Singletonize extends SingletonizeBase {
+    public constructor(
+        config: SingletonizeParams,
+        isParentConstructor: IsParentConstructor = isParentConstructorImplementation,
+    ) {
+        super(isParentConstructor, config);
+    }
+}
 
 export {
-    Resolve,
-
+    ConstructorWithParams,
+    Injector,
     Inject,
-    InjectParams,
-
     InjectConstructorParams,
-    InjectConstructorParamsParams,
-    ConstructorParams,
-
     Singletonize,
-    SingletonizeParams,
-
     InstanceCreator,
 
     Resolver,
     ProcessResolver,
     ResolvingElement,
     HookResolve,
-
+    
     ResolverInjectHook,
     ResolverInjectHookParams,
     ResolverInjectHookResult,
