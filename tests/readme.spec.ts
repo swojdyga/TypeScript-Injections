@@ -1,6 +1,6 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, InjectConstructorParams, Singletonize, Injector, Resolver, ConstructorWithParams } from "../src/index";
+import { Inject, InjectConstructorParams, Singletonize, Injector, Resolver, ConstructorWithParams, InjectWithParams } from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -48,10 +48,10 @@ describe(`Integration tests from README`, () => {
 
         const definitions: Resolver[] = [
             new Inject([
-                {
+                new InjectWithParams({
                     type: Application,
                     to: HelloWorldApplication,
-                },
+                }),
             ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
@@ -104,14 +104,14 @@ describe(`Integration tests from README`, () => {
 
         const definitions: Resolver[] = [
             new Inject([
-                {
+                new InjectWithParams({
                     type: Application,
                     to: HelloWorldApplication,
-                },
-                {
+                }),
+                new InjectWithParams({
                     type: Connection,
                     to: MySQLConnection,
-                },
+                }),
             ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
@@ -165,14 +165,14 @@ describe(`Integration tests from README`, () => {
 
         const definitions: Resolver[] = [
             new Inject([
-                {
+                new InjectWithParams({
                     type: Application,
                     to: HelloWorldApplication,
-                },
-                {
+                }),
+                new InjectWithParams({
                     type: Connection,
                     to: MySQLConnection,
-                },
+                }),
             ]),
             new Singletonize([
                 {
@@ -248,14 +248,14 @@ describe(`Integration tests from README`, () => {
 
         const definitions: Resolver[] = [
             new Inject([
-                {
+                new InjectWithParams({
                     type: Application,
                     to: HelloWorldApplication,
-                },
-                {
+                }),
+                new InjectWithParams({
                     type: Connection,
                     to: MySQLConnection,
-                },
+                }),
             ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
@@ -278,10 +278,10 @@ describe(`Integration tests from README`, () => {
                             MySQLConnection, 
                             [
                                 new Inject([
-                                    {
+                                    new InjectWithParams({
                                         type: Connection,
                                         to: MySQLConnection,
-                                    },
+                                    }),
                                 ]),
                                 new InjectConstructorParams([
                                     new ConstructorWithParams({

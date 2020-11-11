@@ -33,6 +33,8 @@ import ConstructorParams from "./abstractions/ConstructorParams/ConstructorParam
 import Container from "./abstractions/Container/Container";
 import InjectParams from "./abstractions/InjectParams/InjectParams";
 import StrictConstructorParams from "./abstractions/StrictConstructorParams/StrictConstructorParams";
+import InjectWithParams from "./implementations/InjectParams/InjectWithParams/InjectWithParams";
+import StrictInjectParams from "./abstractions/StrictInjectParams/StrictInjectParams";
 
 const instanceCreator = new InstanceCreator();
 
@@ -59,6 +61,7 @@ class Singletonize extends SingletonizeBase {
 
 export {
     ConstructorWithParams,
+    InjectWithParams,
     Injector,
     Inject,
     InjectConstructorParams,
@@ -105,4 +108,6 @@ export {
     SingletonizeParams,
     
     StrictConstructorParams,
+
+    StrictInjectParams,
 };
