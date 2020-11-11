@@ -12,9 +12,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: MainClass,
-            },
+            [    
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const resolverProcess = resolver.process();
@@ -66,9 +68,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: BaseClass,
-            },
+            [
+                {
+                    type: BaseClass,
+                },
+            ],
         );
 
         class MainClass extends BaseClass {
@@ -128,9 +132,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => false,
             },
-            {
-                type: MainClass,
-            },
+            [
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const resolverProcess = resolver.process();
@@ -167,9 +173,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => false,
             },
-            {
-                type: MainClass,
-            },
+            [
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const resolverProcess = resolver.process();
@@ -225,9 +233,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: FirstClass,
-            },
+            [
+                {
+                    type: FirstClass,
+                },
+            ],
         );
 
         const fistResolverProcess = firstResolver.process();
@@ -236,9 +246,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: SecondClass,
-            },
+            [
+                {
+                    type: SecondClass,
+                },
+            ],
         );
 
         const secondResolverProcess = secondResolver.process();
@@ -308,9 +320,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: MainClass,
-            }
+            [
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const fistResolverProcess = firstResolver.process();
@@ -319,9 +333,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: MainClass,
-            },
+            [
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const secondResolverProcess = secondResolver.process();
@@ -389,9 +405,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: BaseClass,
-            },
+            [
+                {
+                    type: BaseClass,
+                },
+            ],
         );
 
         const resolverProcess = resolver.process();
@@ -443,9 +461,11 @@ describe(`Singletonize`, () => {
             {
                 isParent: () => true,
             },
-            {
-                type: MainClass,
-            },
+            [
+                {
+                    type: MainClass,
+                },
+            ],
         );
 
         const firstResolverProcess = resolver.process();

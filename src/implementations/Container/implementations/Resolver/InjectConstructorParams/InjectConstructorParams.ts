@@ -7,8 +7,8 @@ import ConstructorParamArguments from '../../../../../abstractions/ConstructorPa
 export default class InjectConstrutorParams implements Resolver {
     private readonly constructorParamsMap = new Map<Class, ConstructorParameters<Class>>();
     
-    public constructor(config: ConstructorParams[]) {
-        config.forEach(({type, params}) => {
+    public constructor(configs: ConstructorParams[]) {
+        configs.forEach(({type, params}) => {
             this.constructorParamsMap.set(type, params);
         });
     }

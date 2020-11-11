@@ -15,10 +15,12 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            new Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
+            new Inject([
+                {
+                    type: Application,
+                    to: HelloWorldApplication,
+                },
+            ]),
         ];
         
         const injector = new Injector();
@@ -45,10 +47,12 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            new Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
+            new Inject([
+                {
+                    type: Application,
+                    to: HelloWorldApplication,
+                },
+            ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
                     type: HelloWorldApplication,
@@ -99,14 +103,16 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            new Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
-            new Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
+            new Inject([
+                {
+                    type: Application,
+                    to: HelloWorldApplication,
+                },
+                {
+                    type: Connection,
+                    to: MySQLConnection,
+                },
+            ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
                     type: HelloWorldApplication,
@@ -158,17 +164,21 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            new Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
-            new Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
-            new Singletonize({
-                type: Connection,
-            }),
+            new Inject([
+                {
+                    type: Application,
+                    to: HelloWorldApplication,
+                },
+                {
+                    type: Connection,
+                    to: MySQLConnection,
+                },
+            ]),
+            new Singletonize([
+                {
+                    type: Connection,
+                },
+            ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
                     type: HelloWorldApplication,
@@ -237,14 +247,16 @@ describe(`Integration tests from README`, () => {
         }
 
         const definitions: Resolver[] = [
-            new Inject({
-                type: Application,
-                to: HelloWorldApplication,
-            }),
-            new Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
+            new Inject([
+                {
+                    type: Application,
+                    to: HelloWorldApplication,
+                },
+                {
+                    type: Connection,
+                    to: MySQLConnection,
+                },
+            ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
                     type: MySQLConnection,
@@ -265,10 +277,12 @@ describe(`Integration tests from README`, () => {
                         ({resolve}) => resolve(
                             MySQLConnection, 
                             [
-                                new Inject({
-                                    type: Connection,
-                                    to: MySQLConnection,
-                                }),
+                                new Inject([
+                                    {
+                                        type: Connection,
+                                        to: MySQLConnection,
+                                    },
+                                ]),
                                 new InjectConstructorParams([
                                     new ConstructorWithParams({
                                         type: MySQLConnection,
@@ -277,17 +291,21 @@ describe(`Integration tests from README`, () => {
                                         ],
                                     }),
                                 ]),
-                                new Singletonize({
-                                    type: Connection,
-                                }),
+                                new Singletonize([
+                                    {
+                                        type: Connection,
+                                    },
+                                ]),
                             ],
                         ),
                     ],
                 }),
             ]),
-            new Singletonize({
-                type: Connection,
-            }),
+            new Singletonize([
+                {
+                    type: Connection,
+                },
+            ]),
         ];
         
         const injector = new Injector();

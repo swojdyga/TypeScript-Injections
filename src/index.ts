@@ -50,10 +50,10 @@ const isParentConstructorImplementation: IsParentConstructor = new IsConstructor
 
 class Singletonize extends SingletonizeBase {
     public constructor(
-        config: SingletonizeParams,
+        configs: SingletonizeParams[],
         isParentConstructor: IsParentConstructor = isParentConstructorImplementation,
     ) {
-        super(isParentConstructor, config);
+        super(isParentConstructor, configs);
     }
 }
 

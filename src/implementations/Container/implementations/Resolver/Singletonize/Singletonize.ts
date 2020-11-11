@@ -9,7 +9,7 @@ import SingletonizeCreateInstanceHookParams from "./interfaces/SingletonizeCreat
 export default class Singletonize implements Resolver {
     public constructor(
         private readonly isParentConstructor: IsParentConstructor,
-        private readonly config: SingletonizeParams,
+        private readonly configs: SingletonizeParams[],
     ) {
 
     }
@@ -20,13 +20,16 @@ export default class Singletonize implements Resolver {
             return {
                 hooks: {
                     createInstance: <R extends ResolvingElement, T extends Class>(params: SingletonizeCreateInstanceHookParams<R, T>) => {
-                        const type = params.type;
-                        
-                        if(!this.isParentConstructor.isParent(type, this.config.type) && !this.isParentConstructor.isParent(params.resolvingElement, this.config.type)) {
+                        const config = this.configs.find((config) => {
+                            return this.isParentConstructor.isParent(params.type, config.type)
+                                || this.isParentConstructor.isParent(params.resolvingElement, config.type);
+                        });
+
+                        if(!config) {
                             return;
                         }
     
-                        const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof type);
+                        const catchedInstance = catchedInstances.find((catchedInstance) => catchedInstance instanceof params.type);
                         if(!catchedInstance) {
                             return;
                         }
@@ -36,7 +39,12 @@ export default class Singletonize implements Resolver {
                         };
                     },
                     afterResolve: <R extends ResolvingElement, T extends object>(params: SingletonizeAfterResolveHookParams<R, T>) => {
-                        if(!(params.object instanceof (this.config.type as Class)) && !this.isParentConstructor.isParent(params.resolvingElement, this.config.type)) {
+                        const config = this.configs.find((config) => {
+                            return params.object instanceof (config.type as Class)
+                                || this.isParentConstructor.isParent(params.resolvingElement, config.type);
+                        });
+
+                        if(!config) {
                             return;
                         }
     

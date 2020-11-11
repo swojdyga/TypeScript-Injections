@@ -12,10 +12,12 @@ describe(`Inject`, () => {
 
         }
 
-        const resolver = new Inject({
-            type: BaseClass,
-            to: MainClass,
-        });
+        const resolver = new Inject([
+            {
+                type: BaseClass,
+                to: MainClass,
+            },
+        ]);
 
         const resolverProcess = resolver.process();
 
@@ -37,10 +39,12 @@ describe(`Inject`, () => {
 
         }
 
-        const resolver = new Inject({
-            type: BaseClass,
-            to: MainClass,
-        });
+        const resolver = new Inject([
+            {
+                type: BaseClass,
+                to: MainClass,
+            },
+        ]);
 
         const resolverProcess = resolver.process();
 
