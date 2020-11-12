@@ -3,15 +3,18 @@ import Container from '../../../abstractions/Container/Container';
 import Resolver from '../../../abstractions/Container/abstractions/Resoler/Resolver';
 import ProcessResolver from '../../../abstractions/Container/abstractions/Resoler/interfaces/ProcessResolver';
 import CalledResolverInAfterResolveHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook';
+import ResolverResult from '../../../abstractions/Container/abstractions/ResolveResult/ResolverResult';
+import ResolveResultFactoryConfig from '../../../abstractions/ResolveResultFactoryConfig/ResolveResultFactoryConfig';
 
 export default class Injector implements Container {
     public constructor(
         private readonly predefinedResolvers: Resolver[],
+        private readonly resolveResultFactory: <T>(config: ResolveResultFactoryConfig<T>) => ResolverResult<T>,
     ) {
 
     }
 
-    public resolve<T extends AbstractClass | Class>(type: T, resolvers: Resolver[] = []): T extends AbstractClass<infer U> ? U : never {
+    public resolve<T extends AbstractClass | Class>(type: T, resolvers: Resolver[] = []): ResolverResult<T> {
         const allResolvers = [
             ...resolvers,
             ...this.predefinedResolvers,
@@ -19,7 +22,9 @@ export default class Injector implements Container {
     
         const processResolvers = allResolvers.map((resolver) => resolver.process());
     
-        return this.resolveInteral(type, processResolvers);
+        return this.resolveResultFactory({
+            instance: this.resolveInteral(type, processResolvers),
+        });
     }
 
     private resolveInteral<T extends AbstractClass | Class>(type: T, processResolvers: ProcessResolver[]): T extends AbstractClass<infer U> ? U : never {

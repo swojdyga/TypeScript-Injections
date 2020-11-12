@@ -6,6 +6,7 @@ import { ResolvingElement } from "../../../abstractions/Container/abstractions/R
 import ResolverCreateInstanceHookParams from "../../../abstractions/Container/abstractions/Resoler/interfaces/ResolverCreateInstanceHookParams";
 import CalledResolverInAfterResolveHook from "../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook";
 import { HookResolve } from "../../../abstractions/Container/abstractions/Resoler/types/HookResolve";
+import ResolveResultFactoryConfig from "../../../abstractions/ResolveResultFactoryConfig/ResolveResultFactoryConfig";
 
 describe(`Injector`, () => {
     it(`Should use definitions given in Resolve constructor during resolve.`, () => {
@@ -31,9 +32,12 @@ describe(`Injector`, () => {
 
         const resolver = new Resolver();
 
-        const injector = new Injector([
-            resolver,
-        ]);
+        const injector = new Injector(
+            [
+                resolver,
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         injector.resolve(MainClass);
 
@@ -45,19 +49,22 @@ describe(`Injector`, () => {
 
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
-        const mainClass = injector.resolve(MainClass);
+        const mainClass = injector.resolve(MainClass).instance;
 
         expect(mainClass).to.be.instanceOf(MainClass);
     });
@@ -71,17 +78,20 @@ describe(`Injector`, () => {
 
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const baseClass = injector.resolve(BaseClass, [
             {
@@ -95,7 +105,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -107,17 +117,20 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const mainClass = injector.resolve(MainClass, [
             {
@@ -133,7 +146,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(mainClass.welcomeText).to.be.equals("Hello World!");
     })
@@ -145,17 +158,20 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const mainClass = injector.resolve(MainClass, [
             {
@@ -192,7 +208,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(mainClass.welcomeText).to.be.equals("Hello World!");
     })
@@ -206,7 +222,10 @@ describe(`Injector`, () => {
 
         }
 
-        const injector = new Injector([]);
+        const injector = new Injector(
+            [],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const baseClass = injector.resolve(BaseClass, [
             {
@@ -220,7 +239,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -240,7 +259,10 @@ describe(`Injector`, () => {
             "Hello World!",
         ];
 
-        const injector = new Injector([]);
+        const injector = new Injector(
+            [],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const baseClass = injector.resolve(MainClass, [
             {
@@ -263,7 +285,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(baseClass).to.be.instanceOf(MainClass);
     });
@@ -273,17 +295,20 @@ describe(`Injector`, () => {
             public someProperty = false;
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type() as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const mainClass = injector.resolve(MainClass, [
             {
@@ -297,7 +322,7 @@ describe(`Injector`, () => {
                     },
                 }),
             }, 
-        ]);
+        ]).instance;
 
         expect(mainClass.someProperty).to.be.equals(true);
     });
@@ -310,7 +335,10 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([]);
+        const injector = new Injector(
+            [],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         injector.resolve(MainClass, [
             {
@@ -324,7 +352,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(mainClassInstances.length).to.be.equals(1);
     });
@@ -336,17 +364,20 @@ describe(`Injector`, () => {
 
         const firstResolverAfterResolveHookResult = {};
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type() as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(MainClass, [
             {
@@ -371,7 +402,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someProperty).to.be.equals(true);
     });
@@ -381,17 +412,20 @@ describe(`Injector`, () => {
             public someProperty = false;
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type() as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(MainClass, [
             {
@@ -414,7 +448,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someProperty).to.be.equals(false);
     });
@@ -426,17 +460,20 @@ describe(`Injector`, () => {
         class MainClass {
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type() as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(BaseClass, [
             {
@@ -454,7 +491,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
         
         expect(object).to.be.instanceOf(MainClass);
     });
@@ -480,17 +517,20 @@ describe(`Injector`, () => {
             },
         ];
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type() as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         injector.resolve(MainClass, definitinos);
         injector.resolve(MainClass, definitinos);
@@ -509,17 +549,20 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(MainClass, [
             {
@@ -539,7 +582,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
     });
@@ -559,17 +602,20 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(MainClass, [
             {
@@ -604,7 +650,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
     });
@@ -623,17 +669,20 @@ describe(`Injector`, () => {
 
         let counter = 0;
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         injector.resolve(MainClass, [
             {
@@ -664,7 +713,7 @@ describe(`Injector`, () => {
                     };
                 }
             },
-        ]);
+        ]).instance;
 
         expect(counter).to.be.equals(1);
     });
@@ -684,17 +733,19 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,);
 
         const object = injector.resolve(MainClass, [
             {
@@ -732,7 +783,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
     });
@@ -752,17 +803,20 @@ describe(`Injector`, () => {
             }
         }
 
-        const injector = new Injector([
-            {
-                process: () => ({
-                    hooks: {
-                        createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
-                            createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
-                        }),
-                    },
-                })
-            }
-        ]);
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type(...params.constructorParams) as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
 
         const object = injector.resolve(MainClass, [
             {
@@ -801,7 +855,7 @@ describe(`Injector`, () => {
                     },
                 }),
             },
-        ]);
+        ]).instance;
 
         expect(object.someDependency).to.be.instanceOf(SomeDependency);
         expect(object.someOtherDependency).to.be.instanceOf(SomeBaseDependency);

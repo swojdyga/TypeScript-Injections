@@ -25,8 +25,8 @@ describe(`Integration tests from README`, () => {
         
         const injector = new Injector();
 
-        const application = injector.resolve(Application, definitions);
-        const output = application.run();
+        const {instance} = injector.resolve(Application, definitions);
+        const output = instance.run();
 
         expect(output).to.be.equals('Hello World!');
     });
@@ -65,8 +65,8 @@ describe(`Integration tests from README`, () => {
 
         const injector = new Injector();
 
-        const application = injector.resolve(Application, definitions);
-        const output = application.run();
+        const {instance} = injector.resolve(Application, definitions);
+        const output = instance.run();
 
         expect(output).to.be.equals('Hello, John!');
     });
@@ -127,8 +127,8 @@ describe(`Integration tests from README`, () => {
         
         const injector = new Injector();
 
-        const application = injector.resolve(Application, definitions);
-        application.run();
+        const {instance} = injector.resolve(Application, definitions);
+        instance.run();
 
         expect(outputs).to.be.eql([
             'After definitions',
@@ -192,8 +192,8 @@ describe(`Integration tests from README`, () => {
         
         const injector = new Injector();
 
-        const application = injector.resolve(Application, definitions);
-        const output = application.run();
+        const {instance} = injector.resolve(Application, definitions);
+        const output = instance.run();
 
         expect(output).to.be.equals(true);
     });
@@ -310,8 +310,8 @@ describe(`Integration tests from README`, () => {
         
         const injector = new Injector();
 
-        const application = injector.resolve(Application, definitions);
-        const output = application.run();
+        const {instance} = injector.resolve(Application, definitions);
+        const output = instance.run();
 
         expect(output).to.be.eql(['database', 'database2']);
     });
