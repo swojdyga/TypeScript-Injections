@@ -479,8 +479,8 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<R extends ResolvingElement | Class<BaseClass>, T extends object>(params: { object: T, resolvingElement: R }) {
-                            if(params.resolvingElement === BaseClass) {
+                        inject<R extends ResolvingElement | Class<BaseClass>, T extends object>(params: { object: T, resolvingElements: R[] }) {
+                            if(~params.resolvingElements.indexOf(BaseClass as R)) {
                                 return {
                                     injectedObject: MainClass as T,
                                 }
@@ -494,6 +494,73 @@ describe(`Injector`, () => {
         ]).instance;
         
         expect(object).to.be.instanceOf(MainClass);
+    });
+
+    it(`Should add all resolving elements to resolvingElements array.`, () => {
+        class BaseClass {
+            public hasMainClassInResolvingElements = false;
+        }
+
+        class MainClass extends BaseClass {
+
+        }
+
+        class SomeVariationOfMainClass extends MainClass {
+
+        }
+
+        const injector = new Injector(
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
+                                createdInstance: new params.type() as InstanceType<T>,
+                            }),
+                        },
+                    })
+                }
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
+
+        const object = injector.resolve(BaseClass, [
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(params: { object: T }) {
+                            return {
+                                injectedObject: MainClass as T,
+                            };
+                        },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        inject<T extends object>(params: { object: T }) {
+                            return {
+                                injectedObject: SomeVariationOfMainClass as T,
+                            };
+                        },
+                    },
+                }),
+            },
+            {
+                process: () => ({
+                    hooks: {
+                        afterResolve<T extends object, R extends ResolvingElement>(params: {object: T, resolvingElements: R[]}) {
+                            if(~params.resolvingElements.indexOf(MainClass as unknown as R)) {
+                                (params.object as unknown as SomeVariationOfMainClass).hasMainClassInResolvingElements = true;
+                            }
+                        }
+                    }
+                }),
+            },
+        ]).instance;
+
+        expect(object.hasMainClassInResolvingElements).to.be.true;
     });
 
     it(`Should call process method on every Resolve call.`, () => {

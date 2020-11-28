@@ -5,6 +5,7 @@ import ProcessResolver from '../../../abstractions/Container/abstractions/Resole
 import CalledResolverInAfterResolveHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook';
 import ResolverResult from '../../../abstractions/Container/abstractions/ResolveResult/ResolverResult';
 import ResolveResultFactoryConfig from '../../../abstractions/ResolveResultFactoryConfig/ResolveResultFactoryConfig';
+import { ResolvingElement } from '../../..';
 
 export default class Injector implements Container {
     public constructor(
@@ -28,12 +29,16 @@ export default class Injector implements Container {
     }
 
     private resolveInteral<T extends AbstractClass | Class>(type: T, processResolvers: ProcessResolver[]): T extends AbstractClass<infer U> ? U : never {
+        const resolvingElements: ResolvingElement[] = [
+            type,
+        ];
+
         const injectedObject = processResolvers
             .reduce(
                 (object, resolver) => {
                     if(resolver.hooks.inject) {
                         const result = resolver.hooks.inject({
-                            resolvingElement: type,
+                            resolvingElements,
                             resolve: (type, additionalResolvers = []) => this.resolveInteral(type, [
                                 ...processResolvers,
                                 ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
@@ -42,6 +47,10 @@ export default class Injector implements Container {
                         });
 
                         if(result && result.injectedObject) {
+                            if(!~resolvingElements.indexOf(result.injectedObject)) {
+                                resolvingElements.push(result.injectedObject);
+                            }
+                            
                             return result.injectedObject;
                         }
                     }
@@ -54,7 +63,7 @@ export default class Injector implements Container {
         const constructorParams = processResolvers.reduce((constructorParams, resolver) => {
             if(resolver.hooks.beforeCreateInstance) {
                 const result = resolver.hooks.beforeCreateInstance({
-                    resolvingElement: type,
+                    resolvingElements,
                     resolve: (type, additionalResolvers = []) => this.resolveInteral(type, [
                         ...processResolvers,
                         ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
@@ -75,7 +84,7 @@ export default class Injector implements Container {
             for(const resolver of processResolvers) {
                 if(resolver.hooks.createInstance) {
                     const result = resolver.hooks.createInstance({
-                        resolvingElement: type,
+                        resolvingElements,
                         resolve: (type, additionalResolvers = []) => this.resolveInteral(type, [
                             ...processResolvers,
                             ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
@@ -103,7 +112,7 @@ export default class Injector implements Container {
         processResolvers.forEach((resolver) => {
             if(resolver.hooks.afterResolve) {
                 const result = resolver.hooks.afterResolve({
-                    resolvingElement: type,
+                    resolvingElements,
                     resolve: (type, additionalResolvers = []) => this.resolveInteral(type, [
                         ...processResolvers,
                         ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),

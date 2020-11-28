@@ -20,10 +20,7 @@ export default class Singletonize implements Resolver {
             return {
                 hooks: {
                     createInstance: <R extends ResolvingElement, T extends Class>(params: SingletonizeCreateInstanceHookParams<R, T>) => {
-                        const config = this.configs.find((config) => {
-                            return this.isParentConstructor.isParent(params.type, config.type)
-                                || this.isParentConstructor.isParent(params.resolvingElement, config.type);
-                        });
+                        const config = this.findConfigByType(params.type, params.resolvingElements);
 
                         if(!config) {
                             return;
@@ -39,10 +36,7 @@ export default class Singletonize implements Resolver {
                         };
                     },
                     afterResolve: <R extends ResolvingElement, T extends object>(params: SingletonizeAfterResolveHookParams<R, T>) => {
-                        const config = this.configs.find((config) => {
-                            return params.object instanceof (config.type as Class)
-                                || this.isParentConstructor.isParent(params.resolvingElement, config.type);
-                        });
+                        const config = this.findConfigByObject(params.object, params.resolvingElements);
 
                         if(!config) {
                             return;
@@ -78,5 +72,19 @@ export default class Singletonize implements Resolver {
                     },
                 },
             };
+    }
+
+    private findConfigByType(type: Class, resolvingElements: ResolvingElement[]): SingletonizeParams | false {
+        return this.configs.find((config) => {
+            return this.isParentConstructor.isParent(type, config.type)
+                || resolvingElements.some((resolvingElement) => this.isParentConstructor.isParent(resolvingElement, config.type));
+        }) || false;
+    }
+
+    private findConfigByObject(object: object, resolvingElements: ResolvingElement[]): SingletonizeParams | false {
+        return this.configs.find((config) => {
+            return object instanceof (config.type as Class)
+                || resolvingElements.some((resolvingElement) => this.isParentConstructor.isParent(resolvingElement, config.type));
+        }) || false;
     }
 }
