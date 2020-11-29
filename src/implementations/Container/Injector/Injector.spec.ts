@@ -34,6 +34,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 resolver,
             ],
             <T>(config: ResolveResultFactoryConfig<T>) => config,
@@ -51,6 +60,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -110,6 +128,21 @@ describe(`Injector`, () => {
         expect(baseClass).to.be.instanceOf(MainClass);
     });
 
+    it(`Should throw error when none implementation was not given in inject hook.`, () => {
+        class BaseClass {
+
+        }
+
+        const injector = new Injector(
+            [
+
+            ],
+            <T>(config: ResolveResultFactoryConfig<T>) => config,
+        );
+
+        expect(() => injector.resolve(BaseClass)).to.throw();
+    });
+
     it(`Should inject constructor params via beforeCreateInstance hook.`, () => {
         class MainClass {
             public constructor(public readonly welcomeText: string) {
@@ -119,6 +152,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -160,6 +202,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -223,7 +274,17 @@ describe(`Injector`, () => {
         }
 
         const injector = new Injector(
-            [],
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
+            ],
             <T>(config: ResolveResultFactoryConfig<T>) => config,
         );
 
@@ -260,7 +321,17 @@ describe(`Injector`, () => {
         ];
 
         const injector = new Injector(
-            [],
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
+            ],
             <T>(config: ResolveResultFactoryConfig<T>) => config,
         );
 
@@ -300,6 +371,15 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
+                {
+                    process: () => ({
+                        hooks: {
                             createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
                                 createdInstance: new params.type() as InstanceType<T>,
                             }),
@@ -336,7 +416,17 @@ describe(`Injector`, () => {
         }
 
         const injector = new Injector(
-            [],
+            [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
+            ],
             <T>(config: ResolveResultFactoryConfig<T>) => config,
         );
 
@@ -366,6 +456,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -414,6 +513,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -589,6 +697,15 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
+                {
+                    process: () => ({
+                        hooks: {
                             createInstance: <T extends Class, R extends ResolvingElement>(params: ResolverCreateInstanceHookParams<T, R>) => ({
                                 createdInstance: new params.type() as InstanceType<T>,
                             }),
@@ -618,6 +735,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -712,7 +838,9 @@ describe(`Injector`, () => {
                                 };
                             }
 
-                            return;
+                            return {
+                                injectedObject: params.object,
+                            };
                         },
                     },
                 }),
@@ -738,6 +866,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -802,6 +939,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {
@@ -872,6 +1018,15 @@ describe(`Injector`, () => {
 
         const injector = new Injector(
             [
+                {
+                    process: () => ({
+                        hooks: {
+                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
+                                injectedObject: params.resolvingElements[0] as T,
+                            }),
+                        },
+                    })
+                },
                 {
                     process: () => ({
                         hooks: {

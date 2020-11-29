@@ -43,7 +43,7 @@ export default class Injector implements Container {
                                 ...processResolvers,
                                 ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
                             ]),
-                            object,
+                            object: object === null ? type : object,
                         });
 
                         if(result && result.injectedObject) {
@@ -57,8 +57,12 @@ export default class Injector implements Container {
 
                     return object;
                 },
-                type,
+                null as T | null,
             );
+
+        if(injectedObject === null) {
+            throw new Error(`Not found any injection for given type.`);
+        }
 
         const constructorParams = processResolvers.reduce((constructorParams, resolver) => {
             if(resolver.hooks.beforeCreateInstance) {
