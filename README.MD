@@ -1,23 +1,15 @@
-TypeScript Injections is a dependency injection library, which move responsibility from producer to customer.
+TypeScript Injections is a library, which simplify dependency management in your project.
 
 # Introduction
-TypeScript Injections is a one of many variations about implementation of Inversion of Control (IoC). Main features are:
+TypeScript Injections is a library, which simplify dependency management in your project. Main features are:
 
-1. Support for popular libraries and frameworks (e.g. Vue.js)
-    Many libraries, which implements IoC requires classes to work and resolving dependency can be do only in constructor params, but many libraries and frameworks (e.g. Vue.js) operand on object "non-class", and we don't have access to the constructor. For this reason some libraries, which implements IoC are useless, because they can not be used with popular frameworks and libraries.
+1. Library significantly simplify dependency management in your project. For example: injecting connection with a database in a few places not require from you give data connection every time - you do this one time in one place.
 
-    This library supports object "non-class" and resolving dependency can be do anywhere and this feature resolving previously mentioned trouble.
+2. In opposite to other tools to dependency management, you don't need to customize your all code to this library (e.g. with something like @injectable decorator). TypeScript Injections works like plug-in - you use that only in dependency definitions place and in creating main object.
 
-2. Partial support for Dependency Injection Principle (DIP)
-    Because of how TypeScript works, there is not exists technical possibility to full implementation of DIP, because interfaces not exists at the runtime, but they are the basis of DIP. For this reason all libraries of this type must compromise, when want to supports DIP. In this library these compromise is using abstract class instead interfaces. More about this you can read in [Partial support for Dependency Injection Principle (DIP)](#partial-support-for-dependency-injection-principle-dip) section.
+3. Singleton (e.g. connection with a database) is set only in dependency definitions place and in rest of code you use this like other dependency, which is not singleton.
 
-3. Responsibility for resolving dependency is moved from producer to customer.
-    Many libraries uses for dependency injections work in such a way that the class decide that can be resolving by dependency (generally via @injectable decorator). In my opinion, that implementation is a broken of DIP rule and in this library i moved thar responsibility into customer using *Resolve* method.
-
-4. Singleton is transparent.
-    Management of singleton is moved into definition and that has 2 important benefits:
-    * Singleton is transparent - customer doesn't know he use singleton - he use object same as using object which is not singleton
-    * Management of instances is moved into library and thus classes no longer needs manage of own instance - single-responsibility principle (SRP) rule is kept.
+4. Allows writing code which is compatible with the SOLID rules.
 
 # Installation
 You can get the latest release using npm:
@@ -25,257 +17,101 @@ You can get the latest release using npm:
 $ npm install typescript-injections --save
 ```
 
-# Basic usage
-The biggest change is creating instances of classes - in this case responsibility is moved into library and we will create instanceof by `Resolve` method instead of operator `new`.
 
-Library usage is included in 2 steps: define dependencies and resolving them.
+# Usage
+Usage is included in 2 steps: define dependencies and resolving them.
 
-## Inject class
+## Inject
 Let's assume these code:
 ```TypeScript
-class Connection {
-    public ping(): void {
+abstract class Application {
+    public abstract run(): void;
+}
+```
 
+```TypeScript
+class HelloWorldApplication implements Application {
+    public run(): void {
+        console.log(`Hello World!`);
     }
 }
 ```
 
 ```TypeScript
-class MySQLConnection extends Connection {
-    public ping(): void {
-        super.ping();
-        // some stuff
+const definitions: Resolver[] = [
+    new Inject([
+        new InjectWithParams({
+            type: Application,
+            to: HelloWorldApplication,
+        }),
+    ]),
+];
+
+const injector = new Injector();
+const { instance: application } = injector.resolve(Application, definitions);
+
+application.run(); //prints 'Hello World!'
+```
+
+In the example above we have abstraction `Application` and concrete implementation - `HelloWorldApplication`. In `resolve` moment we just use abstraction, and injector, based on given definitions resolve that abstraction to HelloWorldApplication instance.
+
+Note than `Application` abstraction is an abstract class, not interface. Unfortunately, interfaces in TypeScript doesn't exists at the runtime and we can't use them as value. For this reason, we use abstraction and implementations *implements* than abstraction, *not extends*.
+
+
+## Inject constructor params
+We pass the constructor parameters as follows:
+```TypeScript
+abstract class Application {
+    public abstract run(): void;
+}
+```
+
+```TypeScript
+class HelloWorldApplication implements Application {
+    public constructor(private readonly name: string) {
+
+    }
+
+    public run(): void {
+        console.log(`Hello, ${this.name}!`);
     }
 }
 ```
 
-Now we're go to define dependencies - injection of class in this case:
 ```TypeScript
-import { Define, Inject } from "typescript-injections";
-import Connection from "./Connection";
-import MySQLConnection from "./MySQLConnection";
+const definitions: Resolver[] = [
+    new Inject([
+        new InjectWithParams({
+            type: Application,
+            to: HelloWorldApplication,
+        }),
+    ]),
+    new InjectConstructorParams([
+        new ConstructorWithParams({
+            type: HelloWorldApplication,
+            params: [
+                () => 'John',
+            ],
+        }),
+    ]),
+];
 
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-]);
+const injector = new Injector();
+const { instance: application } = injector.resolve(Application, definitions);
+
+application.run(); //prints 'Hello, John!'
 ```
 
-And place, where we need *Connection* intstance - we don't need to know, it is *MySQLConnection* or, e.g. *SQLiteConnection* - we just want Connection instance:
+Note than parameters given in `ConstructorWithParams` are methods, which return target value. Thanks for that, every values are "execute" at the moment, when we create object, not at the dependency defining time. In many cases, constructor parameter is require not only a simple value, but object - we don't want to create instance of that dependency immediately.
+
+The example below shows it well:
+
 ```TypeScript
-import { Resolve } from "typescript-injections";
-import Connection from "./Connection";
-
-const connection = Resolve(this, Connection); // connection instanceof MySQLConnection
-```
-
-As you see - we won't import *MySqlConnection* - our code dependy only on *Connection*.
-
-## Inject property
-In some cases we need to inject some properties into object.
-```TypeScript
-class MySQLConnection extends Connection {
-    public hostname: string | null = null;
-    public login: string | null = null;
-    public password: string | null = null;
-    public database: string | null = null;
-
-    public ping(): void {
-        super.ping();
-        // some stuff
-    }
+abstract class Application {
+    public abstract run(): void;
 }
 ```
 
-Place, where we resolving dependencies don't know about *MySQLConnection* and him properties. Inject properties can be do in the same place, where was inject class:
-```TypeScript
-import { Define, InjectProps } from "typescript-injections";
-import Connection from "./Connection";
-import MySQLConnection from "./MySQLConnection";
-
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-    InjectProps({
-        type: MySQLConnection,
-        props: {
-            hostname: "localhost",
-            login: "root",
-            password: "",
-            database: "main",
-        },
-    }),
-]);
-```
-
-## Singletonize
-As you probably seen - library creates new instance of *MySQLConnection* every time, when you code want access to this. In some cases, that behavior is unexpected, as in that case - we want have only once connection to database.
-
-To Singletonize Connection, we must add new definition into already existing definitions:
-```TypeScript
-import { Define, Inject, InjectProps, Singletonize } from "typescript-injections";
-import Connection from "./Connection";
-
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-    InjectProps({
-        type: MySQLConnection,
-        props: {
-            hostname: "localhost",
-            login: "root",
-            password: "",
-            database: "main",
-        },
-    }),
-    Singletonize({
-        type: MySQLConnection,
-    }),
-]);
-```
-
-That definition gives us sure than code `Resolve(this, Connection)` every time gives us exactly same instance of *Connection*.
-
-## Contextual
-Sometimes you need inject something not in all application, but in concrete context. You can do that using `Contextual` resolver factory. For example, you would connect with different database in other application:
-
-```TypeScript
-import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
-
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-    InjectProps({
-        type: MySQLConnection,
-        props: {
-            hostname: "localhost",
-            login: "root",
-            password: "",
-            database: "main",
-        },
-    }),
-    Contextual({
-        context: ConsoleApplication,
-        resolvers: [
-            InjectProps({
-                type: MySQLConnection,
-                props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "search-results",
-                },
-            }),
-            Singletonize({
-                type: MySQLConnection,
-            }),
-        ],
-    }),
-    Singletonize({
-        type: MySQLConnection,
-    }),
-]);
-```
-
-Remember, Contextual not excluding other definitions - they add definitions in concrete context, so in ConsoleApplication than definition looks like:
-```TypeScript
-import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
-
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-    InjectProps({
-        type: MySQLConnection,
-        props: {
-            hostname: "localhost",
-            login: "root",
-            password: "",
-            database: "main",
-        },
-    }),
-    InjectProps({
-        type: MySQLConnection,
-        props: {
-            hostname: "localhost",
-            login: "root",
-            password: "",
-            database: "search-results",
-        },
-    }),
-    Singletonize({
-        type: MySQLConnection,
-    }),
-    Singletonize({
-        type: MySQLConnection,
-    }),
-]);
-```
-
-As you can see, props in MySQLConnection are settinging twice. For more more obvious definitions I recommening that you always use Contextual.
-```TypeScript
-import { Define, Contextual, Inject, InjectProps, Singletonize } from "typescript-injections";
-
-Define([
-    Contextual({
-        context: Application,
-        resolvers: [
-            Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
-            InjectProps({
-                type: MySQLConnection,
-                props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "main",
-                },
-            }),
-            Singletonize({
-                type: MySQLConnection,
-            }),
-        ],
-    }),
-    Contextual({
-        context: ConsoleApplication,
-        resolvers: [
-            Inject({
-                type: Connection,
-                to: MySQLConnection,
-            }),
-            InjectProps({
-                type: MySQLConnection,
-                props: {
-                    hostname: "localhost",
-                    login: "root",
-                    password: "",
-                    database: "search-results",
-                },
-            }),
-            Singletonize({
-                type: MySQLConnection,
-            }),
-        ],
-    }),
-]);
-```
-
-
-# Partial support for Dependency Injection Principle (DIP)
-As I said before - we can not implement full implementation of DIP, because interfaces in TypeScript doesn't exists at the runtime. My proposition of compromise is a using abstract classes, which resolve that problem, because abstract class exists at the runtime.
-
-For Example:
 ```TypeScript
 abstract class Connection {
     public abstract ping(): void;
@@ -283,33 +119,142 @@ abstract class Connection {
 ```
 
 ```TypeScript
-class MySQLConnection extends Connection {
-    public ping(): void {
-        // some stuff
+class HelloWorldApplication implements Application {
+    public constructor(private readonly connection: Connection) {
+        console.log(`HelloWorldApplication constructor`);
+    }
+
+    public run(): void {
+        this.connection.ping();
+        console.log(`Application run`);
     }
 }
 ```
 
-And next, we can define that dependency:
 ```TypeScript
+class MySQLConnection implements Connection {
+    public constructor() {
+        console.log(`MySQLConnection constructor`);
+    }
 
-import { Define, Inject } from "typescript-injections";
-import Connection from "./Connection";
-import MySQLConnection from "./MySQLConnection";
-
-Define([
-    Inject({
-        type: Connection,
-        to: MySQLConnection,
-    }),
-]);
+    public ping(): void {
+        //do something
+    }
+}
 ```
 
-Ofcourse, that compromise has benefits and disadvantages. Undisputed benefit is a automatically types in TypeScript - there's no need to use `as` construct.
+```TypeScript
+const definitions: Resolver[] = [
+    new Inject([
+        new InjectWithParams({
+            type: Application,
+            to: HelloWorldApplication,
+        }),
+        new InjectWithParams({
+            type: Connection,
+            to: MySQLConnection,
+        }),
+    ]),
+    new InjectConstructorParams([
+        new ConstructorWithParams({
+            type: HelloWorldApplication,
+            params: [
+                ({resolve}) => resolve(Connection),
+            ],
+        }),
+    ]),
+];
 
-And here are the disadvantages:
-1. If you do not define dependency from abstract class to some final class, then... library creates instance of abstract class. At the runtime we can't detect is given class is abstract or "normal".
-2. Abstract class is some between "normal class" and interface and can has implementation, so if somebody will really wants broke DIP rule - they can do this and library can not do nothing with that fact.
+console.log(`After definitions`);
+
+const injector = new Injector();
+const { instance: application } = injector.resolve(Application, definitions);
+
+application.run();
+```
+
+Output will be:
+```
+After definitions
+MySQLConnection constructor
+HelloWorldApplication constructor
+Application run
+```
+
+As you can see, `MySQLConnection` was created only at the moment, when `HelloWorldApplication` was require that to work.
+
+
+## Singletonize
+In some cases we don't want to create instance in every injection. For example, we don't want to create new connection to database on every time, when some part of code needs connection to work - we want create only one connection and use than connection in all injections.
+
+```TypeScript
+abstract class Application {
+    public abstract run(): void;
+}
+```
+
+```TypeScript
+abstract class Connection {
+    public abstract ping(): void;
+}
+```
+
+```TypeScript
+class HelloWorldApplication implements Application {
+    public constructor(private readonly connection: Connection, private readonly otherConnection: Connection) {
+        
+    }
+
+    public run(): void {
+        console.log(this.connection === this.otherConnection);
+    }
+}
+```
+
+```TypeScript
+class MySQLConnection implements Connection {
+    public ping(): void {
+        //do something
+    }
+}
+```
+
+```TypeScript
+const definitions: Resolver[] = [
+    new Inject([
+        new InjectWithParams({
+            type: Application,
+            to: HelloWorldApplication,
+        }),
+        new InjectWithParams({
+            type: Connection,
+            to: MySQLConnection,
+        }),
+    ]),
+    new Singletonize([
+        {
+            type: Connection,
+        },
+    ]),
+    new InjectConstructorParams([
+        new ConstructorWithParams({
+            type: HelloWorldApplication,
+            params: [
+                ({resolve}) => resolve(Connection),
+                ({resolve}) => resolve(Connection),
+            ],
+        }),
+    ]),
+];
+
+const injector = new Injector();
+const { instance: application } = injector.resolve(Application, definitions);
+
+application.run(); //prints 'true'
+```
+
+Instance of `HelloWorldApplication` in `connection` parameter and in `otherConnection` parameter has exactly the same instance of `Connection`.
+
 
 # License
 [MIT](LICENSE)
