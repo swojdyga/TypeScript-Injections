@@ -29,12 +29,7 @@ import { ResolverAfterResolveHookResult } from "./abstractions/Container/abstrac
 import ResolverAfterResolveHookResolveResult from "./abstractions/Container/abstractions/Resoler/interfaces/ResolverAfterResolveHookResolveResult";
 import CalledResolver from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolver";
 import CalledResolverInAfterResolveHook from "./abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook";
-import ConstructorParams from "./abstractions/ConstructorParams/ConstructorParams";
-import Container from "./abstractions/Container/Container";
-import InjectParams from "./abstractions/InjectParams/InjectParams";
-import StrictConstructorParams from "./abstractions/StrictConstructorParams/StrictConstructorParams";
 import InjectWithParams from "./implementations/InjectParams/InjectWithParams/InjectWithParams";
-import StrictInjectParams from "./abstractions/StrictInjectParams/StrictInjectParams";
 import SingletonizeType from "./implementations/SingletonizeParams/SingletonizeType/SingletonizeType";
 import ResolveResultViaConfig from "./implementations/Container/implementations/ResolveResult/ResolveResultViaConfig/ResolveResultViaConfig";
 
@@ -74,10 +69,6 @@ export {
     Singletonize,
     InstanceCreator,
 
-    ConstructorParams,
-
-    Container,
-
     Resolver,
     ProcessResolver,
     ResolvingElement,
@@ -105,15 +96,4 @@ export {
 
     CalledResolver,
     CalledResolverInAfterResolveHook,
-
-
-    InjectParams,
-
-    IsParentConstructor,
-
-    SingletonizeParams,
-    
-    StrictConstructorParams,
-
-    StrictInjectParams,
 };
