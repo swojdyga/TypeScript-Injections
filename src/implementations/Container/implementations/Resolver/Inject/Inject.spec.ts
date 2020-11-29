@@ -22,7 +22,7 @@ describe(`Inject`, () => {
         const resolverProcess = resolver.process();
 
         const injectHookResult = resolverProcess.hooks.inject({
-            object: BaseClass,
+            resolvingElements: [BaseClass],
         });
 
         const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;
@@ -49,7 +49,7 @@ describe(`Inject`, () => {
         const resolverProcess = resolver.process();
 
         const injectHookResult = resolverProcess.hooks.inject({
-            object: BaseClass,
+            resolvingElements: [BaseClass],
         });
 
         const injectedClass = injectHookResult ? injectHookResult.injectedObject : false;

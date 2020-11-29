@@ -5,7 +5,7 @@ import ProcessResolver from '../../../abstractions/Container/abstractions/Resole
 import CalledResolverInAfterResolveHook from '../../../abstractions/Container/abstractions/Resoler/interfaces/CalledResolverInAfterResolveHook';
 import ResolverResult from '../../../abstractions/Container/abstractions/ResolveResult/ResolverResult';
 import ResolveResultFactoryConfig from '../../../abstractions/ResolveResultFactoryConfig/ResolveResultFactoryConfig';
-import { ResolvingElement } from '../../..';
+import { ResolvingElement } from '../../../abstractions/Container/abstractions/Resoler/types/ResolvingElement';
 
 export default class Injector implements Container {
     public constructor(
@@ -15,7 +15,7 @@ export default class Injector implements Container {
 
     }
 
-    public resolve<T extends AbstractClass | Class>(type: T, resolvers: Resolver[] = []): ResolverResult<T> {
+    public resolve<T extends ResolvingElement>(type: T, resolvers: Resolver[] = []): ResolverResult<T> {
         const allResolvers = [
             ...resolvers,
             ...this.predefinedResolvers,
@@ -28,8 +28,8 @@ export default class Injector implements Container {
         });
     }
 
-    private resolveInteral<T extends AbstractClass | Class>(type: T, processResolvers: ProcessResolver[]): T extends AbstractClass<infer U> ? U : never {
-        const resolvingElements: ResolvingElement[] = [
+    private resolveInteral<T extends ResolvingElement>(type: T, processResolvers: ProcessResolver[]): T extends AbstractClass<infer U> ? U : never {
+        const resolvingElements: T[] = [
             type,
         ];
 
@@ -43,7 +43,6 @@ export default class Injector implements Container {
                                 ...processResolvers,
                                 ...additionalResolvers.map((additionalResolver) => additionalResolver.process()),
                             ]),
-                            object: object === null ? type : object,
                         });
 
                         if(result && result.injectedObject) {

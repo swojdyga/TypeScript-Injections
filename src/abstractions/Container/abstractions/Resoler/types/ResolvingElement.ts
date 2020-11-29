@@ -1,3 +1,3 @@
-import { AbstractClass } from "typescript-class-types";
+import {AbstractClass, Class} from "typescript-class-types";
 
-export type ResolvingElement = AbstractClass;
+export type ResolvingElement = AbstractClass | Class;

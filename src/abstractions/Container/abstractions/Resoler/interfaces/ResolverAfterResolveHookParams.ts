@@ -7,5 +7,5 @@ export default interface ResolverAfterResolveHookParams<
     R extends ResolvingElement,
 > extends ResolverHookParams<R> {
     object: T;
-    calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[];
+    calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<R>[];
 }

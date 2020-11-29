@@ -37,8 +37,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -63,8 +63,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -115,9 +115,9 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<T extends object>(params: { object: T }) {
+                        inject<R extends ResolvingElement>(params: { resolvingElements: R[] }) {
                             return {
-                                injectedObject: MainClass as T,
+                                injectedObject: MainClass as R,
                             };
                         },
                     },
@@ -155,8 +155,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -205,8 +205,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -278,8 +278,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -325,8 +325,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -371,8 +371,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -420,8 +420,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -459,8 +459,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -491,7 +491,7 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }) {
+                        afterResolve<T extends object, R extends ResolvingElement>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<R>[], object: T }) {
                             if(params.calledResolversInAfterResolveHook.find((calledResolver) => calledResolver.result === firstResolverAfterResolveHookResult)) {
                                 if(params.object instanceof MainClass) {
                                     params.object.someProperty = true;
@@ -516,8 +516,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -546,7 +546,7 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        afterResolve<T extends object>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[], object: T }) {
+                        afterResolve<T extends object, R extends ResolvingElement>(params: { calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<R>[], object: T }) {
                             if(params.calledResolversInAfterResolveHook.length > 0) {
                                 if(params.object instanceof MainClass) {
                                     params.object.someProperty = true;
@@ -587,10 +587,10 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<R extends ResolvingElement | Class<BaseClass>, T extends object>(params: { object: T, resolvingElements: R[] }) {
+                        inject<R extends ResolvingElement | Class<BaseClass>>(params: { resolvingElements: R[] }) {
                             if(~params.resolvingElements.indexOf(BaseClass as R)) {
                                 return {
-                                    injectedObject: MainClass as T,
+                                    injectedObject: MainClass as R,
                                 }
                             }
 
@@ -636,9 +636,9 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<T extends object>(params: { object: T }) {
+                        inject<R extends ResolvingElement>(params: { resolvingElements: R[] }) {
                             return {
-                                injectedObject: MainClass as T,
+                                injectedObject: MainClass as unknown as R,
                             };
                         },
                     },
@@ -647,9 +647,9 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<T extends object>(params: { object: T }) {
+                        inject<R extends ResolvingElement>(params: { resolvingElements: R[] }) {
                             return {
-                                injectedObject: SomeVariationOfMainClass as T,
+                                injectedObject: SomeVariationOfMainClass as unknown as R,
                             };
                         },
                     },
@@ -697,8 +697,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -738,8 +738,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -831,15 +831,15 @@ describe(`Injector`, () => {
             {
                 process: () => ({
                     hooks: {
-                        inject<T extends object>(params: { object: T; }) {
-                            if(params.object === SomeBaseDependency) {
+                        inject<R extends ResolvingElement>(params: { resolvingElements: R[]; }) {
+                            if(params.resolvingElements[0] === SomeBaseDependency) {
                                 return {
-                                    injectedObject: SomeDependency as T,
+                                    injectedObject: SomeDependency as R,
                                 };
                             }
 
                             return {
-                                injectedObject: params.object,
+                                injectedObject: params.resolvingElements[0],
                             };
                         },
                     },
@@ -869,8 +869,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -942,8 +942,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -973,10 +973,10 @@ describe(`Injector`, () => {
                                                 {
                                                     process: () => ({
                                                         hooks: {
-                                                            inject<T extends object>(params: { object: T; }) {
-                                                                if(params.object === SomeBaseDependency) {
+                                                            inject<R extends ResolvingElement>(params: { resolvingElements: R[]; }) {
+                                                                if(params.resolvingElements[0] === SomeBaseDependency) {
                                                                     return {
-                                                                        injectedObject: SomeDependency as T,
+                                                                        injectedObject: SomeDependency as R,
                                                                     };
                                                                 }
 
@@ -1021,8 +1021,8 @@ describe(`Injector`, () => {
                 {
                     process: () => ({
                         hooks: {
-                            inject: <T extends object>(params: {object: T, resolvingElements: ResolvingElement[]}) => ({
-                                injectedObject: params.resolvingElements[0] as T,
+                            inject: <R extends ResolvingElement>(params: {resolvingElements: R[]}) => ({
+                                injectedObject: params.resolvingElements[0] as R,
                             }),
                         },
                     })
@@ -1053,10 +1053,10 @@ describe(`Injector`, () => {
                                                 {
                                                     process: () => ({
                                                         hooks: {
-                                                            inject<T extends object>(params: { object: T; }) {
-                                                                if(params.object === SomeBaseDependency) {
+                                                            inject<R extends ResolvingElement>(params: { resolvingElements: R[]; }) {
+                                                                if(params.resolvingElements[0] === SomeBaseDependency) {
                                                                     return {
-                                                                        injectedObject: SomeDependency as T,
+                                                                        injectedObject: SomeDependency as R,
                                                                     };
                                                                 }
 

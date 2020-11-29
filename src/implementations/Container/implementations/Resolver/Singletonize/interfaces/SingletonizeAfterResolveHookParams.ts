@@ -4,5 +4,5 @@ import { ResolvingElement } from "../../../../../../abstractions/Container/abstr
 export default interface SingletonizeAfterResolveHookParams<R extends ResolvingElement, T extends object> {
     resolvingElements: R[];
     object: T;
-    calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<T>[];
+    calledResolversInAfterResolveHook: CalledResolverInAfterResolveHook<R>[];
 }
