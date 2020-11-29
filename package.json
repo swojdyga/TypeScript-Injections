@@ -1,7 +1,7 @@
 {
   "name": "typescript-injections",
-  "version": "1.1.0",
-  "description": "TypeScript Injections is a dependency injection library, which move responsibility from producer to customer.",
+  "version": "2.0.0",
+  "description": "TypeScript Injections is a library, which simplify dependency management in your project.",
   "main": "./build/commonjs/index.js",
   "jsnext:main": "./build/es6/index.js",
   "types": "./build/es6/index.d.ts",
