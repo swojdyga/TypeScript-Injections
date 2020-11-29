@@ -16,17 +16,17 @@ describe(`Integration tests from README`, () => {
 
         const definitions: Resolver[] = [
             new Inject([
-                {
+                new InjectWithParams({
                     type: Application,
                     to: HelloWorldApplication,
-                },
+                }),
             ]),
         ];
         
         const injector = new Injector();
+        const {instance: application} = injector.resolve(Application, definitions);
 
-        const {instance} = injector.resolve(Application, definitions);
-        const output = instance.run();
+        const output = application.run();
 
         expect(output).to.be.equals('Hello World!');
     });
@@ -64,9 +64,9 @@ describe(`Integration tests from README`, () => {
         ];
 
         const injector = new Injector();
+        const {instance: application} = injector.resolve(Application, definitions);
 
-        const {instance} = injector.resolve(Application, definitions);
-        const output = instance.run();
+        const output = application.run();
 
         expect(output).to.be.equals('Hello, John!');
     });
@@ -126,9 +126,9 @@ describe(`Integration tests from README`, () => {
         outputs.push(`After definitions`);
         
         const injector = new Injector();
+        const { instance: application } = injector.resolve(Application, definitions);
 
-        const {instance} = injector.resolve(Application, definitions);
-        instance.run();
+        application.run();
 
         expect(outputs).to.be.eql([
             'After definitions',
@@ -191,9 +191,9 @@ describe(`Integration tests from README`, () => {
         ];
         
         const injector = new Injector();
+        const { instance: application } = injector.resolve(Application, definitions);
 
-        const {instance} = injector.resolve(Application, definitions);
-        const output = instance.run();
+        const output = application.run();
 
         expect(output).to.be.equals(true);
     });
