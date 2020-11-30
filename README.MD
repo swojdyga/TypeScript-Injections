@@ -232,9 +232,9 @@ const definitions: Resolver[] = [
         }),
     ]),
     new Singletonize([
-        {
+        new SingletonizeType({
             type: Connection,
-        },
+        }),
     ]),
     new InjectConstructorParams([
         new ConstructorWithParams({

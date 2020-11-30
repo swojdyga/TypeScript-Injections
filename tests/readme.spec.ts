@@ -1,6 +1,15 @@
 import "mocha";
 import { expect } from "chai";
-import { Inject, InjectConstructorParams, Singletonize, Injector, Resolver, ConstructorWithParams, InjectWithParams } from "../src/index";
+import {
+    Inject,
+    InjectConstructorParams,
+    Singletonize,
+    Injector,
+    Resolver,
+    ConstructorWithParams,
+    InjectWithParams,
+    SingletonizeType
+} from "../src/index";
 
 describe(`Integration tests from README`, () => {
     it(`Should inject HelloWorldApplication object into Application place.`, () => {
@@ -175,9 +184,9 @@ describe(`Integration tests from README`, () => {
                 }),
             ]),
             new Singletonize([
-                {
+                new SingletonizeType({
                     type: Connection,
-                },
+                }),
             ]),
             new InjectConstructorParams([
                 new ConstructorWithParams({
