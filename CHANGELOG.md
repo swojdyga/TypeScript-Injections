@@ -1,3 +1,7 @@
+# 2.0.1 (30.11.2020)
+* Correcting error in documentation
+* Removing unsecessery exports
+
 # 2.0.0 (29.11.2020)
 * Complete API redevelopment - new API has no side effects; works like plugin; it is more susceptible to development.
 * Removing `ResolveObject` concept.
