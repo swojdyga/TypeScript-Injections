@@ -4,10 +4,10 @@ import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(pointer: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
-        
+        return {} as T;
     }
 
     public createReference<T>(): AbstractClass<T> {
-        
+        return {} as AbstractClass<T>;
     }
 }
