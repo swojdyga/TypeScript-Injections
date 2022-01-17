@@ -4,7 +4,12 @@ import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
-        throw new Error("Unable to resolve given abstraction.");
+        const abstractionMapping = config.mappings.find((mapping) => mapping.config.abstraction === abstraction);
+        if(!abstractionMapping) {
+            throw new Error("Unable to resolve given abstraction.");
+        }
+
+        return new abstractionMapping.config.implementation() as T;
     }
 
     public createReference<T>(): AbstractClass<T> {
