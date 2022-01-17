@@ -3,8 +3,8 @@ import TypeScriptInjectionsConfig from "../../../../abstractions/Domain/TypeScri
 import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass/AbstractClass";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
-    public resolve<T>(pointer: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
-        return {} as T;
+    public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
+        throw new Error("Unable to resolve given abstraction.");
     }
 
     public createReference<T>(): AbstractClass<T> {
