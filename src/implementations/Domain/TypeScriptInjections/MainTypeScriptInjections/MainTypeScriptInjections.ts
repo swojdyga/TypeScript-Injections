@@ -9,7 +9,14 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             throw new Error("Unable to resolve given abstraction.");
         }
 
-        return new abstractionMapping.config.implementation() as T;
+        const implementation = abstractionMapping.config.implementation;
+
+        const implementationConstructor = config.constructors.find((constructor) => constructor.config.class === implementation);
+        if(!implementationConstructor) {
+            return new implementation() as T;
+        }
+
+        return new implementation(...implementationConstructor.config.params()) as T;
     }
 
     public createReference<T>(): AbstractClass<T> {

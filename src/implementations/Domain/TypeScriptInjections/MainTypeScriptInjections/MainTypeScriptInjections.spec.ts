@@ -2,6 +2,7 @@ import "mocha";
 import { expect } from "chai";
 import MainTypeScriptInjections from "./MainTypeScriptInjections";
 import Mapping from "../../../../abstractions/Domain/ValueObjects/Mapping/Mapping";
+import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
 
 describe(`MainTypeScriptInjections`, () => {
     it(`Create reference.`, () => {
@@ -61,5 +62,63 @@ describe(`MainTypeScriptInjections`, () => {
         });
 
         expect(someInstance).to.be.instanceOf(SomeImplementation);
+    });
+
+    it(`Resolve implementation with dependencies.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        
+        interface OtherInterface {
+            someOtherMethod(): void;
+        }
+
+        class SomeImplementationOfOtherInterface implements OtherInterface {
+            public someOtherMethod(): void {
+                
+            }
+        }
+
+        interface SomeInterface {
+            someMethod(): OtherInterface;
+        }
+
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly someDependency: OtherInterface,
+            ) {
+                
+            }
+
+            public someMethod(): OtherInterface {
+                return this.someDependency;
+            }
+        }
+
+        const otherInterfaceReference = mainTypeScriptInjections.createReference<OtherInterface>();
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: [
+                new Mapping({
+                    abstraction: otherInterfaceReference,
+                    implementation: SomeImplementationOfOtherInterface,
+                }),
+                new Mapping({
+                    abstraction: someInterfaceReference,
+                    implementation: SomeImplementation,
+                }),
+            ],
+            constructors: [
+                new Constructor({
+                    class: SomeImplementation,
+                    params: () => [
+                        new SomeImplementationOfOtherInterface(),
+                    ],
+                }),
+            ],
+        });
+
+        expect(someInstance.someMethod()).to.be.instanceOf(SomeImplementationOfOtherInterface);
     });
 });
