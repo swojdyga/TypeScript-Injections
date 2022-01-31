@@ -16,7 +16,9 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             return new implementation() as T;
         }
 
-        return new implementation(...implementationConstructor.config.params()) as T;
+        return new implementation(...implementationConstructor.config.params({
+            resolve: <T>(abstraction: AbstractClass<T>): T => this.resolve(abstraction, config),
+        })) as T;
     }
 
     public createReference<T>(): AbstractClass<T> {

@@ -121,4 +121,62 @@ describe(`MainTypeScriptInjections`, () => {
 
         expect(someInstance.someMethod()).to.be.instanceOf(SomeImplementationOfOtherInterface);
     });
+
+    it(`Resolve dependencies of implementation using given config.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        
+        interface OtherInterface {
+            someOtherMethod(): void;
+        }
+
+        class SomeImplementationOfOtherInterface implements OtherInterface {
+            public someOtherMethod(): void {
+                
+            }
+        }
+
+        interface SomeInterface {
+            someMethod(): OtherInterface;
+        }
+
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly someDependency: OtherInterface,
+            ) {
+                
+            }
+
+            public someMethod(): OtherInterface {
+                return this.someDependency;
+            }
+        }
+
+        const otherInterfaceReference = mainTypeScriptInjections.createReference<OtherInterface>();
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: [
+                new Mapping({
+                    abstraction: otherInterfaceReference,
+                    implementation: SomeImplementationOfOtherInterface,
+                }),
+                new Mapping({
+                    abstraction: someInterfaceReference,
+                    implementation: SomeImplementation,
+                }),
+            ],
+            constructors: [
+                new Constructor({
+                    class: SomeImplementation,
+                    params: ({resolve}) => [
+                        resolve(otherInterfaceReference),
+                    ],
+                }),
+            ],
+        });
+
+        expect(someInstance.someMethod()).to.be.instanceOf(SomeImplementationOfOtherInterface);
+    });
 });
