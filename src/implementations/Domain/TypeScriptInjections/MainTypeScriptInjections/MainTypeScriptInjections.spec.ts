@@ -180,7 +180,7 @@ describe(`MainTypeScriptInjections`, () => {
         expect(someInstance.someMethod()).to.be.instanceOf(SomeImplementationOfOtherInterface);
     });
 
-    it(`Resolve dependencies of implementation using given config with additional config.`, () => {
+    it(`Resolve dependencies of implementation using given config with additional mapping config.`, () => {
         const mainTypeScriptInjections = new MainTypeScriptInjections();
 
         
@@ -249,5 +249,90 @@ describe(`MainTypeScriptInjections`, () => {
         });
 
         expect(someInstance.someMethod()).to.be.instanceOf(SomeOtherImplementationOfOtherInterface);
+    });
+
+    it(`Resolve dependencies of implementation using given config with additional constructors config.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        interface OtherInterface {
+            someOtherMethod(): string;
+        }
+
+        class SomeImplementationOfOtherInterface implements OtherInterface {
+            public constructor(
+                private readonly someDependency: string,
+            ) {
+
+            }
+
+            public someOtherMethod(): string {
+                return this.someDependency;
+            }
+        }
+
+        interface SomeInterface {
+            someMethod(): string;
+        }
+
+
+        interface SomeInterface {
+            someMethod(): string;
+        }
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly someDependency: OtherInterface,
+            ) {
+                
+            }
+
+            public someMethod(): string {
+                return this.someDependency.someOtherMethod();
+            }
+        }
+
+        const otherInterfaceReference = mainTypeScriptInjections.createReference<OtherInterface>();
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: [
+                new Mapping({
+                    abstraction: otherInterfaceReference,
+                    implementation: SomeImplementationOfOtherInterface,
+                }),
+                new Mapping({
+                    abstraction: someInterfaceReference,
+                    implementation: SomeImplementation,
+                }),
+            ],
+            constructors: [
+                new Constructor({
+                    class: SomeImplementationOfOtherInterface,
+                    params: ({resolve}) => [
+                        "some string",
+                    ],
+                }),
+                new Constructor({
+                    class: SomeImplementation,
+                    params: ({resolve}) => [
+                        resolve(otherInterfaceReference, {
+                            mappings: [
+                                
+                            ],
+                            constructors: [
+                                new Constructor({
+                                    class: SomeImplementationOfOtherInterface,
+                                    params: ({resolve}) => [
+                                        "some other string",
+                                    ],
+                                }),
+                            ]
+                        }),
+                    ],
+                }),
+            ],
+        });
+
+        expect(someInstance.someMethod()).to.be.equals("some other string");
     });
 });

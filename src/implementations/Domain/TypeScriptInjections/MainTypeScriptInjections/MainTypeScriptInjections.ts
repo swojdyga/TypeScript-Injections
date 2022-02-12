@@ -30,6 +30,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
                             ...additionalConfig.mappings,
                             ...config.mappings,
                         ],
+                        constructors: [
+                            ...additionalConfig.constructors ?? [],
+                            ...config.constructors ?? [],
+                        ],
                     }
                     : config,
             ),
