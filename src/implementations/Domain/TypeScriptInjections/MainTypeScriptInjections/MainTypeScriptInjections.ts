@@ -1,5 +1,5 @@
 import TypeScriptInjections from "../../../../abstractions/Domain/TypeScriptInjections/TypeScriptInjections";
-import TypeScriptInjectionsConfig from "../../../../abstractions/Domain/TypeScriptInjections/TypeScriptInjectionsConfig/TypeScriptInjectionsConfig";
+import TypeScriptInjectionsConfig from "../../../../abstractions/Domain/DTO/TypeScriptInjectionsConfig/TypeScriptInjectionsConfig";
 import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass/AbstractClass";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
@@ -11,13 +11,28 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
 
         const implementation = abstractionMapping.config.implementation;
 
-        const implementationConstructor = config.constructors.find((constructor) => constructor.config.class === implementation);
+        const implementationConstructor = config.constructors
+            ?.find((constructor) => constructor.config.class === implementation);
+
         if(!implementationConstructor) {
             return new implementation() as T;
         }
 
         return new implementation(...implementationConstructor.config.params({
-            resolve: <T>(abstraction: AbstractClass<T>): T => this.resolve(abstraction, config),
+            resolve: <T>(
+                abstraction: AbstractClass<T>,
+                additionalConfig?: TypeScriptInjectionsConfig,
+            ): T => this.resolve(
+                abstraction,
+                additionalConfig
+                    ? {
+                        mappings: [
+                            ...additionalConfig.mappings,
+                            ...config.mappings,
+                        ],
+                    }
+                    : config,
+            ),
         })) as T;
     }
 
