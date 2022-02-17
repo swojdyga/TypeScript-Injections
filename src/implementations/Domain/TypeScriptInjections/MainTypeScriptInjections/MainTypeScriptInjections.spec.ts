@@ -478,4 +478,142 @@ describe(`MainTypeScriptInjections`, () => {
 
         expect(someInterface.getSomeOtherInterface()).to.be.equals(someInterface.getSecondSomeOtherInterface());
     });
+
+    it(`Resolve implementation by overwriting via additionals config.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        interface JobExecutor {
+            executeJob(): void;
+        }
+
+        class MultipleJobExecutor implements JobExecutor {
+            public constructor(
+                private readonly jobExecutors: JobExecutor[],
+            ) {
+
+            }
+
+            public executeJob(): void {
+                this.jobExecutors.forEach((jobExecutor) => jobExecutor.executeJob());
+            }
+        }
+
+        class WithAfterJobExecutor implements JobExecutor {
+            public constructor(
+                private readonly jobExecutor: JobExecutor,
+                private afterExecuteJobCallbable: () => void,
+            ) {
+
+            }
+
+            public executeJob(): void {
+                this.jobExecutor.executeJob();
+                this.afterExecuteJobCallbable();
+            }
+        }
+
+        let welcome = "";
+
+        class JobExecutorImplementation implements JobExecutor {
+            public executeJob(): void {
+                welcome = "Hello world!";
+            }
+        }
+
+        class JobExecutorOtherImplementation implements JobExecutor {
+            public executeJob(): void {
+                welcome = "Hello everyone!";
+            }
+        }
+
+        interface Application {
+            run(): void;
+        }
+
+        class JobExecutorApplication {
+            public constructor(
+                private readonly jobExecutor: JobExecutor,
+            ) {
+
+            }
+
+            public run(): void {
+                this.jobExecutor.executeJob();
+            }
+        }
+
+        const jobExecutorReference = mainTypeScriptInjections.createReference<JobExecutor>();
+        const applicationReference = mainTypeScriptInjections.createReference<Application>();
+
+        const application = mainTypeScriptInjections.resolve(applicationReference, {
+            mappings: [
+                new Mapping({
+                    abstraction: applicationReference,
+                    implementation: JobExecutorApplication,
+                }),
+                new Mapping({
+                    abstraction: jobExecutorReference,
+                    implementation: MultipleJobExecutor,
+                }),
+            ],
+            constructors: [
+                new Constructor({
+                    class: MultipleJobExecutor,
+                    params: ({resolve}) => [
+                        [
+                            resolve(jobExecutorReference, {
+                                mappings: [
+                                    new Mapping({
+                                        abstraction: jobExecutorReference,
+                                        implementation: WithAfterJobExecutor,
+                                    }),
+                                ],
+                            }),
+                        ],
+                    ],
+                }),
+                new Constructor({
+                    class: WithAfterJobExecutor,
+                    params: ({resolve}) => [
+                        resolve(jobExecutorReference, {
+                            mappings: [
+                                new Mapping({
+                                    abstraction: jobExecutorReference,
+                                    implementation: JobExecutorImplementation,
+                                }),
+                            ],
+                        }),
+                        () => void(0),
+                    ],
+                }),
+                new Constructor({
+                    class: JobExecutorApplication,
+                    params: ({resolve}) => [
+                        resolve(jobExecutorReference, {
+                            constructors: [
+                                new Constructor({
+                                    class: WithAfterJobExecutor,
+                                    params: ({resolve}) => [
+                                        resolve(jobExecutorReference, {
+                                            mappings: [
+                                                new Mapping({
+                                                    abstraction: jobExecutorReference,
+                                                    implementation: JobExecutorOtherImplementation,
+                                                }),
+                                            ],
+                                        }),
+                                        () => void(0),
+                                    ],
+                                }),
+                            ]
+                        }),
+                    ]
+                }),
+            ],
+        });
+
+        application.run();
+
+        expect(welcome).to.be.equals("Hello everyone!");
+    });
 });
