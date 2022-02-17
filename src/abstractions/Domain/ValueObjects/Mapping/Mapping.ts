@@ -6,7 +6,6 @@ export default class Mapping<T> {
         public readonly config: {
             readonly abstraction: AbstractClass<T>,
             readonly implementation: Class<T, any[]>,
-            readonly singleton?: true,
         },
     ) {
 
