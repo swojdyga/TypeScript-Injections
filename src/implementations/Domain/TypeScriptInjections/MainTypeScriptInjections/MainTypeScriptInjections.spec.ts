@@ -28,7 +28,6 @@ describe(`MainTypeScriptInjections`, () => {
 
         const resolveCallable = () => mainTypeScriptInjections.resolve(someInterfaceReference, {
             mappings: [],
-            constructors: [],
         });
 
         expect(resolveCallable).to.throw(Error, "Unable to resolve given abstraction.");
@@ -55,9 +54,6 @@ describe(`MainTypeScriptInjections`, () => {
                     abstraction: someInterfaceReference,
                     implementation: SomeImplementation,
                 }),
-            ],
-            constructors: [
-
             ],
         });
 
@@ -398,6 +394,67 @@ describe(`MainTypeScriptInjections`, () => {
         });
 
         expect(someInterface.getSomeOtherInterface()).to.be.equals(someInterface.getSecondSomeOtherInterface());
+    });
+
+    it(`Resolve implementation as different instances.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        interface SomeOtherInterface {
+
+        }
+
+        class SomeOtherImplementation implements SomeOtherInterface {
+
+        }
+
+        interface SomeInterface {
+            getSomeOtherInterface(): SomeOtherInterface;
+            getSecondSomeOtherInterface(): SomeOtherInterface;
+        }
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly someOtherInterface: SomeOtherInterface,
+                private readonly someSecondOtherInterface: SomeOtherInterface,
+            ) {
+
+            }
+
+            public getSomeOtherInterface(): SomeOtherInterface {
+                return this.someOtherInterface;
+            }
+
+            public getSecondSomeOtherInterface(): SomeOtherInterface {
+                return this.someSecondOtherInterface;
+            }
+        }
+
+        const someOtherInterfaceReference = mainTypeScriptInjections.createReference<SomeOtherInterface>();
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someInterface = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: [
+                new Mapping({
+                    abstraction: someOtherInterfaceReference,
+                    implementation: SomeOtherImplementation,
+                }),
+                new Mapping({
+                    abstraction: someInterfaceReference,
+                    implementation: SomeImplementation,
+                }),
+            ],
+            constructors: [
+                new Constructor({
+                    class: SomeImplementation,
+                    params: ({resolve}) => [
+                        resolve(someOtherInterfaceReference),
+                        resolve(someOtherInterfaceReference),
+                    ],
+                }),
+            ],
+        });
+
+        expect(someInterface.getSomeOtherInterface()).to.not.be.equals(someInterface.getSecondSomeOtherInterface());
     });
 
     it(`Resolve implementation as singleton from different abstraction.`, () => {

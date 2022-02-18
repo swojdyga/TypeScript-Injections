@@ -57,7 +57,7 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             implementationsClassToImplementationsSingletons,
         );
 
-        if(config.singletons?.indexOf(implementationClass) !== -1) {
+        if(config.singletons && config.singletons.indexOf(implementationClass) > -1) {
             implementationsClassToImplementationsSingletons.set(implementationClass, implementation);
             abstractionsToImplementationsSingletons.set(abstraction, implementation);
         }
