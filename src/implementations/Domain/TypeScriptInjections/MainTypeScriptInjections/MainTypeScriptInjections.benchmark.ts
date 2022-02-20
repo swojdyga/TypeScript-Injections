@@ -67,8 +67,8 @@ accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () =
         mappings: mainTypeScriptInjections.mappings()
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: new Map()
-            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+        constructors: mainTypeScriptInjections.constructors()
+            .set(BySomeInterfaceApplication, ({resolve}) => [
                 () => resolve(someInterfaceReference),
             ]),
     });
@@ -133,8 +133,8 @@ accessingSameClassObjectBenchmark.add("Accessing same class object with large ma
         mappings: mappings
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: new Map()
-            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+        constructors: mainTypeScriptInjections.constructors()
+            .set(BySomeInterfaceApplication, ({resolve}) => [
                 () => resolve(someInterfaceReference),
             ]),
     });
@@ -213,11 +213,11 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
     const applicationReference = mainTypeScriptInjections.createReference<Application>();
 
     const application = mainTypeScriptInjections.resolve(applicationReference, {
-        mappings: new Map()
+        mappings: mainTypeScriptInjections.mappings()
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: new Map()
-            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+        constructors: mainTypeScriptInjections.constructors()
+            .set(BySomeInterfaceApplication, ({resolve}) => [
                 () => resolve(someInterfaceReference),
             ]),
         singletons: [

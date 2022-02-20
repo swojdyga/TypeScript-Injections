@@ -5,6 +5,7 @@ import Class from "../../../../abstractions/Infrastructure/Class/Class";
 import MappingsMap from "../../../../abstractions/Domain/DTO/MappingsMap/MappingsMap";
 import { ConstructorParams } from "../../../../abstractions/Infrastructure/ConstructorParams/ConstructorParams";
 import AdditionalInjectionsConfig from "../../../../abstractions/Domain/DTO/ConstructorsMap/AdditionalInjectionsConfig/AdditionalInjectionsConfig";
+import ConstructorsMap from "../../../../abstractions/Domain/DTO/ConstructorsMap/ConstructorsMap";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
@@ -24,6 +25,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
     }
 
     public mappings(): MappingsMap {
+        return new Map();
+    }
+
+    public constructors(): ConstructorsMap {
         return new Map();
     }
 
@@ -51,9 +56,6 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
 
         const implementationConstructor = config.constructors?.get(implementationClass);
         
-        // const implementationConstructor = config.constructors
-        //     ?.find((constructor) => constructor.config.class === implementationClass);
-
         const implementation = this.createImplementation(
             implementationClass,
             implementationConstructor,

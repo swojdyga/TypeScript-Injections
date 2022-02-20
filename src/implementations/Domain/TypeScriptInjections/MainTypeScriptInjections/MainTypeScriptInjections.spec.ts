@@ -23,6 +23,14 @@ describe(`MainTypeScriptInjections`, () => {
         expect(mappingsMap).to.be.instanceOf(Map);
     });
 
+    it(`Return new constructors map.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        const constructorsMap = mainTypeScriptInjections.constructors();
+
+        expect(constructorsMap).to.be.instanceOf(Map);
+    });
+
     it(`Throw error when can't resolve.`, () => {
         const mainTypeScriptInjections = new MainTypeScriptInjections();
 
@@ -100,7 +108,7 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
+            constructors: mainTypeScriptInjections.constructors()
                 .set(SomeImplementation, () => [
                     new SomeImplementationOfOtherInterface(),
                 ]),
@@ -147,8 +155,8 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(otherInterfaceReference),
                 ]),
         });
@@ -200,8 +208,8 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(otherInterfaceReference, {
                         mappings: mainTypeScriptInjections.mappings()
                             .set(otherInterfaceReference, SomeOtherImplementationOfOtherInterface),
@@ -259,13 +267,13 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
+            constructors: mainTypeScriptInjections.constructors()
                 .set(SomeImplementationOfOtherInterface, () => [
                     "some string",
                 ])
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(otherInterfaceReference, {
-                        constructors: new Map()
+                        constructors: mainTypeScriptInjections.constructors()
                             .set(SomeImplementationOfOtherInterface, () => [
                                 "some other string",
                             ]),
@@ -316,8 +324,8 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(someOtherInterfaceReference, SomeOtherImplementation)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(someOtherInterfaceReference),
                     resolve(someOtherInterfaceReference),
                 ]),
@@ -369,8 +377,8 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(someOtherInterfaceReference, SomeOtherImplementation)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(someOtherInterfaceReference),
                     resolve(someOtherInterfaceReference),
                 ]),
@@ -431,8 +439,8 @@ describe(`MainTypeScriptInjections`, () => {
                 .set(someOtherInterfaceReference, SomeOtherImplementation)
                 .set(someSecondOtherInterfaceReference, SomeOtherImplementation)
                 .set(someInterfaceReference, SomeImplementation),
-            constructors: new Map()
-                .set(SomeImplementation, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
                     resolve(someOtherInterfaceReference),
                     resolve(someSecondOtherInterfaceReference),
                 ]),
@@ -514,8 +522,8 @@ describe(`MainTypeScriptInjections`, () => {
             mappings: mainTypeScriptInjections.mappings()
                 .set(applicationReference, JobExecutorApplication)
                 .set(jobExecutorReference, MultipleJobExecutor),
-            constructors: new Map()
-                .set(MultipleJobExecutor, ({resolve}: {resolve: any}) => [
+            constructors: mainTypeScriptInjections.constructors()
+                .set(MultipleJobExecutor, ({resolve}) => [
                     [
                         resolve(jobExecutorReference, {
                             mappings: mainTypeScriptInjections.mappings()
@@ -523,17 +531,17 @@ describe(`MainTypeScriptInjections`, () => {
                         }),
                     ],
                 ])
-                .set(WithAfterJobExecutor, ({resolve}: {resolve: any}) => [
+                .set(WithAfterJobExecutor, ({resolve}) => [
                     resolve(jobExecutorReference, {
                         mappings: mainTypeScriptInjections.mappings()
                             .set(jobExecutorReference, JobExecutorImplementation),
                     }),
                     () => void(0),
                 ])
-                .set(JobExecutorApplication, ({resolve}: {resolve: any}) => [
+                .set(JobExecutorApplication, ({resolve}) => [
                     resolve(jobExecutorReference, {
-                        constructors: new Map()
-                            .set(WithAfterJobExecutor, ({resolve}: {resolve: any}) => [
+                        constructors: mainTypeScriptInjections.constructors()
+                            .set(WithAfterJobExecutor, ({resolve}) => [
                                 resolve(jobExecutorReference, {
                                     mappings: mainTypeScriptInjections.mappings()
                                         .set(jobExecutorReference, JobExecutorOtherImplementation),
@@ -542,10 +550,10 @@ describe(`MainTypeScriptInjections`, () => {
                             ]),
                     }),
                 ])
-                .set(JobExecutorApplication, ({resolve}: {resolve: any}) => [
+                .set(JobExecutorApplication, ({resolve}) => [
                     resolve(jobExecutorReference, {
-                        constructors: new Map()
-                            .set(WithAfterJobExecutor, ({resolve}: {resolve: any}) => [
+                        constructors: mainTypeScriptInjections.constructors()
+                            .set(WithAfterJobExecutor, ({resolve}) => [
                                 resolve(jobExecutorReference, {
                                     mappings: mainTypeScriptInjections.mappings()
                                         .set(jobExecutorReference, JobExecutorOtherImplementation),
