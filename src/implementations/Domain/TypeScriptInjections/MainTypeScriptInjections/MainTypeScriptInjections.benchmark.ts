@@ -65,7 +65,7 @@ accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () =
     const applicationReference = mainTypeScriptInjections.createReference<Application>();
 
     const application = mainTypeScriptInjections.resolve(applicationReference, {
-        mappings: new Map()
+        mappings: mainTypeScriptInjections.mapping()
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
         constructors: [
@@ -82,7 +82,7 @@ accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () =
 });
 
 const mainTypeScriptInjections = new MainTypeScriptInjections();
-const mappings = new Map();
+const mappings = mainTypeScriptInjections.mapping();
 
 for(let i = 1; i <= 100; i++) {
     interface SomeInterface {

@@ -4,6 +4,7 @@ import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass
 import AdditionalInjectionsConfig from "../../../../abstractions/Domain/ValueObjects/Constructor/AdditionalInjectionsConfig/AdditionalInjectionsConfig";
 import Class from "../../../../abstractions/Infrastructure/Class/Class";
 import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
+import MappingsMap from "../../../../abstractions/Domain/DTO/MappingsMap/MappingsMap";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
@@ -20,6 +21,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
 
     public createReference<T>(): AbstractClass<T> {
         return {} as AbstractClass<T>;
+    }
+
+    public mapping(): MappingsMap {
+        return new Map();
     }
 
     private resolveInternal<T>(
