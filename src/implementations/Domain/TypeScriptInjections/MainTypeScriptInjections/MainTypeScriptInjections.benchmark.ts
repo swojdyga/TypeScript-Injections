@@ -1,5 +1,4 @@
 import * as Benchmark from "benchmark";
-import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
 import MainTypeScriptInjections from "./MainTypeScriptInjections";
 
 const accessingSameClassObjectBenchmark = new Benchmark.Suite();
@@ -68,14 +67,10 @@ accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () =
         mappings: mainTypeScriptInjections.mapping()
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: [
-            new Constructor({
-                class: BySomeInterfaceApplication,
-                params: ({resolve}) => [
-                    () => resolve(someInterfaceReference),
-                ],
-            }),
-        ],
+        constructors: new Map()
+            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+                () => resolve(someInterfaceReference),
+            ]),
     });
 
     application.run();
@@ -138,14 +133,10 @@ accessingSameClassObjectBenchmark.add("Accessing same class object with large ma
         mappings: mappings
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: [
-            new Constructor({
-                class: BySomeInterfaceApplication,
-                params: ({resolve}) => [
-                    () => resolve(someInterfaceReference),
-                ],
-            }),
-        ],
+        constructors: new Map()
+            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+                () => resolve(someInterfaceReference),
+            ]),
     });
 
     application.run();
@@ -225,14 +216,10 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
         mappings: new Map()
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
-        constructors: [
-            new Constructor({
-                class: BySomeInterfaceApplication,
-                params: ({resolve}) => [
-                    () => resolve(someInterfaceReference),
-                ],
-            }),
-        ],
+        constructors: new Map()
+            .set(BySomeInterfaceApplication, ({resolve}: {resolve: any}) => [
+                () => resolve(someInterfaceReference),
+            ]),
         singletons: [
             SomeImplementation,
         ],

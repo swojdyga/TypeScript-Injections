@@ -1,10 +1,10 @@
 import TypeScriptInjections from "../../../../abstractions/Domain/TypeScriptInjections/TypeScriptInjections";
 import TypeScriptInjectionsConfig from "../../../../abstractions/Domain/DTO/TypeScriptInjectionsConfig/TypeScriptInjectionsConfig";
 import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass/AbstractClass";
-import AdditionalInjectionsConfig from "../../../../abstractions/Domain/ValueObjects/Constructor/AdditionalInjectionsConfig/AdditionalInjectionsConfig";
 import Class from "../../../../abstractions/Infrastructure/Class/Class";
-import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
 import MappingsMap from "../../../../abstractions/Domain/DTO/MappingsMap/MappingsMap";
+import { ConstructorParams } from "../../../../abstractions/Infrastructure/ConstructorParams/ConstructorParams";
+import AdditionalInjectionsConfig from "../../../../abstractions/Domain/DTO/ConstructorsMap/AdditionalInjectionsConfig/AdditionalInjectionsConfig";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
@@ -49,8 +49,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             return implementation;
         }
 
-        const implementationConstructor = config.constructors
-            ?.find((constructor) => constructor.config.class === implementationClass);
+        const implementationConstructor = config.constructors?.get(implementationClass);
+        
+        // const implementationConstructor = config.constructors
+        //     ?.find((constructor) => constructor.config.class === implementationClass);
 
         const implementation = this.createImplementation(
             implementationClass,
@@ -68,18 +70,23 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
         return implementation;
     }
 
-    private createImplementation<T>(
-        implementationClass: Class<T, any[]>,
-        implementationConstructor: Constructor<Class<{}, any[]>> | undefined,
+    private createImplementation<C>(
+        implementationClass: Class<C, any[]>,
+        implementationConstructor: ((injections: {
+            resolve: <T>(
+                abstraction: AbstractClass<T>,
+                config?: AdditionalInjectionsConfig,
+            ) => T,
+        }) => ConstructorParams<Class<C, any[]>>) | undefined,
         config: TypeScriptInjectionsConfig,
         abstractionsToImplementationsSingletons: Map<AbstractClass<unknown>, {}>,
         implementationsClassToImplementationsSingletons: Map<Class<unknown, unknown[]>, {}>,
-    ): T {
+    ): C {
         if(!implementationConstructor) {
-            return new implementationClass() as T;
+            return new implementationClass() as C;
         }
 
-        return new implementationClass(...implementationConstructor.config.params({
+        return new implementationClass(...implementationConstructor({
             resolve: <T>(
                 abstraction: AbstractClass<T>,
                 additionalConfig?: AdditionalInjectionsConfig,
@@ -90,15 +97,18 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
                         mappings: additionalConfig.mappings
                             ? new Map([...config.mappings, ...additionalConfig.mappings])
                             : config.mappings,
-                        constructors: [
-                            ...additionalConfig.constructors ?? [],
-                            ...config.constructors ?? [],
-                        ],
+                        constructors: additionalConfig.constructors && config.constructors
+                            ? new Map([...config.constructors, ...additionalConfig.constructors])
+                            : (
+                                additionalConfig.constructors
+                                    ? additionalConfig.constructors
+                                    : config.constructors
+                            ),
                     }
                     : config,
                 abstractionsToImplementationsSingletons,
                 implementationsClassToImplementationsSingletons,
             ),
-        })) as T;
+        })) as C;
     }
 }
