@@ -32,12 +32,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             return abstractionsToImplementationsSingletons.get(abstraction) as T;
         }
 
-        const abstractionMapping = config.mappings.find((mapping) => mapping.config.abstraction === abstraction);
-        if(!abstractionMapping) {
+        const implementationClass = config.mappings.get(abstraction) as Class<T, unknown[]>;
+        if(!implementationClass) {
             throw new Error("Unable to resolve given abstraction.");
         }
-
-        const implementationClass = abstractionMapping.config.implementation as Class<T, unknown[]>;
         
         if(implementationsClassToImplementationsSingletons.has(implementationClass)) {
             const implementation = implementationsClassToImplementationsSingletons.get(implementationClass) as T;
@@ -84,10 +82,9 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
                 abstraction,
                 additionalConfig
                     ? {
-                        mappings: [
-                            ...additionalConfig.mappings ?? [],
-                            ...config.mappings,
-                        ],
+                        mappings: additionalConfig.mappings
+                            ? new Map([...config.mappings, ...additionalConfig.mappings])
+                            : config.mappings,
                         constructors: [
                             ...additionalConfig.constructors ?? [],
                             ...config.constructors ?? [],

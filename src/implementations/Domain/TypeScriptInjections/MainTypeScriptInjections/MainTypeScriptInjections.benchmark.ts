@@ -1,188 +1,247 @@
 import * as Benchmark from "benchmark";
 import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
-import Mapping from "../../../../abstractions/Domain/ValueObjects/Mapping/Mapping";
 import MainTypeScriptInjections from "./MainTypeScriptInjections";
 
-new Benchmark.Suite()
-    .add("Accessing same class object (raw).", () => {
-        class SomeClass {
-            public someMethod() {
+const accessingSameClassObjectBenchmark = new Benchmark.Suite();
 
-            }
+accessingSameClassObjectBenchmark.add("Accessing same class object (raw).", () => {
+    class SomeClass {
+        public someMethod() {
+
+        }
+    }
+
+    class Application {
+        public constructor(
+            private readonly someClassFactory: () => SomeClass,
+        ) {
+
         }
 
-        class Application {
-            public constructor(
-                private readonly someClassFactory: () => SomeClass,
-            ) {
-
-            }
-
-            public run(): void {
-                for(let i = 1; i <= 100; i++) {
-                    this.someClassFactory();
-                }
+        public run(): void {
+            for(let i = 1; i <= 100; i++) {
+                this.someClassFactory();
             }
         }
+    }
 
-        new Application(
-            () => new SomeClass(),
-        ).run();
-    })
-    .add("Accessing same class object (tsi).", () => {
-        const mainTypeScriptInjections = new MainTypeScriptInjections();
+    new Application(
+        () => new SomeClass(),
+    ).run();
+});
 
-        interface SomeInterface {
-            someMethod(): void;
+accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () => {
+    const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+    interface SomeInterface {
+        someMethod(): void;
+    }
+
+    class SomeImplementation implements SomeInterface {
+        public someMethod(): void {
+            
+        }
+    }
+
+    interface Application {
+        run(): void;
+    }
+
+    class BySomeInterfaceApplication implements Application {
+        public constructor(
+            private readonly someInterfaceFactory: () => SomeInterface,
+        ) {
+
         }
 
-        class SomeImplementation implements SomeInterface {
-            public someMethod(): void {
-                
+        public run(): void {
+            for(let i = 1; i <= 100; i++) {
+                this.someInterfaceFactory();
             }
         }
+    }
 
-        interface Application {
-            run(): void;
+    const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+    const applicationReference = mainTypeScriptInjections.createReference<Application>();
+
+    const application = mainTypeScriptInjections.resolve(applicationReference, {
+        mappings: new Map()
+            .set(applicationReference, BySomeInterfaceApplication)
+            .set(someInterfaceReference, SomeImplementation),
+        constructors: [
+            new Constructor({
+                class: BySomeInterfaceApplication,
+                params: ({resolve}) => [
+                    () => resolve(someInterfaceReference),
+                ],
+            }),
+        ],
+    });
+
+    application.run();
+});
+
+const mainTypeScriptInjections = new MainTypeScriptInjections();
+const mappings = new Map();
+
+for(let i = 1; i <= 100; i++) {
+    interface SomeInterface {
+        someMethod(): void;
+    }
+
+    class SomeImplementation implements SomeInterface {
+        public someMethod(): void {
+            
+        }
+    }
+
+    const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+    mappings.set(someInterfaceReference, SomeImplementation);
+}
+
+accessingSameClassObjectBenchmark.add("Accessing same class object with large mapping config (tsi).", () => {
+    const mainTypeScriptInjections = new MainTypeScriptInjections();
+    
+    interface SomeInterface {
+        someMethod(): void;
+    }
+
+    class SomeImplementation implements SomeInterface {
+        public someMethod(): void {
+            
+        }
+    }
+
+    interface Application {
+        run(): void;
+    }
+
+    class BySomeInterfaceApplication implements Application {
+        public constructor(
+            private readonly someInterfaceFactory: () => SomeInterface,
+        ) {
+
         }
 
-        class BySomeInterfaceApplication implements Application {
-            public constructor(
-                private readonly someInterfaceFactory: () => SomeInterface,
-            ) {
-
-            }
-
-            public run(): void {
-                for(let i = 1; i <= 100; i++) {
-                    this.someInterfaceFactory();
-                }
+        public run(): void {
+            for(let i = 1; i <= 100; i++) {
+                this.someInterfaceFactory();
             }
         }
+    }
 
-        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
-        const applicationReference = mainTypeScriptInjections.createReference<Application>();
+    const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+    const applicationReference = mainTypeScriptInjections.createReference<Application>();
 
-        const application = mainTypeScriptInjections.resolve(applicationReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: applicationReference,
-                    implementation: BySomeInterfaceApplication,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
-            constructors: [
-                new Constructor({
-                    class: BySomeInterfaceApplication,
-                    params: ({resolve}) => [
-                        () => resolve(someInterfaceReference),
-                    ],
-                }),
-            ],
-            singletons: [
-                
-            ]
-        });
+    const application = mainTypeScriptInjections.resolve(applicationReference, {
+        mappings: mappings
+            .set(applicationReference, BySomeInterfaceApplication)
+            .set(someInterfaceReference, SomeImplementation),
+        constructors: [
+            new Constructor({
+                class: BySomeInterfaceApplication,
+                params: ({resolve}) => [
+                    () => resolve(someInterfaceReference),
+                ],
+            }),
+        ],
+    });
 
-        application.run();
-    })
+    application.run();
+});
+
+accessingSameClassObjectBenchmark
     .on('cycle', (event) => {
         console.log(String(event.target));
     })
     .run();
 
-new Benchmark.Suite()
-    .add("Accessing same instance (raw).", () => {
-        class SomeClass {
-            public someMethod() {
+const accessingSameInstanceBenchmark = new Benchmark.Suite();
 
-            }
+accessingSameInstanceBenchmark.add("Accessing same instance (raw).", () => {
+    class SomeClass {
+        public someMethod() {
+
+        }
+    }
+
+    class Application {
+        public constructor(
+            private readonly someClassFactory: () => SomeClass,
+        ) {
+
         }
 
-        class Application {
-            public constructor(
-                private readonly someClassFactory: () => SomeClass,
-            ) {
-
-            }
-
-            public run(): void {
-                for(let i = 1; i <= 100; i++) {
-                    this.someClassFactory();
-                }
+        public run(): void {
+            for(let i = 1; i <= 100; i++) {
+                this.someClassFactory();
             }
         }
+    }
 
-        const someClass = new SomeClass();
+    const someClass = new SomeClass();
 
-        new Application(
-            () => someClass,
-        ).run();
-    })
-    .add("Accessing same instance (tsi).", () => {
-        const mainTypeScriptInjections = new MainTypeScriptInjections();
+    new Application(
+        () => someClass,
+    ).run();
+});
 
-        interface SomeInterface {
-            someMethod(): void;
+accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
+    const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+    interface SomeInterface {
+        someMethod(): void;
+    }
+
+    class SomeImplementation implements SomeInterface {
+        public someMethod(): void {
+            
+        }
+    }
+
+    interface Application {
+        run(): void;
+    }
+
+    class BySomeInterfaceApplication implements Application {
+        public constructor(
+            private readonly someInterfaceFactory: () => SomeInterface,
+        ) {
+
         }
 
-        class SomeImplementation implements SomeInterface {
-            public someMethod(): void {
-                
+        public run(): void {
+            for(let i = 1; i <= 100; i++) {
+                this.someInterfaceFactory();
             }
         }
+    }
 
-        interface Application {
-            run(): void;
-        }
+    const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+    const applicationReference = mainTypeScriptInjections.createReference<Application>();
 
-        class BySomeInterfaceApplication implements Application {
-            public constructor(
-                private readonly someInterfaceFactory: () => SomeInterface,
-            ) {
+    const application = mainTypeScriptInjections.resolve(applicationReference, {
+        mappings: new Map()
+            .set(applicationReference, BySomeInterfaceApplication)
+            .set(someInterfaceReference, SomeImplementation),
+        constructors: [
+            new Constructor({
+                class: BySomeInterfaceApplication,
+                params: ({resolve}) => [
+                    () => resolve(someInterfaceReference),
+                ],
+            }),
+        ],
+        singletons: [
+            SomeImplementation,
+        ],
+    });
 
-            }
+    application.run();
+});
 
-            public run(): void {
-                for(let i = 1; i <= 100; i++) {
-                    this.someInterfaceFactory();
-                }
-            }
-        }
-
-        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
-        const applicationReference = mainTypeScriptInjections.createReference<Application>();
-
-        const application = mainTypeScriptInjections.resolve(applicationReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: applicationReference,
-                    implementation: BySomeInterfaceApplication,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
-            constructors: [
-                new Constructor({
-                    class: BySomeInterfaceApplication,
-                    params: ({resolve}) => [
-                        () => resolve(someInterfaceReference),
-                    ],
-                }),
-            ],
-            singletons: [
-                SomeImplementation,
-            ],
-        });
-
-        application.run();
-    })
-    .on('cycle', (event) => {
-        console.log(String(event.target));
-    })
-    .run();
+accessingSameInstanceBenchmark.on('cycle', (event) => {
+    console.log(String(event.target));
+})
+.run();

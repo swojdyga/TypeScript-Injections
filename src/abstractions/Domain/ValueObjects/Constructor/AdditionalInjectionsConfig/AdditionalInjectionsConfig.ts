@@ -1,8 +1,8 @@
 import Class from "../../../../Infrastructure/Class/Class";
 import Constructor from "../Constructor";
-import Mapping from "../../Mapping/Mapping";
+import MappingsMap from "../../../DTO/MappingsMap/MappingsMap";
 
 export default interface AdditionalInjectionsConfig {
-    mappings?: Array<Mapping<unknown>>;
+    mappings?: MappingsMap;
     constructors?: Array<Constructor<Class<{}, any[]>>>;
 }

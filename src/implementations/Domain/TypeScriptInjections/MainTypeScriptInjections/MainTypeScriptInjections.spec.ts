@@ -1,7 +1,6 @@
 import "mocha";
 import { expect } from "chai";
 import MainTypeScriptInjections from "./MainTypeScriptInjections";
-import Mapping from "../../../../abstractions/Domain/ValueObjects/Mapping/Mapping";
 import Constructor from "../../../../abstractions/Domain/ValueObjects/Constructor/Constructor";
 
 describe(`MainTypeScriptInjections`, () => {
@@ -27,7 +26,7 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const resolveCallable = () => mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [],
+            mappings: new Map(),
         });
 
         expect(resolveCallable).to.throw(Error, "Unable to resolve given abstraction.");
@@ -49,12 +48,8 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(someInterfaceReference, SomeImplementation),
         });
 
         expect(someInstance).to.be.instanceOf(SomeImplementation);
@@ -95,16 +90,9 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: otherInterfaceReference,
-                    implementation: SomeImplementationOfOtherInterface,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
@@ -153,16 +141,9 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: otherInterfaceReference,
-                    implementation: SomeImplementationOfOtherInterface,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
@@ -217,27 +198,16 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: otherInterfaceReference,
-                    implementation: SomeImplementationOfOtherInterface,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
                     params: ({resolve}) => [
                         resolve(otherInterfaceReference, {
-                            mappings: [
-                                new Mapping({
-                                    abstraction: otherInterfaceReference,
-                                    implementation: SomeOtherImplementationOfOtherInterface,
-                                }),
-                            ],
+                            mappings: new Map()
+                                .set(otherInterfaceReference, SomeOtherImplementationOfOtherInterface),
                         }),
                     ],
                 }),
@@ -291,20 +261,13 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInstance = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: otherInterfaceReference,
-                    implementation: SomeImplementationOfOtherInterface,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(otherInterfaceReference, SomeImplementationOfOtherInterface)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementationOfOtherInterface,
-                    params: ({resolve}) => [
+                    params: () => [
                         "some string",
                     ],
                 }),
@@ -312,13 +275,10 @@ describe(`MainTypeScriptInjections`, () => {
                     class: SomeImplementation,
                     params: ({resolve}) => [
                         resolve(otherInterfaceReference, {
-                            mappings: [
-                                
-                            ],
                             constructors: [
                                 new Constructor({
                                     class: SomeImplementationOfOtherInterface,
-                                    params: ({resolve}) => [
+                                    params: () => [
                                         "some other string",
                                     ],
                                 }),
@@ -369,16 +329,9 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInterface = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: someOtherInterfaceReference,
-                    implementation: SomeOtherImplementation,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(someOtherInterfaceReference, SomeOtherImplementation)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
@@ -433,16 +386,9 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInterface = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: someOtherInterfaceReference,
-                    implementation: SomeOtherImplementation,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(someOtherInterfaceReference, SomeOtherImplementation)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
@@ -505,20 +451,10 @@ describe(`MainTypeScriptInjections`, () => {
         const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
 
         const someInterface = mainTypeScriptInjections.resolve(someInterfaceReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: someOtherInterfaceReference,
-                    implementation: SomeOtherImplementation,
-                }),
-                new Mapping({
-                    abstraction: someSecondOtherInterfaceReference,
-                    implementation: SomeOtherImplementation,
-                }),
-                new Mapping({
-                    abstraction: someInterfaceReference,
-                    implementation: SomeImplementation,
-                }),
-            ],
+            mappings: new Map()
+                .set(someOtherInterfaceReference, SomeOtherImplementation)
+                .set(someSecondOtherInterfaceReference, SomeOtherImplementation)
+                .set(someInterfaceReference, SomeImplementation),
             constructors: [
                 new Constructor({
                     class: SomeImplementation,
@@ -603,28 +539,17 @@ describe(`MainTypeScriptInjections`, () => {
         const applicationReference = mainTypeScriptInjections.createReference<Application>();
 
         const application = mainTypeScriptInjections.resolve(applicationReference, {
-            mappings: [
-                new Mapping({
-                    abstraction: applicationReference,
-                    implementation: JobExecutorApplication,
-                }),
-                new Mapping({
-                    abstraction: jobExecutorReference,
-                    implementation: MultipleJobExecutor,
-                }),
-            ],
+            mappings: new Map()
+                .set(applicationReference, JobExecutorApplication)
+                .set(jobExecutorReference, MultipleJobExecutor),
             constructors: [
                 new Constructor({
                     class: MultipleJobExecutor,
                     params: ({resolve}) => [
                         [
                             resolve(jobExecutorReference, {
-                                mappings: [
-                                    new Mapping({
-                                        abstraction: jobExecutorReference,
-                                        implementation: WithAfterJobExecutor,
-                                    }),
-                                ],
+                                mappings: new Map()
+                                    .set(jobExecutorReference, WithAfterJobExecutor),
                             }),
                         ],
                     ],
@@ -633,12 +558,8 @@ describe(`MainTypeScriptInjections`, () => {
                     class: WithAfterJobExecutor,
                     params: ({resolve}) => [
                         resolve(jobExecutorReference, {
-                            mappings: [
-                                new Mapping({
-                                    abstraction: jobExecutorReference,
-                                    implementation: JobExecutorImplementation,
-                                }),
-                            ],
+                            mappings: new Map()
+                                .set(jobExecutorReference, JobExecutorImplementation),
                         }),
                         () => void(0),
                     ],
@@ -652,12 +573,8 @@ describe(`MainTypeScriptInjections`, () => {
                                     class: WithAfterJobExecutor,
                                     params: ({resolve}) => [
                                         resolve(jobExecutorReference, {
-                                            mappings: [
-                                                new Mapping({
-                                                    abstraction: jobExecutorReference,
-                                                    implementation: JobExecutorOtherImplementation,
-                                                }),
-                                            ],
+                                            mappings: new Map()
+                                                .set(jobExecutorReference, JobExecutorOtherImplementation),
                                         }),
                                         () => void(0),
                                     ],
