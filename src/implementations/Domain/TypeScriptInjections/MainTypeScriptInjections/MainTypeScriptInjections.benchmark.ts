@@ -220,7 +220,7 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
             .set(BySomeInterfaceApplication, ({resolve}) => [
                 () => resolve(someInterfaceReference),
             ]),
-        singletons: new Set<any>()
+        singletons: mainTypeScriptInjections.singletons()
             .add(SomeImplementation),
     });
 

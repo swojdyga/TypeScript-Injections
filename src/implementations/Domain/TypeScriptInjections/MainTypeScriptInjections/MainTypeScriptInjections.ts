@@ -32,6 +32,10 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
         return new Map();
     }
 
+    public singletons(): Set<Class<{}, any>> {
+        return new Set();
+    }
+
     private resolveInternal<T>(
         abstraction: AbstractClass<T>,
         config: TypeScriptInjectionsConfig,

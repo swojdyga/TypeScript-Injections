@@ -31,6 +31,14 @@ describe(`MainTypeScriptInjections`, () => {
         expect(constructorsMap).to.be.instanceOf(Map);
     });
 
+    it(`Return new singletons set.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        const singletonsSet = mainTypeScriptInjections.singletons();
+
+        expect(singletonsSet).to.be.instanceOf(Set);
+    });
+
     it(`Throw error when can't resolve.`, () => {
         const mainTypeScriptInjections = new MainTypeScriptInjections();
 
@@ -329,7 +337,7 @@ describe(`MainTypeScriptInjections`, () => {
                     resolve(someOtherInterfaceReference),
                     resolve(someOtherInterfaceReference),
                 ]),
-            singletons: new Set<any>()
+            singletons: mainTypeScriptInjections.singletons()
                 .add(SomeOtherImplementation)
         });
 
@@ -443,7 +451,7 @@ describe(`MainTypeScriptInjections`, () => {
                     resolve(someOtherInterfaceReference),
                     resolve(someSecondOtherInterfaceReference),
                 ]),
-            singletons: new Set<any>()
+            singletons: mainTypeScriptInjections.singletons()
                 .add(SomeOtherImplementation),
         });
 
