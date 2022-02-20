@@ -23,7 +23,7 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
         return {} as AbstractClass<T>;
     }
 
-    public mapping(): MappingsMap {
+    public mappings(): MappingsMap {
         return new Map();
     }
 

@@ -5,5 +5,5 @@ import TypeScriptInjectionsConfig from "../DTO/TypeScriptInjectionsConfig/TypeSc
 export default interface TypeScriptInjections {
     resolve<T>(pointer: AbstractClass<T>, config: TypeScriptInjectionsConfig): T;
     createReference<T>(): AbstractClass<T>;
-    mapping(): MappingsMap;
+    mappings(): MappingsMap;
 }
