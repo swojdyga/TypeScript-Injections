@@ -5,5 +5,5 @@ import MappingsMap from "../MappingsMap/MappingsMap";
 export default interface TypeScriptInjectionsConfig {
     mappings: MappingsMap;
     constructors?: ConstructorsMap;
-    singletons?: Array<Class<{}, any>>;
+    singletons?: Set<Class<{}, any>>;
 }

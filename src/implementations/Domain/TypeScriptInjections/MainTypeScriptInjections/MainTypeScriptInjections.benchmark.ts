@@ -220,9 +220,8 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
             .set(BySomeInterfaceApplication, ({resolve}) => [
                 () => resolve(someInterfaceReference),
             ]),
-        singletons: [
-            SomeImplementation,
-        ],
+        singletons: new Set<any>()
+            .add(SomeImplementation),
     });
 
     application.run();

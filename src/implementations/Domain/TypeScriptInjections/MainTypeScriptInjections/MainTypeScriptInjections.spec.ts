@@ -329,9 +329,8 @@ describe(`MainTypeScriptInjections`, () => {
                     resolve(someOtherInterfaceReference),
                     resolve(someOtherInterfaceReference),
                 ]),
-            singletons: [
-                SomeOtherImplementation,
-            ],
+            singletons: new Set<any>()
+                .add(SomeOtherImplementation)
         });
 
         expect(someInterface.getSomeOtherInterface()).to.be.equals(someInterface.getSecondSomeOtherInterface());
@@ -444,9 +443,8 @@ describe(`MainTypeScriptInjections`, () => {
                     resolve(someOtherInterfaceReference),
                     resolve(someSecondOtherInterfaceReference),
                 ]),
-            singletons: [
-                SomeOtherImplementation,
-            ],
+            singletons: new Set<any>()
+                .add(SomeOtherImplementation),
         });
 
         expect(someInterface.getSomeOtherInterface()).to.be.equals(someInterface.getSecondSomeOtherInterface());
