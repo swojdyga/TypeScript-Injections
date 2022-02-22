@@ -7,7 +7,7 @@
   "types": "./build/es6/index.d.ts",
   "scripts": {
     "test": "(shx mkdir .temp && shx cp -r src .temp/src && shx cp -r tests .temp/tests && mocha -r esm -r ts-node/register src '.temp/src/**/*.spec.ts' 'tests/**/*.spec.ts' && shx rm -rf .temp) || shx rm -rf .temp",
-    "benchmark": "ts-node --project ./tsconfig-commonjs.json ./src/MainTypeScriptInjections.benchmark.ts",
+    "benchmark": "ts-node --project ./tsconfig-commonjs.json ./src/implementations/Domain/TypeScriptInjections/MainTypeScriptInjections/MainTypeScriptInjections.benchmark.ts",
     "build": "npm run build-commonjs && npm run build-es6",
     "build-commonjs": "(shx rm -rf build/commonjs/* && tsc --project tsconfig-commonjs.json) || shx rm -rf build/commonjs/*",
     "build-es6": "(shx rm -rf build/es6/* && tsc --project tsconfig-es6.json) || shx rm -rf build/es6/*",
@@ -25,11 +25,9 @@
     "mocha": "^7.2.0",
     "shx": "^0.3.2",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.5.4"
   },
-  "dependencies": {
-    "typescript-class-types": "^1.2.2"
-  },
+  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swojdyga/typescript-injections.git"

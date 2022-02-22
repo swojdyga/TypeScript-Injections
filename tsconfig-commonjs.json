@@ -4,7 +4,6 @@
         "target": "es6",
         "moduleResolution": "node",
         "strictNullChecks": true,
-        "experimentalDecorators": true,
         "declaration": true,
         "declarationDir": "build/commonjs",
         "outDir": "build/commonjs",

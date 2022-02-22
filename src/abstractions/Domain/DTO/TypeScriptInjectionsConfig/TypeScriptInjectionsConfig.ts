@@ -1,0 +1,9 @@
+import Class from "../../../Infrastructure/Class/Class";
+import ConstructorsMap from "../ConstructorsMap/ConstructorsMap";
+import MappingsMap from "../MappingsMap/MappingsMap";
+
+export default interface TypeScriptInjectionsConfig {
+    mappings: MappingsMap;
+    constructors?: ConstructorsMap;
+    singletons?: Set<Class<{}, any>>;
+}
