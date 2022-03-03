@@ -574,4 +574,70 @@ describe(`MainTypeScriptInjections`, () => {
 
         expect(welcome).to.be.equals("Hello everyone!");
     });
+
+    it(`Resolve constructor with default values.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        interface SomeInterface {
+            hello(): string;
+        }
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly helloText = "Hello world!",
+            ) {
+
+            }
+
+            public hello(): string {
+                return this.helloText;
+            }
+        }
+
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someImplementation = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: mainTypeScriptInjections.mappings()
+                .set(someInterfaceReference, SomeImplementation),
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
+                    "Hello everyone!",
+                ]),
+        });
+
+        expect(someImplementation.hello()).to.be.equals("Hello everyone!");
+    });
+
+    it(`Resolve constructor with callable parameter.`, () => {
+        const mainTypeScriptInjections = new MainTypeScriptInjections();
+
+        interface SomeInterface {
+            hello(): string;
+        }
+
+        class SomeImplementation implements SomeInterface {
+            public constructor(
+                private readonly helloCallable: (text: string) => string,
+            ) {
+
+            }
+
+            public hello(): string {
+                return this.helloCallable("World");
+            }
+        }
+
+        const someInterfaceReference = mainTypeScriptInjections.createReference<SomeInterface>();
+
+        const someImplementation = mainTypeScriptInjections.resolve(someInterfaceReference, {
+            mappings: mainTypeScriptInjections.mappings()
+                .set(someInterfaceReference, SomeImplementation),
+            constructors: mainTypeScriptInjections.constructors()
+                .set(SomeImplementation, ({resolve}) => [
+                    (text) => `Hello ${text}!`,
+                ]),
+        });
+
+        expect(someImplementation.hello()).to.be.equals("Hello World!");
+    });
 });
