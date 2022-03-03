@@ -1,5 +1,6 @@
 import MainTypeScriptInjections from "./implementations/Domain/TypeScriptInjections/MainTypeScriptInjections/MainTypeScriptInjections";
 import TypeScriptInjectionsConfig from "./abstractions/Domain/DTO/TypeScriptInjectionsConfig/TypeScriptInjectionsConfig";
+import AbstractClass from "./abstractions/Infrastructure/AbstractClass/AbstractClass";
 
 const {
     resolve,
@@ -15,5 +16,6 @@ export {
     mappings,
     constructors,
     singletons,
-    TypeScriptInjectionsConfig
+    TypeScriptInjectionsConfig,
+    AbstractClass,
 };
