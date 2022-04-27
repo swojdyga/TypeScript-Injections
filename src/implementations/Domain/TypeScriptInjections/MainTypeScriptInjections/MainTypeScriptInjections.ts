@@ -3,9 +3,11 @@ import TypeScriptInjectionsConfig from "../../../../abstractions/Domain/DTO/Type
 import AbstractClass from "../../../../abstractions/Infrastructure/AbstractClass/AbstractClass";
 import Class from "../../../../abstractions/Infrastructure/Class/Class";
 import MappingsMap from "../../../../abstractions/Domain/DTO/MappingsMap/MappingsMap";
-import { ConstructorParams } from "../../../../abstractions/Infrastructure/ConstructorParams/ConstructorParams";
 import AdditionalInjectionsConfig from "../../../../abstractions/Domain/DTO/ConstructorsMap/AdditionalInjectionsConfig/AdditionalInjectionsConfig";
 import ConstructorsMap from "../../../../abstractions/Domain/DTO/ConstructorsMap/ConstructorsMap";
+import {
+    ConstructorParamsAsMethodsWithParams
+} from "../../../../abstractions/Infrastructure/ConstructorParamsAsMethodsWithParams/ConstructorParamsAsMethodsWithParams";
 
 export default class MainTypeScriptInjections implements TypeScriptInjections {
     public resolve<T>(abstraction: AbstractClass<T>, config: TypeScriptInjectionsConfig): T {
@@ -78,12 +80,14 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
 
     private createImplementation<C>(
         implementationClass: Class<C, any[]>,
-        implementationConstructor: ((injections: {
-            resolve: <T>(
-                abstraction: AbstractClass<T>,
-                config?: AdditionalInjectionsConfig,
-            ) => T,
-        }) => ConstructorParams<Class<C, any[]>>) | undefined,
+        implementationConstructor: ConstructorParamsAsMethodsWithParams<Class<C, any[]>, [
+            {
+                resolve: <T>(
+                    abstraction: AbstractClass<T>,
+                    config?: AdditionalInjectionsConfig,
+                ) => T,
+            },
+        ]> | undefined,
         config: TypeScriptInjectionsConfig,
         abstractionsToImplementationsSingletons: Map<AbstractClass<unknown>, {}>,
         implementationsClassToImplementationsSingletons: Map<Class<unknown, unknown[]>, {}>,
@@ -92,7 +96,7 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
             return new implementationClass() as C;
         }
 
-        return new implementationClass(...implementationConstructor({
+        return new implementationClass(...implementationConstructor.map((paramCallable) => paramCallable({
             resolve: <T>(
                 abstraction: AbstractClass<T>,
                 additionalConfig?: AdditionalInjectionsConfig,
@@ -104,7 +108,7 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
                             ? new Map([...config.mappings, ...additionalConfig.mappings])
                             : config.mappings,
                         constructors: additionalConfig.constructors && config.constructors
-                            ? new Map([...config.constructors, ...additionalConfig.constructors])
+                            ? new Map([...config.constructors, ...additionalConfig.constructors]) as ConstructorsMap
                             : (
                                 additionalConfig.constructors
                                     ? additionalConfig.constructors
@@ -115,6 +119,6 @@ export default class MainTypeScriptInjections implements TypeScriptInjections {
                 abstractionsToImplementationsSingletons,
                 implementationsClassToImplementationsSingletons,
             ),
-        })) as C;
+        })));
     }
 }

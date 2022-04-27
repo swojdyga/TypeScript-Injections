@@ -27,7 +27,6 @@
     "ts-node": "^9.0.0",
     "typescript": "^4.5.4"
   },
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swojdyga/typescript-injections.git"

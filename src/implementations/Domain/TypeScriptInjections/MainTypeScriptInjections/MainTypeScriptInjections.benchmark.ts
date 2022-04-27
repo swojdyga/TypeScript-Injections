@@ -1,5 +1,6 @@
 import * as Benchmark from "benchmark";
 import MainTypeScriptInjections from "./MainTypeScriptInjections";
+import {Event} from "benchmark";
 
 const accessingSameClassObjectBenchmark = new Benchmark.Suite();
 
@@ -68,8 +69,8 @@ accessingSameClassObjectBenchmark.add("Accessing same class object (tsi).", () =
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
         constructors: mainTypeScriptInjections.constructors()
-            .set(BySomeInterfaceApplication, ({resolve}) => [
-                () => resolve(someInterfaceReference),
+            .set(BySomeInterfaceApplication, [
+                ({resolve}) => () => resolve(someInterfaceReference),
             ]),
     });
 
@@ -134,8 +135,8 @@ accessingSameClassObjectBenchmark.add("Accessing same class object with large ma
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
         constructors: mainTypeScriptInjections.constructors()
-            .set(BySomeInterfaceApplication, ({resolve}) => [
-                () => resolve(someInterfaceReference),
+            .set(BySomeInterfaceApplication, [
+                ({resolve}) => () => resolve(someInterfaceReference),
             ]),
     });
 
@@ -143,7 +144,7 @@ accessingSameClassObjectBenchmark.add("Accessing same class object with large ma
 });
 
 accessingSameClassObjectBenchmark
-    .on('cycle', (event) => {
+    .on('cycle', (event: Event) => {
         console.log(String(event.target));
     })
     .run();
@@ -217,8 +218,8 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
             .set(applicationReference, BySomeInterfaceApplication)
             .set(someInterfaceReference, SomeImplementation),
         constructors: mainTypeScriptInjections.constructors()
-            .set(BySomeInterfaceApplication, ({resolve}) => [
-                () => resolve(someInterfaceReference),
+            .set(BySomeInterfaceApplication, [
+                ({resolve}) => () => resolve(someInterfaceReference),
             ]),
         singletons: mainTypeScriptInjections.singletons()
             .add(SomeImplementation),
@@ -227,7 +228,7 @@ accessingSameInstanceBenchmark.add("Accessing same instance (tsi).", () => {
     application.run();
 });
 
-accessingSameInstanceBenchmark.on('cycle', (event) => {
+accessingSameInstanceBenchmark.on('cycle', (event: Event) => {
     console.log(String(event.target));
 })
 .run();
